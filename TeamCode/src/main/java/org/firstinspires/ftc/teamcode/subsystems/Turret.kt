@@ -18,11 +18,6 @@ import org.firstinspires.ftc.teamcode.utilities.Constants.TURRET_MAX_A
 import org.firstinspires.ftc.teamcode.utilities.Constants.TURRET_MAX_V
 import org.firstinspires.ftc.teamcode.utilities.Constants.TURRET_MOTOR_TICKS_PER_REV
 
-/*
-* TODO:
-** Deal with nullable stuff (utilize type safety)
-* */
-
 class Turret(val motor: MotorEx) : SubsystemBase() {
     init {
         motor.setRunMode(Motor.RunMode.VelocityControl)
@@ -33,7 +28,7 @@ class Turret(val motor: MotorEx) : SubsystemBase() {
     var curPosition = 0
     var targetPosition = 0
     var atTarget = true
-    private var profile: MotionProfile? = null
+    private lateinit var profile: MotionProfile
     private var time: ElapsedTime = ElapsedTime()
     var profiled = true
     var controller = PIDController(TURRET_KP, TURRET_KI, TURRET_KD)
@@ -58,13 +53,13 @@ class Turret(val motor: MotorEx) : SubsystemBase() {
         atTarget = kotlin.math.abs(curPosition - targetPosition) < 10
         if (!atTarget && profiled) {
             val curX = motor.currentPosition
-            val tempXTarget = profile?.get(time.time())?.x
-            val tempVTarget = profile?.get(time.time())?.v
-            val tempATarget = profile?.get(time.time())?.a
+            val tempXTarget = profile[time.time()].x
+            val tempVTarget = profile[time.time()].v
+            val tempATarget = profile[time.time()].a
             var output = controller.calculate(
                 curX.toDouble(),
-                tempXTarget!!.toDouble(),
-            ) + TURRET_KV * tempVTarget!! + TURRET_KA * tempATarget!!
+                tempXTarget.toDouble(),
+            ) + TURRET_KV * tempVTarget + TURRET_KA * tempATarget
             motor.set(output)
         } else motor.set(0.0)
     }
