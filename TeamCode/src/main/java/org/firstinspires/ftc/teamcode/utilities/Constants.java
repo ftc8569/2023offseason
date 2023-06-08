@@ -17,6 +17,17 @@ public class Constants {
     public static final double EXTENSION_MAX_LENGTH = 81.6; // Approximation based on CAD
 
     // Turret Constants
+    public static final double TURRET_MAX_V = 0.0;
+    public static final double TURRET_MAX_A = 0.0;
+    public static final double TURRET_KV = 0.0;
+    public static final double TURRET_KA = 0.0;
+    public static final double TURRET_KP = 0.0;
+    public static final double TURRET_KI = 0.0;
+    public static final double TURRET_KD = 0.0;
+    public static final double TURRET_MOTOR_TICKS_PER_REV = 751.8; // For a 223RPM motor
+    public static final double MOTOR_TO_TURRET_GEAR_RATIO = 24.0 / 141.0;
+
+
 
     // Claw Constants
 
