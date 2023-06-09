@@ -25,29 +25,27 @@ class Turret(val motor: MotorEx) : SubsystemBase() {
 
     var curAngle = 0.0
     var targetAngle = 0.0
+        set(targetAngle: Double){
+            this.targetAngle = targetAngle
+            this.targetPosition = angleToEncoderTicks(targetAngle).toInt()
+        }
     var curPosition = 0
     var targetPosition = 0
+        set(targetPosition: Int){
+            this.targetPosition = targetPosition
+            this.profile = MotionProfileGenerator.generateSimpleMotionProfile(
+                MotionState(curPosition.toDouble(), motor.velocity, motor.acceleration),
+                MotionState(targetPosition.toDouble(), 0.0, 0.0),
+                TURRET_MAX_V,
+                TURRET_MAX_A
+            )
+            time.reset()
+        }
     var atTarget = true
     private lateinit var profile: MotionProfile
     private var time: ElapsedTime = ElapsedTime()
     var profiled = true
     var controller = PIDController(TURRET_KP, TURRET_KI, TURRET_KD)
-
-    fun setTargetPosition(targetPosition: Int) {
-        this.targetPosition = targetPosition
-        this.profile = MotionProfileGenerator.generateSimpleMotionProfile(
-            MotionState(curPosition.toDouble(), motor.velocity, motor.acceleration),
-            MotionState(targetPosition.toDouble(), 0.0, 0.0),
-            TURRET_MAX_V,
-            TURRET_MAX_A
-        )
-        time.reset()
-    }
-
-    fun setTargetAngle(targetAngle: Double) {
-        this.targetAngle = targetAngle
-        setTargetPosition(angleToEncoderTicks(targetAngle).toInt())
-    }
 
     override fun periodic() {
         atTarget = kotlin.math.abs(curPosition - targetPosition) < 10
@@ -65,7 +63,7 @@ class Turret(val motor: MotorEx) : SubsystemBase() {
     }
 
     // Angles in degrees
-    private fun angleToEncoderTicks(angle: Double): Double {
+    fun angleToEncoderTicks(angle: Double): Double {
         return (angle / 360) * (TURRET_MOTOR_TICKS_PER_REV / MOTOR_TO_TURRET_GEAR_RATIO)
     }
 

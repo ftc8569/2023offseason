@@ -31,6 +31,6 @@ class AxonServo(
         servo.position = target
     }
 
-    val analogOutput: Double
+    val position: Double
         get() = analogInput.voltage / 3.3 * 360
 }
