@@ -18,7 +18,8 @@ import org.firstinspires.ftc.teamcode.utilities.Constants.TURRET_MAX_A
 import org.firstinspires.ftc.teamcode.utilities.Constants.TURRET_MAX_V
 import org.firstinspires.ftc.teamcode.utilities.Constants.TURRET_MOTOR_TICKS_PER_REV
 
-class Turret(val motor: MotorEx) : SubsystemBase() {
+// Put timer in constructor, mock a timer
+class Turret(val motor: MotorEx, val robot: Robot) : SubsystemBase() {
     init {
         motor.setRunMode(Motor.RunMode.VelocityControl)
     }
@@ -26,13 +27,13 @@ class Turret(val motor: MotorEx) : SubsystemBase() {
     var curAngle = 0.0
     var targetAngle = 0.0
         set(targetAngle: Double){
-            this.targetAngle = targetAngle
+            field = targetAngle
             this.targetPosition = angleToEncoderTicks(targetAngle).toInt()
         }
     var curPosition = 0
     var targetPosition = 0
         set(targetPosition: Int){
-            this.targetPosition = targetPosition
+            field = targetPosition
             this.profile = MotionProfileGenerator.generateSimpleMotionProfile(
                 MotionState(curPosition.toDouble(), motor.velocity, motor.acceleration),
                 MotionState(targetPosition.toDouble(), 0.0, 0.0),
@@ -54,19 +55,22 @@ class Turret(val motor: MotorEx) : SubsystemBase() {
             val tempXTarget = profile[time.time()].x
             val tempVTarget = profile[time.time()].v
             val tempATarget = profile[time.time()].a
-            var output = controller.calculate(
-                curX.toDouble(),
-                tempXTarget.toDouble(),
-            ) + TURRET_KV * tempVTarget + TURRET_KA * tempATarget
+//            var output = TURRET_KV * tempVTarget + TURRET_KA * tempATarget
+
+            // Raw PID for unit testing, can add motion profile back in later
+            var output = controller.calculate(curX.toDouble(), targetPosition.toDouble())
             motor.set(output)
         } else motor.set(0.0)
     }
 
     // Angles in degrees
-    fun angleToEncoderTicks(angle: Double): Double {
+    private fun angleToEncoderTicks(angle: Double): Double {
         return (angle / 360) * (TURRET_MOTOR_TICKS_PER_REV / MOTOR_TO_TURRET_GEAR_RATIO)
     }
 
+//    fun encoderTicksToAngle(ticks: Double): Double {
+//
+//    }
     init {
         register()
     }

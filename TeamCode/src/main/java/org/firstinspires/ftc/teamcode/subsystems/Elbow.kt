@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.utilities.Constants.ELBOW_KS
 import org.firstinspires.ftc.teamcode.utilities.Constants.ELBOW_KV
 import org.firstinspires.ftc.teamcode.utilities.Constants.INITIAL_ANGLE
 
-class Elbow(private val motor1: MotorEx, private val motor2: MotorEx) : SubsystemBase() {
+class Elbow(private val motor1: MotorEx, private val motor2: MotorEx, val robot: Robot) : SubsystemBase() {
     val motor = MotorGroup(motor1, motor2)
     val ff = ArmFeedforward(
         ELBOW_KS,
