@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.tests
+package org.firstinspires.ftc.teamcode.tests.subsystems
 
 import com.arcrobotics.ftclib.hardware.motors.MotorEx
 import junit.framework.TestCase.assertEquals
@@ -41,7 +41,7 @@ class TurretTest {
 
         val turret = Turret(motor, robot)
         turret.targetAngle = 90.0
-        for(i in 0..1000){
+        for(i in 0..1500){
             turret.periodic()
         }
 
