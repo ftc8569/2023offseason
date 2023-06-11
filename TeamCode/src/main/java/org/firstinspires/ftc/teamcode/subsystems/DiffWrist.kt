@@ -1,34 +1,38 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
 import com.arcrobotics.ftclib.command.SubsystemBase
-import com.arcrobotics.ftclib.geometry.Rotation2d
-import com.arcrobotics.ftclib.kinematics.wpilibkinematics.DifferentialDriveKinematics
-import com.arcrobotics.ftclib.kinematics.wpilibkinematics.DifferentialDriveOdometry
-import com.qualcomm.robotcore.util.ElapsedTime
+import com.arcrobotics.ftclib.kinematics.DifferentialOdometry
 import org.firstinspires.ftc.teamcode.utilities.AxonCRServo
-import java.util.concurrent.TimeUnit
+import kotlin.math.pow
+import kotlin.math.sign
+import kotlin.math.sqrt
 
-class DiffWrist(private val leftServo: AxonCRServo, private val rightServo: AxonCRServo, val robot:Robot) : SubsystemBase() {
-    val kinematics: DifferentialDriveKinematics = DifferentialDriveKinematics(0.035)
-    val odometry: DifferentialDriveOdometry = DifferentialDriveOdometry(Rotation2d())
+class DiffWrist(
+    private val leftServo: AxonCRServo,
+    private val rightServo: AxonCRServo,
+    val robot: Robot
+) : SubsystemBase() {
+    private val odometry: DifferentialOdometry =
+        DifferentialOdometry({ leftServo.position }, { rightServo.position }, 0.035)
     var translation = 0.0
     var rotation = 0.0
     var goalTranslation = 0.0
     var goalRotation = 0.0
 
-
-    override fun periodic(){
+    override fun periodic() {
         /* Each servo will calculate its loop time by storing the degrees travelled
-        *  since the last time updateVelocity() was called */
-        leftServo.updateVelocity()
-        rightServo.updateVelocity()
+        *  since the last time update() was called */
+        leftServo.update()
+        rightServo.update()
+        odometry.updatePose()
+
+        val currentPose = odometry.pose
+        translation = sqrt(
+            currentPose.x.pow(2) * sign(currentPose.x) + currentPose.y.pow(2) * sign(currentPose.y)
+        )
+        rotation = currentPose.heading
 
     }
-
-
-
-
-
 
 
 }

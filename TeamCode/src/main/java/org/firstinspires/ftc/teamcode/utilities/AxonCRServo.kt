@@ -9,7 +9,6 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 import kotlin.math.sign
 
-
 class AxonCRServo(
     hw: HardwareMap,
     servoName: String?,
@@ -28,7 +27,7 @@ class AxonCRServo(
     private val analogOutput: Double
         get() { return analogInput.voltage / 3.3 * 360}
     private var lastAngleReading = 0.0
-
+    var position = 0.0
 
     init {
         servo = hw.get(CRServoImplEx::class.java, servoName)
@@ -44,8 +43,8 @@ class AxonCRServo(
         servo.power = power
     }
 
-    // Must be called on every loop when using velocity control
-    fun updateVelocity(){
+    // Must be called on every loop
+    fun update(){
         lastLoopTime = loopTimer.time(TimeUnit.SECONDS).toDouble()
         val prevAngle = lastAngleReading
         val currentAngle = analogOutput
@@ -57,5 +56,8 @@ class AxonCRServo(
             angleDelta += 360.0 * -sign(angleDelta)
         }
         velocity = angleDelta / lastLoopTime
+        position += angleDelta
+
+        loopTimer.reset()
     }
 }
