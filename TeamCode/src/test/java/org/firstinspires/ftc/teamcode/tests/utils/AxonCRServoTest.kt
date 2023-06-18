@@ -11,7 +11,7 @@ import org.mockito.kotlin.mock
 class AxonCRServoTest {
 
     @Test
-    fun test_update_fun(){
+    fun test_encoder_wrapping(){
         var numEncoderCalls = 0
         val servo = mock<CRServoImplEx>(){
             on {power} doAnswer{

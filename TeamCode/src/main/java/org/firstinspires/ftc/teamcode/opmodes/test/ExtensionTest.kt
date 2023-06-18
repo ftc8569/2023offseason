@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.utilities.AxonCRServo
 @TeleOp
 class ExtensionTest: CommandOpMode() {
     override fun initialize() {
-        val extension = Extension(AxonCRServo(hardwareMap, "extension", "extension", 500.0, 2500.0), telemetry)
+        val extension = Extension(AxonCRServo(hardwareMap, "extension", "extension", 500.0, 2500.0))
         val gp1 = GamepadEx(gamepad1)
         val rightDpad = gp1.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
         val leftDpad = gp1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)

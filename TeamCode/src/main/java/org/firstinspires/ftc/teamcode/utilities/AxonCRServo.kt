@@ -10,9 +10,9 @@ import kotlin.math.sign
 
 class AxonCRServo(
     val servo: CRServoImplEx,
-    val analogInput: AnalogInput,
-    val min: Double,
-    val max: Double
+    private val analogInput: AnalogInput,
+    min: Double,
+    max: Double
 ) {
     constructor(
         hw: HardwareMap,
@@ -27,14 +27,12 @@ class AxonCRServo(
         servo.pwmRange = PwmRange(min, max)
     }
 
-    val analogOutput: Double
+    private val analogOutput: Double
         get() = analogInput.voltage / 3.3 * 360
     var target = 0.0
     var position = analogOutput
-    var lastPosition = 0.0
-        private set
-    var lastReading = position
-        private set
+    private var lastPosition = 0.0
+    private var lastReading = position
     fun setPower(power: Double) {
         servo.power = power
     }

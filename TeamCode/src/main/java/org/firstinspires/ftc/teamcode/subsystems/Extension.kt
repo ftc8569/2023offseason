@@ -14,9 +14,7 @@ import kotlin.math.asin
 import kotlin.math.pow
 import kotlin.math.sin
 
-class Extension(private val servo: AxonCRServo, val t: Telemetry) : SubsystemBase() {
-    val dashboard = FtcDashboard.getInstance()
-    val mulT = MultipleTelemetry(dashboard.telemetry, t)
+class Extension(private val servo: AxonCRServo) : SubsystemBase() {
     val controller = PIDController(EXTENSION_KP, EXTENSION_KI, EXTENSION_KD)
     var targetPosition = 0.0
     var length = 0.0
@@ -35,11 +33,6 @@ class Extension(private val servo: AxonCRServo, val t: Telemetry) : SubsystemBas
     override fun periodic(){
         servo.update()
         val power = controller.calculate(servo.position, servo.target)
-        mulT.addData("servo position", servo.position)
-        mulT.addData("servo power", power)
-        mulT.addData("analog out", servo.analogOutput)
-        mulT.addData("goal", targetPosition)
-        mulT.update()
         servo.setPower(power)
     }
 
