@@ -14,7 +14,7 @@ import org.mockito.kotlin.mock
 
 class TurretTest {
     val robot = mock<Robot>()
-    val loopTime = 20e-3
+    private val loopTime = 20e-3
 
     @Test
     fun motor_acceleration_stubbing_works(){

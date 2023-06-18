@@ -30,7 +30,6 @@ class Drivetrain(val hw: HardwareMap): SubsystemBase() {
         frontL.inverted = true
         backR.inverted = true
         backL.inverted = true
-
     }
 
     fun getYaw(): Double{
