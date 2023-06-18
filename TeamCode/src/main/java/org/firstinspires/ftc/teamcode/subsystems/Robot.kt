@@ -18,5 +18,5 @@ class Robot(private val hw: HardwareMap) {
 //    val extension: Extension =
 //        Extension(AxonCRServo(hw, "extension", "extensionAnalog", 500.0, 2500.0))
     val aligner: Aligner = Aligner(AxonServo(hw, "aligner", "alignerAnalog", 500.0, 2500.0), this)
-    val wrist: DiffWrist = DiffWrist()
+//    val wrist: DiffWrist = DiffWrist()
 }
