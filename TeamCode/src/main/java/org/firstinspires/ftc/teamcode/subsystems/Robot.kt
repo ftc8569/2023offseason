@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystems
 
 import com.arcrobotics.ftclib.hardware.motors.MotorEx
 import com.qualcomm.robotcore.hardware.HardwareMap
+import org.firstinspires.ftc.teamcode.utilities.AxonCRServo
 import org.firstinspires.ftc.teamcode.utilities.AxonServo
 
 /*
@@ -12,10 +13,10 @@ import org.firstinspires.ftc.teamcode.utilities.AxonServo
 */
 
 class Robot(private val hw: HardwareMap) {
-    val turret: Turret = Turret(MotorEx(hw, "turret"), this)
+    val turret: Turret = Turret(MotorEx(hw, "turret"))
     val elbow: Elbow = Elbow(MotorEx(hw, "elbow1"), MotorEx(hw, "elbow2"), this)
-    val extension: Extension =
-        Extension(AxonServo(hw, "extension", "extensionAnalog", 500.0, 2500.0), this)
+//    val extension: Extension =
+//        Extension(AxonCRServo(hw, "extension", "extensionAnalog", 500.0, 2500.0))
     val aligner: Aligner = Aligner(AxonServo(hw, "aligner", "alignerAnalog", 500.0, 2500.0), this)
     val wrist: DiffWrist = DiffWrist()
 }

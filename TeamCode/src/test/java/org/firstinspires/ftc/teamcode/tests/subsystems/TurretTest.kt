@@ -39,7 +39,7 @@ class TurretTest {
             on{currentPosition} doAnswer {curPos.toInt()}
         }
 
-        val turret = Turret(motor, robot)
+        val turret = Turret(motor)
         turret.targetAngle = 90.0
         for(i in 0..1500){
             turret.periodic()
