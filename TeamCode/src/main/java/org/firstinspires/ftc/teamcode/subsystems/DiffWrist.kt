@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
 import com.arcrobotics.ftclib.command.SubsystemBase
+import com.arcrobotics.ftclib.geometry.Rotation2d
+import com.arcrobotics.ftclib.geometry.Translation2d
 import com.arcrobotics.ftclib.kinematics.DifferentialOdometry
 import org.firstinspires.ftc.teamcode.utilities.AxonCRServo
 import kotlin.math.pow
@@ -14,7 +16,7 @@ class DiffWrist(
 ) : SubsystemBase() {
     private val odometry: DifferentialOdometry =
         DifferentialOdometry({ leftServo.position }, { rightServo.position }, 0.035)
-    var translation = 0.0
+    var translation = Translation2d()
     var rotation = 0.0
     var goalTranslation = 0.0
     var goalRotation = 0.0
@@ -27,12 +29,8 @@ class DiffWrist(
         odometry.updatePose()
 
         val currentPose = odometry.pose
-        translation = sqrt(
-            currentPose.x.pow(2) * sign(currentPose.x) + currentPose.y.pow(2) * sign(currentPose.y)
-        )
+        translation = currentPose.translation
         rotation = currentPose.heading
 
     }
-
-
 }

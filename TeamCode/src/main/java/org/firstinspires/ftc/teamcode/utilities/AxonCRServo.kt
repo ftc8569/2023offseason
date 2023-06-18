@@ -44,7 +44,7 @@ class AxonCRServo(
     }
 
     // Must be called on every loop
-    fun update(){
+    fun update():Unit{
         lastLoopTime = loopTimer.time(TimeUnit.SECONDS).toDouble()
         val prevAngle = lastAngleReading
         val currentAngle = analogOutput
