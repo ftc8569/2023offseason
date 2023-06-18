@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.utilities.Constants.ELBOW_KP
 import org.firstinspires.ftc.teamcode.utilities.Constants.ELBOW_KS
 import org.firstinspires.ftc.teamcode.utilities.Constants.ELBOW_KV
 import org.firstinspires.ftc.teamcode.utilities.Constants.INITIAL_ANGLE
+import org.firstinspires.ftc.teamcode.utilities.HelperFunctions
 
 class Elbow(private val motor1: MotorEx, private val motor2: MotorEx, val robot: Robot) : SubsystemBase() {
     val motor = MotorGroup(motor1, motor2)
@@ -29,8 +30,8 @@ class Elbow(private val motor1: MotorEx, private val motor2: MotorEx, val robot:
 
     override fun periodic(){
         if(enabled){
-            currentAngle = motor1.currentPosition.toDouble() // TODO: CONVERT TO ANGLE
-//            var output = ff.
+            currentAngle = HelperFunctions.getAngleFromEncoders(motor1.currentPosition.toDouble(), 0.0 ,0.0)
+
         }
     }
 

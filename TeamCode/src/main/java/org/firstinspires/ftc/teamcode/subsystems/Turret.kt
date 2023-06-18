@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.utilities.Constants.TURRET_MAX_V
 import org.firstinspires.ftc.teamcode.utilities.Constants.TURRET_MOTOR_TICKS_PER_REV
 
 // Put timer in constructor, mock a timer
-class Turret(val motor: MotorEx, val robot: Robot) : SubsystemBase() {
+class Turret(val motor: MotorEx) : SubsystemBase() {
     init {
         motor.setRunMode(Motor.RunMode.VelocityControl)
     }
@@ -72,6 +72,7 @@ class Turret(val motor: MotorEx, val robot: Robot) : SubsystemBase() {
 //
 //    }
     init {
+        controller.setTolerance(13.0)
         register()
     }
 
