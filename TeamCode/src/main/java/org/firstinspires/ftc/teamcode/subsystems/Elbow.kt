@@ -19,7 +19,7 @@ import kotlin.math.cos
 
 class Elbow(private val motor1: MotorEx, private val motor2: MotorEx, val robot: Robot) :
     SubsystemBase() {
-    val controller = PIDController(ELBOW_KP, ELBOW_KI, ELBOW_KD)
+    private val controller = PIDController(ELBOW_KP, ELBOW_KI, ELBOW_KD)
     var targetAngle = INITIAL_ANGLE
     var currentAngle = INITIAL_ANGLE
     var enabled = true

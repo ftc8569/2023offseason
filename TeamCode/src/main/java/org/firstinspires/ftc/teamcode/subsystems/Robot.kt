@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
+import com.acmerobotics.dashboard.FtcDashboard
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
 import com.arcrobotics.ftclib.hardware.motors.MotorEx
 import com.qualcomm.robotcore.hardware.HardwareMap
+import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.utilities.AxonCRServo
 import org.firstinspires.ftc.teamcode.utilities.AxonServo
 import org.firstinspires.ftc.teamcode.utilities.Mode
@@ -13,13 +16,18 @@ import org.firstinspires.ftc.teamcode.utilities.Mode
 * look at the state of any of the subsystems also on the robot
 */
 
-class Robot(private val hw: HardwareMap) {
+class Robot(private val hw: HardwareMap, val telemetry: Telemetry) {
+    val drivetrain = RRDrivetrain(hw, this)
     val turret: Turret = Turret(MotorEx(hw, "turret"))
     val elbow: Elbow = Elbow(MotorEx(hw, "elbow1"), MotorEx(hw, "elbow2"), this)
     val extension: Extension =
         Extension(AxonCRServo(hw, "extension", "extensionAnalog", 500.0, 2500.0))
     val aligner: Aligner = Aligner(AxonServo(hw, "aligner", "alignerAnalog", 500.0, 2500.0), this)
-//    val wrist: DiffWrist = DiffWrist()
+
+    //    val wrist: DiffWrist = DiffWrist()
     var mode: Mode = Mode.INTAKE
+    val dashboard = FtcDashboard.getInstance()
+    val t = MultipleTelemetry(telemetry, dashboard.telemetry)
+
 
 }

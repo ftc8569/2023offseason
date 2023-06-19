@@ -15,7 +15,7 @@ used roadrunner, and one for teleop that used FTCLib. This is unnecessary, and m
 difficult to use RR odometry within TeleOp. Instead, we will be using RR exclusively. Please
 forgive me for my sins -- Jack Fetkovich, 06/18/2023
 * */
-class RRDrivetrain(val hw: HardwareMap): SampleMecanumDrive(hw), Subsystem {
+class RRDrivetrain(val hw: HardwareMap, val robot: Robot): SampleMecanumDrive(hw), Subsystem {
     fun driveFieldCentric(
         strafeSpeed: Double, forwardSpeed: Double,
         turnSpeed: Double, gyroAngle: Double
@@ -28,7 +28,7 @@ class RRDrivetrain(val hw: HardwareMap): SampleMecanumDrive(hw), Subsystem {
 
     /* Everything from SubsystemBase class, implmenting Subsystem interface so that I can
      inherit the SampleMecanumDrive class */
-    private var m_name = this.javaClass.simpleName
+    var m_name = this.javaClass.simpleName
     fun SubsystemBase() {
         CommandScheduler.getInstance().registerSubsystem(this)
     }
