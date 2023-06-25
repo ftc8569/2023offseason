@@ -19,28 +19,38 @@ class AxonCRServo(
         servoName: String?,
         analogName: String?,
         min: Double,
-        max: Double):this(
+        max: Double
+    ) : this(
         servo = hw.get(CRServoImplEx::class.java, servoName),
-        analogInput = hw.get(AnalogInput::class.java, analogName), min, max)
+        analogInput = hw.get(AnalogInput::class.java, analogName), min, max
+    )
 
     init {
         servo.pwmRange = PwmRange(min, max)
     }
 
     private val analogOutput: Double
-        get() = analogInput.voltage / 3.3 * 360
-    var target = 0.0
+        get() {
+            return if (!reversed) {
+                analogInput.voltage / 3.3 * 360
+            } else {
+                360 - (analogInput.voltage / 3.3 * 360)
+            }
+        }
     var position = analogOutput
+    var reversed = false
+
     private var lastPosition = 0.0
     private var lastReading = position
+
     fun setPower(power: Double) {
-        servo.power = power
+        servo.power = if(!reversed) power else -power
     }
 
-    fun update(){
+    fun update() {
         val encoderReading = analogOutput
         var positionDelta = encoderReading - lastReading
-        if(abs(positionDelta) >= 180){
+        if (abs(positionDelta) >= 180) {
             positionDelta = (360 - abs(positionDelta)) * -sign(positionDelta)
         }
         position += positionDelta

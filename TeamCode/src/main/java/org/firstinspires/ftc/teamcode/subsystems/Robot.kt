@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
 import com.arcrobotics.ftclib.hardware.motors.MotorEx
+import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.utilities.AxonCRServo
@@ -17,6 +18,14 @@ import org.firstinspires.ftc.teamcode.utilities.Mode
 */
 
 class Robot(private val hw: HardwareMap, val telemetry: Telemetry) {
+
+    init {
+        val hubs = hw.getAll(LynxModule::class.java)
+        for (hub in hubs) {
+            hub.bulkCachingMode = LynxModule.BulkCachingMode.AUTO
+        }
+    }
+
     val drivetrain = RRDrivetrain(hw, this)
     val turret: Turret = Turret(MotorEx(hw, "turret"))
     val elbow: Elbow = Elbow(MotorEx(hw, "elbow1"), MotorEx(hw, "elbow2"), this)
@@ -26,7 +35,7 @@ class Robot(private val hw: HardwareMap, val telemetry: Telemetry) {
 
     //    val wrist: DiffWrist = DiffWrist()
     var mode: Mode = Mode.INTAKE
-    val dashboard = FtcDashboard.getInstance()
+    val dashboard: FtcDashboard = FtcDashboard.getInstance()
     val t = MultipleTelemetry(telemetry, dashboard.telemetry)
 
 

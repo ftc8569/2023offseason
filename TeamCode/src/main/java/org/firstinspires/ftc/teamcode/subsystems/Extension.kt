@@ -32,7 +32,7 @@ class Extension(private val servo: AxonCRServo) : SubsystemBase() {
 
     override fun periodic(){
         servo.update()
-        val power = controller.calculate(servo.position, servo.target)
+        val power = controller.calculate(servo.position, targetPosition)
         servo.setPower(power)
     }
 
