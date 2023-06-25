@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.test
 import com.arcrobotics.ftclib.command.CommandOpMode
 import com.arcrobotics.ftclib.gamepad.GamepadEx
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import org.firstinspires.ftc.teamcode.commands.DriveMec
+import org.firstinspires.ftc.teamcode.commands.drivetrain.DriveMec
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain
 import kotlin.math.pow
 import kotlin.math.sign
