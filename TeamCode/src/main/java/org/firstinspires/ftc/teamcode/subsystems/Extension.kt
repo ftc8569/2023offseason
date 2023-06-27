@@ -23,7 +23,7 @@ class Extension(private val servo: AxonCRServo) : SubsystemBase() {
             val inside = (LEG_A.pow(2) + LEG_B.pow(2) - len.pow(2))/(2 * LEG_A * LEG_B)
             val thetaPrime = acos(inside)
             val theta = 180-asin((LEG_B * sin(thetaPrime))/len) * (180/Math.PI)
-            this.targetPosition = 5 * theta
+            this.targetPosition = 2 * theta
             field = len
         }
     init {

@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.utilities.AxonCRServo
 import org.firstinspires.ftc.teamcode.utilities.AxonServo
 import org.firstinspires.ftc.teamcode.utilities.Mode
+import org.firstinspires.ftc.teamcode.utilities.PoleState
 
 /*
 * All subsystems have a reference to the robot that they are a member of
@@ -17,8 +18,7 @@ import org.firstinspires.ftc.teamcode.utilities.Mode
 * look at the state of any of the subsystems also on the robot
 */
 
-class Robot(private val hw: HardwareMap, val telemetry: Telemetry) {
-
+class Robot(val hw: HardwareMap, val telemetry: Telemetry) {
     init {
         val hubs = hw.getAll(LynxModule::class.java)
         for (hub in hubs) {
@@ -37,6 +37,8 @@ class Robot(private val hw: HardwareMap, val telemetry: Telemetry) {
     var mode: Mode = Mode.INTAKE
     val dashboard: FtcDashboard = FtcDashboard.getInstance()
     val t = MultipleTelemetry(telemetry, dashboard.telemetry)
+    val poleState = PoleState(0.0,0.0)
+
 
 
 }
