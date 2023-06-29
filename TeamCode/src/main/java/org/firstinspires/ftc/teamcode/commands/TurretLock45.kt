@@ -20,7 +20,7 @@ class TurretLock45(
     override fun execute() {
         val vec = input.invoke()
         val robotHeading = HelperFunctions.normalizeAngleRadians(heading.invoke())
-        val joystickAngle = HelperFunctions.normalizeAngleRadians(atan2(vec.y, vec.x))
+        val joystickAngle = HelperFunctions.normalizeAngleRadians(atan2(vec.x, vec.y))
 
         var closestAngle = potentialAngles[0]
         var closestDistance = 10000.0
@@ -31,12 +31,16 @@ class TurretLock45(
                 closestDistance = distToAngle
             }
         }
-        turret.targetAngle = HelperFunctions.toDegrees(
-            HelperFunctions.toRobotRelativeAngle(
-                closestAngle,
-                robotHeading
-            )
+        val robotRelativeAngle = HelperFunctions.toRobotRelativeAngle(
+            closestAngle,
+            robotHeading
         )
+
+        val angleDegrees = HelperFunctions.toDegrees(robotRelativeAngle)
+
+        turret.targetAngle = angleDegrees
+
+        print(turret)
     }
     override fun isFinished() = false
 }
