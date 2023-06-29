@@ -15,7 +15,7 @@ import kotlin.math.pow
 import kotlin.math.sin
 
 class Extension(private val servo: AxonCRServo) : SubsystemBase() {
-    val controller = PIDController(EXTENSION_KP, EXTENSION_KI, EXTENSION_KD)
+    private val controller = PIDController(EXTENSION_KP, EXTENSION_KI, EXTENSION_KD)
     var targetPosition = 0.0
     var length = 0.0
         set(len) {

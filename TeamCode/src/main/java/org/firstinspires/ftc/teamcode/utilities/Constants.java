@@ -40,5 +40,9 @@ public class Constants {
 
     // Wrist Constants
 
+    // Starting position constants
+    public static final double TURRET_STARTING_ENCODER = 100;
+    public static final double EXTENSION_STARTING_ENCODER = 65;
+    public static final double ELBOW_EXTENSION_STARTING_ENCODER = 10;
 
 }
