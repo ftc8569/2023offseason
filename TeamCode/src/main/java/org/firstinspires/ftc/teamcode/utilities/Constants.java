@@ -15,11 +15,11 @@ public class Constants {
     public static final double INITIAL_ANGLE = 0.0;
 
     // Extension Constants
-    public static final double LEG_A = 250e-3;
-    public static final double LEG_B = 325e-3;
+    public static final double LEG_A = 175e-3;
+    public static final double LEG_B = 250e-3;
     public static final double EXTENSION_KP = .03;
     public static final double EXTENSION_KI = 0.0;
-    public static final double EXTENSION_KD = 0.0;
+    public static final double EXTENSION_KD = 0.003;
     public static final double EXTENSION_KCOS = 0.001;
 
     // Turret Constants
