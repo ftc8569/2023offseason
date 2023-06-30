@@ -17,11 +17,11 @@ import org.firstinspires.ftc.teamcode.utilities.HelperFunctions
 import kotlin.math.PI
 import kotlin.math.cos
 
-class Elbow(private val motor1: MotorEx, private val motor2: MotorEx, val robot: Robot) :
+class Elbow(private val motor1: MotorEx, private val motor2: MotorEx) :
     SubsystemBase() {
     private val controller = PIDController(ELBOW_KP, ELBOW_KI, ELBOW_KD)
-    var targetAngle = INITIAL_ANGLE
-    var currentAngle = INITIAL_ANGLE
+    var targetAngle = 0.0
+    var currentAngle = 0.0
     var enabled = true
     private val ff = 0.5 // TUNE THIS
     init {
@@ -34,9 +34,9 @@ class Elbow(private val motor1: MotorEx, private val motor2: MotorEx, val robot:
     override fun periodic() {
         if (enabled) {
             currentAngle =
-                HelperFunctions.getAngleFromEncoders(motor1.currentPosition.toDouble(), 0.0, 0.0)
-            val power = controller.calculate(currentAngle, targetAngle) + getFeedforward(robot.extension.length, targetAngle)
-            motor.set(power)
+                (motor1.currentPosition / 696.5) * 90
+//            val power = controller.calculate(currentAngle, targetAngle) + getFeedforward(robot.extension.length, targetAngle)
+//            motor.set(power)
         }
     }
 }

@@ -22,8 +22,8 @@ class CRServoTest: LinearOpMode() {
         waitForStart()
         while(opModeIsActive() && !isStopRequested){
             gp1.readButtons()
-            if(gp1.getButton(GamepadKeys.Button.DPAD_UP)) power += 0.1
-            if(gp1.getButton(GamepadKeys.Button.DPAD_DOWN)) power -= 0.1
+            if(gp1.wasJustPressed(GamepadKeys.Button.DPAD_UP)) power += 0.1
+            if(gp1.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)) power -= 0.1
 
             telemetry.addData("Power: ", power)
             telemetry.addData("encoder: ", analogInput.voltage / 3.3 * 360)

@@ -28,7 +28,7 @@ class Robot(val hw: HardwareMap, val telemetry: Telemetry) {
 
     val drivetrain = RRDrivetrain(hw, this)
     val turret: Turret = Turret(MotorEx(hw, "turret"))
-    val elbow: Elbow = Elbow(MotorEx(hw, "elbow1"), MotorEx(hw, "elbow2"), this)
+//    val elbow: Elbow = Elbow(MotorEx(hw, "elbow1"), MotorEx(hw, "elbow2"), this)
     val extension: Extension =
         Extension(AxonCRServo(hw, "extension", "extensionAnalog", 500.0, 2500.0))
     val aligner: Aligner = Aligner(AxonServo(hw, "aligner", "alignerAnalog", 500.0, 2500.0), this)

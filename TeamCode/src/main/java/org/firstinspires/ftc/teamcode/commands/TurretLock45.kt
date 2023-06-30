@@ -13,7 +13,7 @@ class TurretLock45(
     private val heading: () -> Double,
     private val input: () -> Vector2d
 ) : CommandBase() {
-    override fun initialize() {
+    init {
         addRequirements(turret)
     }
     private val potentialAngles = listOf<Double>(-3 * PI / 4, -PI / 4, PI / 4, 3 * PI / 4)
