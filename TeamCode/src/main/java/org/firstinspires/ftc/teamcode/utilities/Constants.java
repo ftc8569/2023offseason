@@ -17,7 +17,7 @@ public class Constants {
     // Extension Constants
     public static final double LEG_A = 175e-3;
     public static final double LEG_B = 250e-3;
-    public static final double EXTENSION_KP = .03;
+    public static final double EXTENSION_KP = .008;
     public static final double EXTENSION_KI = 0.0;
     public static final double EXTENSION_KD = 0.003;
     public static final double EXTENSION_KCOS = 0.001;

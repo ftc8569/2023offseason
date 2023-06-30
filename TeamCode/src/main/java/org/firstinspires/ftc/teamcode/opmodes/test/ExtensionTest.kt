@@ -24,13 +24,19 @@ class ExtensionTest: LinearOpMode() {
         while(opModeIsActive() && !isStopRequested){
             gp1.readButtons()
             if(gp1.wasJustPressed(GamepadKeys.Button.Y)){
-                scheduler.schedule(InstantCommand({extension.length = 0.3}, extension))
+                scheduler.schedule(InstantCommand({extension.length = 0.15}, extension))
             } else if (gp1.wasJustPressed(GamepadKeys.Button.A)){
-                scheduler.schedule(InstantCommand({extension.length = 0.0}, extension))
+                scheduler.schedule(InstantCommand({extension.length = 0.075}, extension))
             }
+
             t.addData("Theta: ", extension.theta)
             t.addData("Power: ", extension.power)
+            t.addData("Target Pos", extension.targetPosition)
+            t.addData("Current Pos", extension.servo.position)
+            t.addData("Inside", extension.inside)
+            t.addData("Theta Prime", extension.thetaPrime)
             t.update()
+            scheduler.run()
         }
     }
 
