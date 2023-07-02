@@ -4,9 +4,7 @@ import com.arcrobotics.ftclib.hardware.motors.MotorEx
 import junit.framework.TestCase.assertEquals
 import org.firstinspires.ftc.teamcode.subsystems.Robot
 import org.firstinspires.ftc.teamcode.subsystems.Turret
-import org.firstinspires.ftc.teamcode.utilities.Constants.TURRET_KP
 import org.junit.Test
-import org.mockito.ArgumentMatcher
 import org.mockito.ArgumentMatchers
 import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.doReturn

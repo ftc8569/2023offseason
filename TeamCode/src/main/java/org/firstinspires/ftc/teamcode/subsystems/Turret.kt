@@ -8,15 +8,13 @@ import com.arcrobotics.ftclib.controller.PIDController
 import com.arcrobotics.ftclib.hardware.motors.Motor
 import com.arcrobotics.ftclib.hardware.motors.MotorEx
 import com.qualcomm.robotcore.util.ElapsedTime
-import org.firstinspires.ftc.teamcode.utilities.Constants.MOTOR_TO_TURRET_GEAR_RATIO
-import org.firstinspires.ftc.teamcode.utilities.Constants.TURRET_KA
-import org.firstinspires.ftc.teamcode.utilities.Constants.TURRET_KD
-import org.firstinspires.ftc.teamcode.utilities.Constants.TURRET_KI
-import org.firstinspires.ftc.teamcode.utilities.Constants.TURRET_KP
-import org.firstinspires.ftc.teamcode.utilities.Constants.TURRET_KV
-import org.firstinspires.ftc.teamcode.utilities.Constants.TURRET_MAX_A
-import org.firstinspires.ftc.teamcode.utilities.Constants.TURRET_MAX_V
-import org.firstinspires.ftc.teamcode.utilities.Constants.TURRET_MOTOR_TICKS_PER_REV
+import org.firstinspires.ftc.teamcode.Cons.MOTOR_TO_TURRET_GEAR_RATIO
+import org.firstinspires.ftc.teamcode.Cons.TURRET_KD
+import org.firstinspires.ftc.teamcode.Cons.TURRET_KI
+import org.firstinspires.ftc.teamcode.Cons.TURRET_KP
+import org.firstinspires.ftc.teamcode.Cons.TURRET_MAX_A
+import org.firstinspires.ftc.teamcode.Cons.TURRET_MAX_V
+import org.firstinspires.ftc.teamcode.Cons.TURRET_MOTOR_TICKS_PER_REV
 
 // Put timer in constructor, mock a timer
 class Turret(val motor: MotorEx) : SubsystemBase() {

@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode.utilities;
+package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
 
 @Config
-public class Constants {
+public class Cons {
     // Elbow Constants
     public static final double ELBOW_KS = 0.0;
     public static final double ELBOW_KA = 0.0;
@@ -17,9 +17,9 @@ public class Constants {
     // Extension Constants
     public static final double LEG_A = 175e-3;
     public static final double LEG_B = 250e-3;
-    public static final double EXTENSION_KP = .008;
+    public static final double EXTENSION_KP = .0025;
     public static final double EXTENSION_KI = 0.0;
-    public static final double EXTENSION_KD = 0.003;
+    public static final double EXTENSION_KD = 0.000;
     public static final double EXTENSION_KCOS = 0.001;
 
     // Turret Constants

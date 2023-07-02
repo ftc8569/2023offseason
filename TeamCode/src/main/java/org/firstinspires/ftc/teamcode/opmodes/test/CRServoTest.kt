@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.test
 
+import com.acmerobotics.dashboard.FtcDashboard
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
 import com.arcrobotics.ftclib.gamepad.GamepadEx
 import com.arcrobotics.ftclib.gamepad.GamepadKeys
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
@@ -18,6 +20,7 @@ class CRServoTest: LinearOpMode() {
         servo.direction = DcMotorSimple.Direction.REVERSE
         val gp1 = GamepadEx(gamepad1)
         var power = 0.0
+        val t = MultipleTelemetry(FtcDashboard.getInstance().telemetry, telemetry)
 
         waitForStart()
         while(opModeIsActive() && !isStopRequested){
@@ -25,9 +28,9 @@ class CRServoTest: LinearOpMode() {
             if(gp1.wasJustPressed(GamepadKeys.Button.DPAD_UP)) power += 0.1
             if(gp1.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)) power -= 0.1
 
-            telemetry.addData("Power: ", power)
-            telemetry.addData("encoder: ", analogInput.voltage / 3.3 * 360)
-            telemetry.update()
+            t.addData("Power: ", power)
+            t.addData("encoder: ", analogInput.voltage / 3.3 * 360)
+            t.update()
             servo.power = power
         }
     }

@@ -2,18 +2,11 @@ package org.firstinspires.ftc.teamcode.subsystems
 
 import com.arcrobotics.ftclib.command.SubsystemBase
 import com.arcrobotics.ftclib.controller.PIDController
-import com.arcrobotics.ftclib.controller.wpilibcontroller.ArmFeedforward
 import com.arcrobotics.ftclib.hardware.motors.MotorEx
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup
-import org.firstinspires.ftc.teamcode.utilities.Constants.ELBOW_KA
-import org.firstinspires.ftc.teamcode.utilities.Constants.ELBOW_KCOS
-import org.firstinspires.ftc.teamcode.utilities.Constants.ELBOW_KD
-import org.firstinspires.ftc.teamcode.utilities.Constants.ELBOW_KI
-import org.firstinspires.ftc.teamcode.utilities.Constants.ELBOW_KP
-import org.firstinspires.ftc.teamcode.utilities.Constants.ELBOW_KS
-import org.firstinspires.ftc.teamcode.utilities.Constants.ELBOW_KV
-import org.firstinspires.ftc.teamcode.utilities.Constants.INITIAL_ANGLE
-import org.firstinspires.ftc.teamcode.utilities.HelperFunctions
+import org.firstinspires.ftc.teamcode.Cons.ELBOW_KD
+import org.firstinspires.ftc.teamcode.Cons.ELBOW_KI
+import org.firstinspires.ftc.teamcode.Cons.ELBOW_KP
 import kotlin.math.PI
 import kotlin.math.cos
 

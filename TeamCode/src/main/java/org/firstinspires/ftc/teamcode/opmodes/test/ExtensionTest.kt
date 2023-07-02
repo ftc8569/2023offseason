@@ -1,6 +1,5 @@
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
-import com.arcrobotics.ftclib.command.CommandOpMode
 import com.arcrobotics.ftclib.command.CommandScheduler
 import com.arcrobotics.ftclib.command.InstantCommand
 import com.arcrobotics.ftclib.gamepad.GamepadEx
@@ -24,17 +23,18 @@ class ExtensionTest: LinearOpMode() {
         while(opModeIsActive() && !isStopRequested){
             gp1.readButtons()
             if(gp1.wasJustPressed(GamepadKeys.Button.Y)){
-                scheduler.schedule(InstantCommand({extension.length = 0.15}, extension))
+                scheduler.schedule(InstantCommand({extension.length = 0.3}, extension))
             } else if (gp1.wasJustPressed(GamepadKeys.Button.A)){
-                scheduler.schedule(InstantCommand({extension.length = 0.075}, extension))
+                scheduler.schedule(InstantCommand({extension.home()}, extension))
             }
-
-            t.addData("Theta: ", extension.theta)
+44
+            t.addData("Phi ", extension.phi)
+            t.addData("Target phi ", extension.targetPhi)
+            t.addData("Theta", extension.theta)
+            t.addData("Target theta", extension.targetTheta)
             t.addData("Power: ", extension.power)
             t.addData("Target Pos", extension.targetPosition)
             t.addData("Current Pos", extension.servo.position)
-            t.addData("Inside", extension.inside)
-            t.addData("Theta Prime", extension.thetaPrime)
             t.update()
             scheduler.run()
         }

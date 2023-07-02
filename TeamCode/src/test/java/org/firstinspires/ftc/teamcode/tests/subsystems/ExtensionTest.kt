@@ -1,7 +1,8 @@
 package org.firstinspires.ftc.teamcode.tests.subsystems
 
 import com.qualcomm.robotcore.hardware.CRServoImplEx
-import org.firstinspires.ftc.robotcore.external.Telemetry
+import junit.framework.TestCase.assertEquals
+
 import org.firstinspires.ftc.teamcode.subsystems.Extension
 import org.firstinspires.ftc.teamcode.utilities.AxonCRServo
 import org.junit.Test
@@ -18,6 +19,7 @@ class ExtensionTest {
             on {servo} doReturn(mock<CRServoImplEx>())
         }
         val extension = Extension(mock<AxonCRServo>())
-        extension.length = 0.4
+        extension.length = 0.15
+        assertEquals(100.3, extension.targetPhi, 0.5)
     }
 }
