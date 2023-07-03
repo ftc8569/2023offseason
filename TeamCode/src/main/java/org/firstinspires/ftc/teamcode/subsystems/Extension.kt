@@ -12,17 +12,18 @@ import kotlin.math.*
 // phi -- angle between slides and leg A (shorter linkage leg)
 // theta -- angle between the two linkage legs
 
-class Extension(val servo: AxonCRServo) : SubsystemBase() {
-    private val controller = PIDController(EXTENSION_KP, EXTENSION_KI, 0.0)
+class Extension(val servo: AxonCRServo, val robot: Robot) : SubsystemBase() {
+    private val controller = PIDController(EXTENSION_KP, EXTENSION_KI, EXTENSION_KD)
     private val phiOffset = 16.3
-
     var phi = phiOffset
     var targetPhi = phi
     var theta = 0.0
     var targetTheta = theta // Called targetTheta, but we're not really controlling theta, we are controlling phi
     var initialPosition = servo.position
     var targetPosition = initialPosition
+
     var power = 0.0
+    var extended = false
 
     var length = 0.0
         set(len) {
@@ -32,6 +33,7 @@ class Extension(val servo: AxonCRServo) : SubsystemBase() {
             targetPhi =
                 180 - asin((LEG_B * sin(targetTheta)) / boundedLen) * (180 / Math.PI)
             this.targetPosition = 2 * targetPhi + (initialPosition - 2 * phiOffset)
+            extended = true
             field = boundedLen
         }
 
@@ -41,6 +43,7 @@ class Extension(val servo: AxonCRServo) : SubsystemBase() {
 
     fun home(){
         this.targetPosition = initialPosition
+        extended = false
     }
 
     override fun periodic() {
@@ -53,6 +56,10 @@ class Extension(val servo: AxonCRServo) : SubsystemBase() {
         val out = controller.calculate(servo.position, targetPosition)
         power = out
         servo.setPower(out)
+
+        robot.t.addData("Phi", phi)
+        robot.t.addData("Target Phi", targetPhi)
+        robot.t.update()
     }
 
     init {

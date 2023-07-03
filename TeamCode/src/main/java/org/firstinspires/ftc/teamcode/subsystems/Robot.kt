@@ -25,19 +25,18 @@ class Robot(val hw: HardwareMap, val telemetry: Telemetry) {
             hub.bulkCachingMode = LynxModule.BulkCachingMode.AUTO
         }
     }
+    val t = MultipleTelemetry(FtcDashboard.getInstance().telemetry, telemetry)
 
-    val drivetrain = RRDrivetrain(hw, this)
+//    val drivetrain = RRDrivetrain(hw, this)
     val turret: Turret = Turret(MotorEx(hw, "turret"))
-//    val elbow: Elbow = Elbow(MotorEx(hw, "elbow1"), MotorEx(hw, "elbow2"), this)
     val extension: Extension =
-        Extension(AxonCRServo(hw, "extension", "extensionAnalog", 500.0, 2500.0))
-    val aligner: Aligner = Aligner(AxonServo(hw, "aligner", "alignerAnalog", 500.0, 2500.0), this)
+        Extension(AxonCRServo(hw, "extension", "extension", 500.0, 2500.0), this)
+    val elbow = Elbow(MotorEx(hw, "leftElbow"), MotorEx(hw, "rightElbow"), this)
+//    val aligner: Aligner = Aligner(AxonServo(hw, "aligner", "alignerAnalog", 500.0, 2500.0), this)
 
     //    val wrist: DiffWrist = DiffWrist()
-    var mode: Mode = Mode.INTAKE
-    val dashboard: FtcDashboard = FtcDashboard.getInstance()
-    val t = MultipleTelemetry(telemetry, dashboard.telemetry)
-    val poleState = PoleState(0.0,0.0)
+//    var mode: Mode = Mode.INTAKE
+//    val poleState = PoleState(0.0,0.0)
 
 
 
