@@ -25,24 +25,31 @@ class DiffWrist(
     init {
         leftServo.servo.direction = DcMotorSimple.Direction.REVERSE
         leftServo.analogReversed = true
+        leftServo.update()
+        rightServo.update()
     }
     private val wheelRadius = 0.022
     private val leftInitial = leftServo.position
     private val rightInitial = rightServo.position
-    val odo = DifferentialOdometry({ (leftServo.position - leftInitial)/360 * (wheelRadius * PI * 2) * (39.37)  },
-        { (rightServo.position - rightInitial) /360 * (wheelRadius * PI * 2) * (39.37) },
-        1.5
+    val odo = DifferentialOdometry({ (leftServo.position - leftInitial)/360 * (wheelRadius * PI * 2)},
+        { (rightServo.position - rightInitial) /360 * (wheelRadius * PI * 2)},
+        0.04
     )
     val kinematics = DifferentialDriveKinematics(0.038)
     var speeds = ChassisSpeeds(0.0,0.0,0.0)
     val leftController = PIDController(WRIST_LEFT_KP,0.0,0.0)
     val rightController = PIDController(WRIST_RIGHT_KP,0.0,0.0)
 
+    init {
+        odo.updatePose(Pose2d(0.0,0.0, Rotation2d(0.0)))
+    }
+
     override fun periodic() {
         /* Each servo will calculate its loop time by storing the degrees travelled
         *  since the last time update() was called */
         leftServo.update()
         rightServo.update()
+        odo.updatePose()
 
         val wheelSpeeds = kinematics.toWheelSpeeds(speeds)
         val leftSpeed = wheelSpeeds.leftMetersPerSecond / wheelRadius
@@ -63,11 +70,10 @@ class DiffWrist(
         telemetry.addData("odo", odo)
         telemetry.update()
 
-        odo.updatePose()
+
     }
 
     init {
-        odo.updatePose(Pose2d(0.0,0.0, Rotation2d(0.0)))
         register()
     }
 }
