@@ -38,7 +38,6 @@ class WristTest : LinearOpMode() {
             } else if (gp1.wasJustPressed(GamepadKeys.Button.A)) {
                 scheduler.schedule(WristTrajectory(wrist, end, start))
             }
-
         }
         scheduler.reset()
     }
