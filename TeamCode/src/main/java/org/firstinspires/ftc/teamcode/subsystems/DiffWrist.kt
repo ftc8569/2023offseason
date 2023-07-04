@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import org.firstinspires.ftc.teamcode.Cons.WRIST_LEFT_KP
 import org.firstinspires.ftc.teamcode.Cons.WRIST_RIGHT_KP
 import org.firstinspires.ftc.teamcode.utilities.AxonCRServo
+import kotlin.math.PI
 
 class DiffWrist(
     private val leftServo: AxonCRServo,
@@ -25,9 +26,9 @@ class DiffWrist(
     private val wheelRadius = 0.022
     private val leftInitial = leftServo.position
     private val rightInitial = rightServo.position
-    val odo = DifferentialOdometry({ leftServo.position - leftInitial },
-        { rightServo.position - rightInitial },
-        0.0322
+    val odo = DifferentialOdometry({ (leftServo.position - leftInitial)/360 * (wheelRadius * PI * 2) * (39.37)  },
+        { (rightServo.position - rightInitial) /360 * (wheelRadius * PI * 2) * (39.37) },
+        1.27
     )
     val kinematics = DifferentialDriveKinematics(0.038)
     var speeds = ChassisSpeeds(0.0,0.0,0.0)
