@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput
 import com.qualcomm.robotcore.hardware.CRServoImplEx
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.PwmControl.PwmRange
+import com.qualcomm.robotcore.util.ElapsedTime
 import kotlin.math.abs
 import kotlin.math.sign
 
@@ -31,7 +32,7 @@ class AxonCRServo(
 
     private val analogOutput: Double
         get() {
-            return if (!reversed) {
+            return if (!analogReversed) {
                 analogInput.voltage / 3.3 * 360
             } else {
                 360 - (analogInput.voltage / 3.3 * 360)
@@ -39,23 +40,33 @@ class AxonCRServo(
         }
     var position = analogOutput
     var reversed = false
+    var analogReversed = false
 
     private var lastPosition = 0.0
     private var lastReading = position
+
+    private val timer = ElapsedTime()
+    var velocity = 0.0
 
     fun setPower(power: Double) {
         servo.power = if(!reversed) power else -power
     }
 
     fun update() {
+        val time = timer.seconds()
         val encoderReading = analogOutput
         var positionDelta = encoderReading - lastReading
         if (abs(positionDelta) >= 180) {
             positionDelta = (360 - abs(positionDelta)) * -sign(positionDelta)
         }
         position += positionDelta
+        velocity = (position - lastPosition)/time
+
         lastReading = encoderReading
         lastPosition = position
+        timer.reset()
+
+
     }
 
 }

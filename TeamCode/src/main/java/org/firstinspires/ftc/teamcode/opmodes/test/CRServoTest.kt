@@ -14,8 +14,8 @@ import com.qualcomm.robotcore.hardware.PwmControl
 @TeleOp
 class CRServoTest: LinearOpMode() {
     override fun runOpMode() {
-        val servo = hardwareMap.get(CRServoImplEx::class.java, "extension")
-        val analogInput = hardwareMap.get(AnalogInput::class.java, "extension")
+        val servo = hardwareMap.get(CRServoImplEx::class.java, "rightWrist")
+        val analogInput = hardwareMap.get(AnalogInput::class.java, "rightWrist")
         servo.pwmRange = PwmControl.PwmRange(500.0,2500.0)
         servo.direction = DcMotorSimple.Direction.REVERSE
         val gp1 = GamepadEx(gamepad1)

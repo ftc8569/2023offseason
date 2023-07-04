@@ -1,48 +1,66 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
 import com.arcrobotics.ftclib.command.SubsystemBase
 import com.arcrobotics.ftclib.controller.PIDController
+import com.arcrobotics.ftclib.kinematics.DifferentialOdometry
+import com.arcrobotics.ftclib.kinematics.wpilibkinematics.ChassisSpeeds
+import com.arcrobotics.ftclib.kinematics.wpilibkinematics.DifferentialDriveKinematics
+import com.arcrobotics.ftclib.kinematics.wpilibkinematics.DifferentialDriveOdometry
+import com.qualcomm.robotcore.hardware.DcMotorSimple
+import org.firstinspires.ftc.teamcode.Cons.WRIST_LEFT_KP
+import org.firstinspires.ftc.teamcode.Cons.WRIST_RIGHT_KP
 import org.firstinspires.ftc.teamcode.utilities.AxonCRServo
 
 class DiffWrist(
     private val leftServo: AxonCRServo,
     private val rightServo: AxonCRServo,
-    val robot: Robot
+    val telemetry: MultipleTelemetry
+//    val robot: Robot
 ) : SubsystemBase() {
-    private val rightController = PIDController(0.0, 0.0, 0.0)
-    private val leftController = PIDController(0.0, 0.0, 0.0)
-
     init {
-        leftServo.reversed = true
+        leftServo.servo.direction = DcMotorSimple.Direction.REVERSE
+        leftServo.analogReversed = true
     }
-
+    private val wheelRadius = 0.022
     private val leftInitial = leftServo.position
     private val rightInitial = rightServo.position
-
-    var leftTarget = leftInitial
-        set(target) {
-            field = target + leftInitial
-        }
-    var rightTarget = rightInitial
-        set(target) {
-            field = target + rightInitial
-        }
-
-    fun setTargets(left:Double, right:Double){
-        leftTarget = left
-        rightTarget = right
-    }
+    val odo = DifferentialOdometry({ leftServo.position - leftInitial },
+        { rightServo.position - rightInitial },
+        0.0322
+    )
+    val kinematics = DifferentialDriveKinematics(0.038)
+    var speeds = ChassisSpeeds(0.0,0.0,0.0)
+    val leftController = PIDController(WRIST_LEFT_KP,0.0,0.0)
+    val rightController = PIDController(WRIST_RIGHT_KP,0.0,0.0)
 
     override fun periodic() {
         /* Each servo will calculate its loop time by storing the degrees travelled
         *  since the last time update() was called */
         leftServo.update()
         rightServo.update()
+        odo.updatePose()
 
-        var leftPower = leftController.calculate(leftServo.position - leftInitial, leftTarget)
-        var rightPower = leftController.calculate(rightServo.position - rightInitial, rightTarget)
+        val wheelSpeeds = kinematics.toWheelSpeeds(speeds)
+        val leftSpeed = wheelSpeeds.leftMetersPerSecond / wheelRadius
+        val rightSpeed = wheelSpeeds.rightMetersPerSecond / wheelRadius
 
-        leftServo.setPower(leftPower)
-        rightServo.setPower(rightPower)
+        val leftOut = leftController.calculate(leftServo.velocity, leftSpeed)
+        val rightOut = rightController.calculate(rightServo.velocity, rightSpeed)
+
+        leftServo.setPower(leftOut)
+        rightServo.setPower(rightOut)
+
+        telemetry.addData("Left velocity", leftServo.velocity)
+        telemetry.addData("Right velocity", rightServo.velocity)
+        telemetry.addData("Left Goal", leftSpeed)
+        telemetry.addData("Right goal", rightSpeed)
+        telemetry.addData("Angle", odo.pose.rotation.degrees)
+        telemetry.addData("translation", odo.pose.translation)
+        telemetry.update()
+    }
+
+    init {
+        register()
     }
 }
