@@ -39,12 +39,18 @@ public class Cons {
     public static double CLAW_CLOSE = 1250;
 
     // Wrist Constants
-    public static double WRIST_LEFT_KP = 0.05;
-    public static double WRIST_RIGHT_KP = 0.05;
+    public static double WRIST_LEFT_KP = 0.0005;
+    public static double WRIST_LEFT_KD = 0.0001;
+    public static double WRIST_RIGHT_KP = 0.0005;
+    public static double WRIST_RIGHT_KD = 0.0001;
     public static double WRIST_MAX_VEL = 0.125;
     public static double WRIST_MAX_ACCEL = 0.1;
     public static double WRIST_B = 2.0;
     public static double WRIST_ZETA = 0.7;
+
+    // Aligner Constants
+    public static double ALIGNER_IN = 2200;
+    public static double ALIGNER_OUT = 826;
 
     // Starting position constants
     public static double TURRET_STARTING_ENCODER = 100;

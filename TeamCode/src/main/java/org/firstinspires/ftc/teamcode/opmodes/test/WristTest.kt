@@ -26,7 +26,7 @@ class WristTest : LinearOpMode() {
 
         val gp1 = GamepadEx(gamepad1)
         val start = Pose2d(0.0,0.0, Rotation2d(0.0))
-        val end = Pose2d(0.001, 0.001, Rotation2d(PI))
+        val end = Pose2d(0.2, 0.0, Rotation2d(0.00))
 
         waitForStart()
         while (opModeIsActive() && !isStopRequested) {
@@ -34,9 +34,9 @@ class WristTest : LinearOpMode() {
             gp1.readButtons()
 
             if (gp1.wasJustPressed(GamepadKeys.Button.Y)) {
-                scheduler.schedule(WristTrajectory(wrist, start, end))
+                scheduler.schedule(WristTrajectory(wrist, wrist.odo.pose, end))
             } else if (gp1.wasJustPressed(GamepadKeys.Button.A)) {
-                scheduler.schedule(WristTrajectory(wrist, end, start))
+                scheduler.schedule(WristTrajectory(wrist, wrist.odo.pose, start))
             }
         }
         scheduler.reset()

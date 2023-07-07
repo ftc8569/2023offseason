@@ -42,6 +42,23 @@ class WristTrajectoryTest {
     }
 
     @Test
+    fun why_are_trajectories_not_working(){
+        val kinematics = DifferentialDriveKinematics(0.0322)
+        var config = TrajectoryConfig(Cons.WRIST_MAX_VEL, Cons.WRIST_MAX_ACCEL).addConstraint(DifferentialDriveKinematicsConstraint(kinematics, 0.125))
+        var trajectory: Trajectory = TrajectoryGenerator.generateTrajectory(
+            listOf(
+                Pose2d(0.0, 0.0, Rotation2d(0.0)), Pose2d(
+                    0.2, 0.0, Rotation2d(
+                        0.0
+                    )
+                )
+            ), config
+        )
+        println(trajectory.totalTimeSeconds)
+        println(trajectory)
+    }
+
+    @Test
     fun no_movement_test(){
         val odo = DifferentialOdometry({0.0}, {0.0}, 1.5)
         for(i in 0..10){
@@ -116,6 +133,8 @@ class WristTrajectoryTest {
         wrist.periodic()
 
     }
+
+
 
 
 }

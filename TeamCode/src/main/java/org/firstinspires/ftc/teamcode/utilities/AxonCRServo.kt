@@ -46,7 +46,7 @@ class AxonCRServo(
     private var lastReading = position
 
     private val timer = ElapsedTime()
-    var velocity = RollingAverageFilter(10)
+    var velocity = RollingAverageFilter(40)
 
     fun setPower(power: Double) {
         servo.power = if(!reversed) power else -power

@@ -11,10 +11,10 @@ import com.arcrobotics.ftclib.kinematics.wpilibkinematics.DifferentialDriveKinem
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.DifferentialDriveOdometry
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation
-import org.firstinspires.ftc.teamcode.Cons.WRIST_LEFT_KP
-import org.firstinspires.ftc.teamcode.Cons.WRIST_RIGHT_KP
+import org.firstinspires.ftc.teamcode.Cons.*
 import org.firstinspires.ftc.teamcode.utilities.AxonCRServo
 import kotlin.math.PI
+import kotlin.math.abs
 
 class DiffWrist(
     private val leftServo: AxonCRServo,
@@ -37,8 +37,8 @@ class DiffWrist(
     )
     val kinematics = DifferentialDriveKinematics(0.038)
     var speeds = ChassisSpeeds(0.0,0.0,0.0)
-    val leftController = PIDController(WRIST_LEFT_KP,0.0,0.0)
-    val rightController = PIDController(WRIST_RIGHT_KP,0.0,0.0)
+    val leftController = PIDController(WRIST_LEFT_KP,0.0,WRIST_LEFT_KD)
+    val rightController = PIDController(WRIST_RIGHT_KP,0.0, WRIST_RIGHT_KD)
 
     init {
         odo.updatePose(Pose2d(0.0,0.0, Rotation2d(0.0)))
@@ -52,14 +52,24 @@ class DiffWrist(
         odo.updatePose()
 
         val wheelSpeeds = kinematics.toWheelSpeeds(speeds)
-        val leftSpeed = wheelSpeeds.leftMetersPerSecond / wheelRadius
-        val rightSpeed = wheelSpeeds.rightMetersPerSecond / wheelRadius
+        val leftSpeed = (wheelSpeeds.leftMetersPerSecond / wheelRadius) * 10
+        val rightSpeed = (wheelSpeeds.rightMetersPerSecond / wheelRadius) * 10
 
         val leftOut = leftController.calculate(leftServo.velocity.get(), leftSpeed)
         val rightOut = rightController.calculate(rightServo.velocity.get(), rightSpeed)
 
-//        leftServo.setPower(leftOut)
-//        rightServo.setPower(rightOut)
+        if(abs(leftSpeed) > 2){
+            leftServo.setPower(-leftOut)
+        } else {
+            leftServo.setPower(0.0)
+        }
+
+        if(abs(rightSpeed) > 2){
+            rightServo.setPower(-rightOut)
+        } else {
+            rightServo.setPower(0.0)
+        }
+
 
         telemetry.addData("Left velocity", leftServo.velocity.get())
         telemetry.addData("Right velocity", rightServo.velocity.get())
