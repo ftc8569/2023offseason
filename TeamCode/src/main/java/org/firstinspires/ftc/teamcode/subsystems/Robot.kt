@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
 import com.arcrobotics.ftclib.hardware.motors.MotorEx
 import com.qualcomm.hardware.lynx.LynxModule
+import com.qualcomm.robotcore.hardware.DigitalChannel
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.utilities.AxonCRServo
@@ -27,14 +28,17 @@ class Robot(val hw: HardwareMap, val telemetry: Telemetry) {
     }
     val t = MultipleTelemetry(FtcDashboard.getInstance().telemetry, telemetry)
 
-//    val drivetrain = RRDrivetrain(hw, this)
+    val drivetrain = RRDrivetrain(hw, this)
     val turret: Turret = Turret(MotorEx(hw, "turret"))
     val extension: Extension =
         Extension(AxonCRServo(hw, "extension", "extension", 500.0, 2500.0), this)
     val elbow = Elbow(MotorEx(hw, "leftElbow"), MotorEx(hw, "rightElbow"), this)
 //    val aligner: Aligner = Aligner(AxonServo(hw, "aligner", "alignerAnalog", 500.0, 2500.0), this)
 
-    //    val wrist: DiffWrist = DiffWrist()
+    val wrist: DiffWrist = DiffWrist( AxonServo(hw, "leftWrist", 500.0, 2500.0),
+        AxonServo(hw, "rightWrist", 500.0, 2500.0),
+        t)
+    val claw = Claw(AxonServo(hw, "claw", 500.0, 2500.0), hw.get(DigitalChannel::class.java, "beamBreak"))
 //    var mode: Mode = Mode.INTAKE
 //    val poleState = PoleState(0.0,0.0)
 

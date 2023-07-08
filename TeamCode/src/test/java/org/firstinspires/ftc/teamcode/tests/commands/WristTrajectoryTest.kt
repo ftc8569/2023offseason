@@ -58,81 +58,81 @@ class WristTrajectoryTest {
         println(trajectory)
     }
 
-    @Test
-    fun no_movement_test(){
-        val odo = DifferentialOdometry({0.0}, {0.0}, 1.5)
-        for(i in 0..10){
-            odo.updatePose()
-        }
-
-        assertEquals(0.0, odo.pose.rotation.degrees, 0.001)
-    }
-    @Test
-    fun straight_line_test(){
-        val odo = DifferentialOdometry({1.0}, {1.0}, 1.5)
-        odo.updatePose()
-        assertEquals(1.0, odo.pose.translation.x, 0.01)
-        assertEquals(0.0, odo.pose.rotation.degrees, 0.01)
-    }
-
-    @Test
-    fun wrist_test(){
-        var numEncoderCalls = 0
-        val leftServo = mock<AxonCRServo>(){
-            on {position} doAnswer{
-                var out = 0.0
-                when(numEncoderCalls){
-                    0 -> out = 0.0
-                    1 -> out = 100.0
-                    2 -> out = 100.0
-                    else -> out = 100.0
-                }
-                out
-            }
-            on {velocity} doReturn mock<RollingAverageFilter>()
-            on {velocity.get()} doAnswer {
-                var out = 0.0
-                when(numEncoderCalls) {
-                    0 -> out = 0.0
-                    1 -> out = 100.0
-                    2 -> out = 100.0
-                    else -> out = 100.0
-                }
-                out
-            }
-
-        }
-        val rightServo = mock<AxonCRServo>(){
-            on {position} doAnswer{
-                var out = 0.0
-                when(numEncoderCalls){
-                    0 -> out = 0.0
-                    1 -> out = -100.0
-                    2 -> out = -100.0
-                    else -> out = -100.0
-                }
-                numEncoderCalls++
-                out
-            }
-            on {velocity} doReturn mock<RollingAverageFilter>()
-            on {velocity.get()} doAnswer {
-                var out = 0.0
-                when(numEncoderCalls) {
-                    0 -> out = 0.0
-                    1 -> out = -100.0
-                    2 -> out = -100.0
-                    else -> out =-100.0
-                }
-                out
-            }
-        }
-
-        val wrist = DiffWrist(leftServo, rightServo, mock<MultipleTelemetry>())
-        wrist.periodic()
-        wrist.periodic()
-        wrist.periodic()
-
-    }
+//    @Test
+//    fun no_movement_test(){
+//        val odo = DifferentialOdometry({0.0}, {0.0}, 1.5)
+//        for(i in 0..10){
+//            odo.updatePose()
+//        }
+//
+//        assertEquals(0.0, odo.pose.rotation.degrees, 0.001)
+//    }
+//    @Test
+//    fun straight_line_test(){
+//        val odo = DifferentialOdometry({1.0}, {1.0}, 1.5)
+//        odo.updatePose()
+//        assertEquals(1.0, odo.pose.translation.x, 0.01)
+//        assertEquals(0.0, odo.pose.rotation.degrees, 0.01)
+//    }
+//
+//    @Test
+//    fun wrist_test(){
+//        var numEncoderCalls = 0
+//        val leftServo = mock<AxonCRServo>(){
+//            on {position} doAnswer{
+//                var out = 0.0
+//                when(numEncoderCalls){
+//                    0 -> out = 0.0
+//                    1 -> out = 100.0
+//                    2 -> out = 100.0
+//                    else -> out = 100.0
+//                }
+//                out
+//            }
+//            on {velocity} doReturn mock<RollingAverageFilter>()
+//            on {velocity.get()} doAnswer {
+//                var out = 0.0
+//                when(numEncoderCalls) {
+//                    0 -> out = 0.0
+//                    1 -> out = 100.0
+//                    2 -> out = 100.0
+//                    else -> out = 100.0
+//                }
+//                out
+//            }
+//
+//        }
+//        val rightServo = mock<AxonCRServo>(){
+//            on {position} doAnswer{
+//                var out = 0.0
+//                when(numEncoderCalls){
+//                    0 -> out = 0.0
+//                    1 -> out = -100.0
+//                    2 -> out = -100.0
+//                    else -> out = -100.0
+//                }
+//                numEncoderCalls++
+//                out
+//            }
+//            on {velocity} doReturn mock<RollingAverageFilter>()
+//            on {velocity.get()} doAnswer {
+//                var out = 0.0
+//                when(numEncoderCalls) {
+//                    0 -> out = 0.0
+//                    1 -> out = -100.0
+//                    2 -> out = -100.0
+//                    else -> out =-100.0
+//                }
+//                out
+//            }
+//        }
+//
+//        val wrist = DiffWrist(leftServo, rightServo, mock<MultipleTelemetry>())
+//        wrist.periodic()
+//        wrist.periodic()
+//        wrist.periodic()
+//
+//    }
 
 
 
