@@ -11,6 +11,7 @@ class Claw(private val servo: AxonServo, val beamBreak: DigitalChannel): Subsyst
     override fun periodic(){
         holdingCone = beamBreak.state
 
+
     }
     fun openClaw(){
         servo.servo.position = (CLAW_OPEN - 500)/2000

@@ -1,16 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.test
 
 import com.arcrobotics.ftclib.command.CommandOpMode
-import com.arcrobotics.ftclib.command.InstantCommand
-import com.arcrobotics.ftclib.command.ParallelCommandGroup
-import com.arcrobotics.ftclib.gamepad.GamepadEx
-import com.arcrobotics.ftclib.gamepad.GamepadKeys
-import com.arcrobotics.ftclib.geometry.Vector2d
-import com.arcrobotics.ftclib.hardware.motors.MotorEx
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import org.firstinspires.ftc.teamcode.commands.TurretLock45
-import org.firstinspires.ftc.teamcode.subsystems.Robot
-import org.firstinspires.ftc.teamcode.subsystems.Turret
 
 @TeleOp
 class TurretLock45Test: CommandOpMode() {

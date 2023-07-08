@@ -12,7 +12,7 @@ import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.cos
 
-class Elbow(private val motor1: MotorEx, private val motor2: MotorEx) :
+class Elbow(private val motor1: MotorEx, private val motor2: MotorEx, val robot:Robot) :
     SubsystemBase() {
     private val controller = PIDController(ELBOW_KP, ELBOW_KI, ELBOW_KD)
     var targetAngle = 0.0
@@ -38,7 +38,7 @@ class Elbow(private val motor1: MotorEx, private val motor2: MotorEx) :
             atTargetPosition = abs(targetAngle - currentAngle) < 10
 
             var power = controller.calculate(currentAngle, targetAngle)
-//            if(robot.extension.extended) power += 0.1
+            if(robot.extension.extended) power += 0.1
             motor.set(power)
 
         }

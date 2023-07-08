@@ -5,24 +5,24 @@ import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySe
 import org.firstinspires.ftc.teamcode.subsystems.RRDrivetrain
 
 class TrajectoryCommand(
-    private val drive: RRDrivetrain,
+    private val autodrive: RRDrivetrain,
     private val trajectory: TrajectorySequence
 ) :
     CommandBase() {
 
     init {
-        addRequirements(drive)
+        addRequirements(autodrive)
     }
 
     override fun initialize() {
-        drive.followTrajectorySequenceAsync(trajectory)
+        autodrive.followTrajectorySequenceAsync(trajectory)
     }
 
     override fun execute() {
-        drive.update()
+        autodrive.update()
     }
 
     override fun isFinished(): Boolean {
-        return !drive.isBusy
+        return !autodrive.isBusy
     }
 }

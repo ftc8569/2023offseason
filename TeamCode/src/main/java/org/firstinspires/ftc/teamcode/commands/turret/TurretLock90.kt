@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.commands
+package org.firstinspires.ftc.teamcode.commands.turret
 
 import com.arcrobotics.ftclib.command.CommandBase
 import com.arcrobotics.ftclib.geometry.Vector2d
@@ -34,7 +34,7 @@ class TurretLock90(
         if(vec.x == 0.0 && vec.y ==0.0){
             closestAngle = PI;
         }
-        val robotRelativeAngle = HelperFunctions.toRobotRelativeAngle(
+        val robotRelativeAngle = -HelperFunctions.toRobotRelativeAngle(
             closestAngle,
             robotHeading
         )

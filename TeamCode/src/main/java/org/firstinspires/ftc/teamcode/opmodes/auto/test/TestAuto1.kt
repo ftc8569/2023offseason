@@ -11,6 +11,7 @@ class TestAuto1: LinearOpMode() {
 
     override fun runOpMode() {
         waitForStart()
+
 //        val driveToStackCommand = TrajectoryCommand(r.drivetrain, )
     }
 }

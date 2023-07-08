@@ -7,10 +7,11 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import com.qualcomm.robotcore.hardware.ServoImplEx
 import org.firstinspires.ftc.teamcode.subsystems.Extension
 import org.firstinspires.ftc.teamcode.utilities.AxonCRServo
 
-@Disabled
+
 @TeleOp
 class ExtensionTest: LinearOpMode() {
 
@@ -18,7 +19,7 @@ class ExtensionTest: LinearOpMode() {
 //        val scheduler = CommandScheduler.getInstance()
 //        val dashboard:FtcDashboard = FtcDashboard.getInstance()
 //        val t = MultipleTelemetry(telemetry, dashboard.telemetry)
-//        val extension = Extension(AxonCRServo(hardwareMap, "extension", "extension", 500.0, 2500.0))
+//        val extension = Extension(hardwareMap.get(ServoImplEx::class.java, "extension"))
 //        val gp1 = GamepadEx(gamepad1)
 //        waitForStart()
 //
@@ -31,12 +32,11 @@ class ExtensionTest: LinearOpMode() {
 //            } else if (gp1.wasJustPressed(GamepadKeys.Button.B)){
 //                scheduler.schedule(InstantCommand({extension.length=0.4}, extension))
 //            }
-//44
+//
 //            t.addData("Phi ", extension.phi)
 //            t.addData("Target phi ", extension.targetPhi)
 //            t.addData("Theta", extension.theta)
 //            t.addData("Target theta", extension.targetTheta)
-//            t.addData("Power: ", extension.power)
 //            t.addData("Target Pos", extension.targetPosition)
 //            t.addData("Current Pos", extension.servo.position)
 //            t.update()

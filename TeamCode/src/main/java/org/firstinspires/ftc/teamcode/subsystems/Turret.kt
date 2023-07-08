@@ -7,6 +7,7 @@ import com.arcrobotics.ftclib.command.SubsystemBase
 import com.arcrobotics.ftclib.controller.PIDController
 import com.arcrobotics.ftclib.hardware.motors.Motor
 import com.arcrobotics.ftclib.hardware.motors.MotorEx
+import com.arcrobotics.ftclib.kotlin.extensions.util.clamp
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.Cons.MOTOR_TO_TURRET_GEAR_RATIO
 import org.firstinspires.ftc.teamcode.Cons.TURRET_KD
@@ -17,7 +18,7 @@ import org.firstinspires.ftc.teamcode.Cons.TURRET_MAX_V
 import org.firstinspires.ftc.teamcode.Cons.TURRET_MOTOR_TICKS_PER_REV
 
 // Put timer in constructor, mock a timer
-class Turret(val motor: MotorEx) : SubsystemBase() {
+class Turret(val motor: MotorEx, val robot: Robot) : SubsystemBase() {
     init {
         motor.setRunMode(Motor.RunMode.VelocityControl)
     }
@@ -57,7 +58,10 @@ class Turret(val motor: MotorEx) : SubsystemBase() {
 
             // Raw PID for unit testing, can add motion profile back in later
             var output = controller.calculate(curX.toDouble(), targetPosition.toDouble())
+            output.clamp(-0.5, 0.5)
             motor.set(output)
+
+            robot.t.addData("Turret targ", targetAngle)
         } else motor.set(0.0)
     }
 

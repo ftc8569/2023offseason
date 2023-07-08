@@ -3,11 +3,10 @@ package org.firstinspires.ftc.teamcode.tests.commands
 import com.arcrobotics.ftclib.geometry.Vector2d
 import com.arcrobotics.ftclib.hardware.motors.MotorEx
 import junit.framework.TestCase.assertEquals
-import org.firstinspires.ftc.teamcode.commands.TurretLock45
+import org.firstinspires.ftc.teamcode.commands.turret.TurretLock45
 import org.firstinspires.ftc.teamcode.subsystems.Turret
 import org.junit.Test
 import org.mockito.kotlin.mock
-import kotlin.math.PI
 
 class TurretLock45Tests {
 

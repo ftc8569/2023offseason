@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.IMU
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants
 
-class Drivetrain(val hw: HardwareMap): SubsystemBase() {
+class Drivetrain(val hw: HardwareMap, val robot: Robot): SubsystemBase() {
     private val frontR = MotorEx(hw, "frontR")
     private val frontL = MotorEx(hw, "frontL")
     private val backR = MotorEx(hw, "backR")
@@ -34,6 +34,11 @@ class Drivetrain(val hw: HardwareMap): SubsystemBase() {
 
     fun getYaw(): Double{
         return imu.robotYawPitchRollAngles.getYaw(AngleUnit.DEGREES)
+    }
+
+    override fun periodic(){
+        robot.t.addData("Beambreak",robot.claw.holdingCone)
+        robot.t.update()
     }
 
     init {

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.commands
+package org.firstinspires.ftc.teamcode.commands.turret
 
 import com.arcrobotics.ftclib.command.CommandBase
 import com.arcrobotics.ftclib.geometry.Vector2d
@@ -31,7 +31,7 @@ class TurretLock45(
                 closestDistance = distToAngle
             }
         }
-        val robotRelativeAngle = HelperFunctions.toRobotRelativeAngle(
+        val robotRelativeAngle = -HelperFunctions.toRobotRelativeAngle(
             closestAngle,
             robotHeading
         )
