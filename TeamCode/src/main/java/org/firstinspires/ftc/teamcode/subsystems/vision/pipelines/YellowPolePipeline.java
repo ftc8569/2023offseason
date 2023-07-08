@@ -1,10 +1,14 @@
 package org.firstinspires.ftc.teamcode.subsystems.vision.pipelines;
+import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
+import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
+
+import java.io.File;
 
 public class YellowPolePipeline extends OpenCvPipeline {
 
@@ -24,9 +28,12 @@ public class YellowPolePipeline extends OpenCvPipeline {
     // Convolution kernel parameters
     private final int kernelWidth = 16;
 
+    private Mat img;
+
     // Calculate the distance to the pole
     @Override
     public Mat processFrame(Mat input) {
+        img = input;
         // Convert image to HSV color space
         Mat hsv = new Mat();
         Imgproc.cvtColor(input, hsv, Imgproc.COLOR_BGR2HSV);
@@ -57,5 +64,29 @@ public class YellowPolePipeline extends OpenCvPipeline {
 
         // Return the input image for display (optional)
         return input;
+    }
+
+    private int captureCounter = 0;
+    public String CaptureImage(){
+        Mat image2Save = img;
+        String fullFileName = String.format("-%d.png",captureCounter++);
+
+        if(null != image2Save)
+            if (saveOpenCvImageToFile(fullFileName, image2Save))
+                return fullFileName;
+        return "not saved";
+    }
+
+    public static final File VISION_FOLDER =
+            new File(AppUtil.ROOT_FOLDER + "/vision/");
+    private boolean saveOpenCvImageToFile(String filename, Mat mat) {
+
+        Mat mIntermediateMat = new Mat();
+        Imgproc.cvtColor(mat, mIntermediateMat, Imgproc.COLOR_BGR2RGB, 3);
+
+        boolean mkdirs = VISION_FOLDER.mkdirs();
+        File file = new File(VISION_FOLDER, filename);
+        boolean savedSuccessfully = Imgcodecs.imwrite(file.toString(), mat);
+        return  savedSuccessfully;
     }
 }

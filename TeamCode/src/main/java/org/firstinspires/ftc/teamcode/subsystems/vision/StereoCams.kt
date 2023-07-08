@@ -36,7 +36,7 @@ class StereoCams(val robot: Robot) : SubsystemBase() {
         leftWebcam.openCameraDeviceAsync(object : OpenCvCamera.AsyncCameraOpenListener {
             override fun onOpened() {
                 leftWebcam.setPipeline(YellowPolePipeline(leftSlope))
-                leftWebcam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_LEFT)
+                leftWebcam.startStreaming(640, 480, OpenCvCameraRotation.SIDEWAYS_LEFT)
             }
 
             override fun onError(errorCode: Int) {
@@ -45,7 +45,7 @@ class StereoCams(val robot: Robot) : SubsystemBase() {
         rightWebcam.openCameraDeviceAsync(object : OpenCvCamera.AsyncCameraOpenListener {
             override fun onOpened() {
                 leftWebcam.setPipeline(YellowPolePipeline(rightSlope))
-                leftWebcam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_LEFT)
+                leftWebcam.startStreaming(640, 480, OpenCvCameraRotation.SIDEWAYS_LEFT)
             }
             override fun onError(errorCode: Int) {
             }

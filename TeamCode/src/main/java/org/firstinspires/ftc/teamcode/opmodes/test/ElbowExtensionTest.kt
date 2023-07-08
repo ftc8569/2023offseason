@@ -13,27 +13,27 @@ import org.firstinspires.ftc.teamcode.subsystems.Robot
 @TeleOp
 class ElbowExtensionTest: LinearOpMode() {
     override fun runOpMode() {
-        val scheduler = CommandScheduler.getInstance()
-        val r = Robot(hardwareMap, telemetry)
-        val gp1 = GamepadEx(gamepad1)
-
-        waitForStart()
-        while(opModeIsActive() && !isStopRequested){
-            scheduler.run()
-            gp1.readButtons()
-
-            if(gp1.wasJustPressed(GamepadKeys.Button.Y)){
-                scheduler.schedule(InstantCommand({r.elbow.targetAngle = 50.0}, r.elbow))
-            } else if (gp1.wasJustPressed(GamepadKeys.Button.A)){
-                scheduler.schedule(InstantCommand({r.elbow.targetAngle = 0.0}, r.elbow))
-            }
-
-            if(gp1.wasJustPressed(GamepadKeys.Button.X)){
-                scheduler.schedule(InstantCommand({r.extension.home()}, r.extension))
-            } else if (gp1.wasJustPressed(GamepadKeys.Button.B)){
-                scheduler.schedule(InstantCommand({r.extension.length = 0.4}, r.extension))
-            }
-        }
-        scheduler.reset()
-    }
+//        val scheduler = CommandScheduler.getInstance()
+//        val r = Robot(hardwareMap, telemetry)
+//        val gp1 = GamepadEx(gamepad1)
+//
+//        waitForStart()
+//        while(opModeIsActive() && !isStopRequested){
+//            scheduler.run()
+//            gp1.readButtons()
+//
+//            if(gp1.wasJustPressed(GamepadKeys.Button.Y)){
+//                scheduler.schedule(InstantCommand({r.elbow.targetAngle = 50.0}, r.elbow))
+//            } else if (gp1.wasJustPressed(GamepadKeys.Button.A)){
+//                scheduler.schedule(InstantCommand({r.elbow.targetAngle = 0.0}, r.elbow))
+//            }
+//
+//            if(gp1.wasJustPressed(GamepadKeys.Button.X)){
+//                scheduler.schedule(InstantCommand({r.extension.home()}, r.extension))
+//            } else if (gp1.wasJustPressed(GamepadKeys.Button.B)){
+//                scheduler.schedule(InstantCommand({r.extension.length = 0.4}, r.extension))
+//            }
+//        }
+//        scheduler.reset()
+  }
 }

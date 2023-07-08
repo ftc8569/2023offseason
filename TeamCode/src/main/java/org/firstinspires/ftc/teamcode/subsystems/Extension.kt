@@ -21,6 +21,7 @@ class Extension(val servo: AxonCRServo, val robot: Robot) : SubsystemBase() {
     var targetTheta = theta // Called targetTheta, but we're not really controlling theta, we are controlling phi
     var initialPosition = servo.position
     var targetPosition = initialPosition
+    var atTargetPosition = true
 
     var power = 0.0
     var extended = false
@@ -51,14 +52,16 @@ class Extension(val servo: AxonCRServo, val robot: Robot) : SubsystemBase() {
         phi = (servo.position - initialPosition) / 2 + phiOffset
         theta = 180 - phi - asin((LEG_A * sin(PI - HelperFunctions.toRadians(phi)))/ LEG_B)
 
+        atTargetPosition = abs(targetPosition - servo.position) < 20
         servo.update()
-        controller.setPID(sin(HelperFunctions.toRadians(theta)) * EXTENSION_KP, 0.0, 0.0)
+        controller.setPID(sin(HelperFunctions.toRadians(theta)) * EXTENSION_KP, 0.0, EXTENSION_KD)
         val out = controller.calculate(servo.position, targetPosition)
         power = out
         servo.setPower(out)
 
-        robot.t.addData("Phi", phi)
-        robot.t.addData("Target Phi", targetPhi)
+//        robot.t.addData("Phi", phi)
+//        robot.t.addData("Target Phi", targetPhi)
+        robot.t.addData("Mode", robot.mode)
         robot.t.update()
     }
 

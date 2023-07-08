@@ -32,14 +32,15 @@ class Robot(val hw: HardwareMap, val telemetry: Telemetry) {
     val turret: Turret = Turret(MotorEx(hw, "turret"))
     val extension: Extension =
         Extension(AxonCRServo(hw, "extension", "extension", 500.0, 2500.0), this)
-    val elbow = Elbow(MotorEx(hw, "leftElbow"), MotorEx(hw, "rightElbow"), this)
+//    val elbow = Elbow(MotorEx(hw, "leftElbow"), MotorEx(hw, "rightElbow"), this)
 //    val aligner: Aligner = Aligner(AxonServo(hw, "aligner", "alignerAnalog", 500.0, 2500.0), this)
 
-    val wrist: DiffWrist = DiffWrist( AxonServo(hw, "leftWrist", 500.0, 2500.0),
+    val wrist: DiffWrist = DiffWrist( AxonServo(hw, "leftWrist", 500.0, 2500.0,),
         AxonServo(hw, "rightWrist", 500.0, 2500.0),
         t)
     val claw = Claw(AxonServo(hw, "claw", 500.0, 2500.0), hw.get(DigitalChannel::class.java, "beamBreak"))
-//    var mode: Mode = Mode.INTAKE
+    var mode: Mode = Mode.INTAKE
+    var fallenCone = false
 //    val poleState = PoleState(0.0,0.0)
 
 

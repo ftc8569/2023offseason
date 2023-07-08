@@ -17,9 +17,9 @@ public class Cons {
     // Extension Constants
     public static double LEG_A = 175e-3;
     public static double LEG_B = 250e-3;
-    public static double EXTENSION_KP = .03;
+    public static double EXTENSION_KP = .01;
     public static double EXTENSION_KI = 0.0;
-    public static double EXTENSION_KD = 5.0;
+    public static double EXTENSION_KD = 0.001;
     public static double EXTENSION_KCOS = 0.001;
 
     // Turret Constants
@@ -35,8 +35,8 @@ public class Cons {
 
 
     // Claw Constants
-    public static double CLAW_OPEN = 2500;
-    public static double CLAW_CLOSE = 1250;
+    public static double CLAW_OPEN = 1500;
+    public static double CLAW_CLOSE = 1100;
 
     // Wrist Constants
     public static double WRIST_LEFT_KP = 0.0005;

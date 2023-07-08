@@ -21,18 +21,15 @@ class DiffWrist(
     private val leftServo: AxonServo,
     private val rightServo: AxonServo,
     val telemetry: MultipleTelemetry,
-    var twist:Double = 0.0,
-    var bend:Double = 0.0,
-    var leftAng: Double = 1500.0,
-    var rightAng:Double = 1500.0
-
-
 ) : SubsystemBase() {
-
+    var twist:Double = 0.0
+    var bend:Double = 0.0
+    var leftAng: Double = 1500.0
+    var rightAng:Double = 1500.0
     override fun periodic() {
         // Difference of 1000 micro_s = 90 deg
-        leftAng = 0.5 + ((bend/90)*1000 - ((twist/90 * 1000)/2))/2500
-        rightAng = 0.5 + ((bend/90)*1000 + ((twist/90 * 1000)/2))/2500
+        leftAng = 0.5 + ((bend/90)*1000 - ((twist/90 * 1000)/2))/2000
+        rightAng = 0.5 + ((bend/90)*1000 + ((twist/90 * 1000)/2))/2000
 
         leftServo.servo.position = leftAng
         rightServo.servo.position = 1.0 - rightAng
