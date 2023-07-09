@@ -24,6 +24,10 @@ object HelperFunctions {
         return normalizeAngleRadians(normFieldRelAngle + abs(normRobotHeading) * -sign(normRobotHeading))
     }
 
+    fun toRobotRelativeAngleNoNorm(fieldRelativeAngle: Double, robotHeading: Double): Double {
+        return fieldRelativeAngle + abs(robotHeading) * -sign(robotHeading)
+    }
+
     fun normalizeAngleRadians(angle: Double): Double {
         var newAngle = angle
         if (abs(newAngle) > PI) newAngle -= (2 * PI) * sign(newAngle)

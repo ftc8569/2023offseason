@@ -23,13 +23,13 @@ public class Cons {
     public static double EXTENSION_KCOS = 0.001;
 
     // Turret Constants
-    public static double TURRET_MAX_V = 10.0;
-    public static double TURRET_MAX_A = 2.0;
-    public static double TURRET_KV = 0.1;
-    public static double TURRET_KA = 0.1;
-    public static double TURRET_KP = 0.007;
+    public static double TURRET_MAX_V = 1500;
+    public static double TURRET_MAX_A = 800;
+    public static double TURRET_KV = 0.0005;
+    public static double TURRET_KA = 0.0001;
+    public static double TURRET_KP = 0.002;
     public static double TURRET_KI = 0.0;
-    public static double TURRET_KD = 0.0000;
+    public static double TURRET_KD = 0.0002;
     public static double TURRET_MOTOR_TICKS_PER_REV = 751.8; // For a 223RPM motor
     public static double MOTOR_TO_TURRET_GEAR_RATIO = 24.0 / 141.0;
 
@@ -48,13 +48,19 @@ public class Cons {
     public static double WRIST_B = 2.0;
     public static double WRIST_ZETA = 0.7;
 
-    // Aligner Constants
-    public static double ALIGNER_IN = 2200;
-    public static double ALIGNER_OUT = 826;
+    // Extension
+    public static double EXTENSION_HOME = 0.785;
+    public static double EXTENSION_MAX = 0.0;
+
 
     // Starting position constants
     public static double TURRET_STARTING_ENCODER = 100;
     public static double EXTENSION_STARTING_ENCODER = 65;
     public static double ELBOW_EXTENSION_STARTING_ENCODER = 10;
+
+
+    // Drivetrain Constants
+    public static double HEADING_KP = 0.04;
+    public static double HEADING_KD = 0.005;
 
 }

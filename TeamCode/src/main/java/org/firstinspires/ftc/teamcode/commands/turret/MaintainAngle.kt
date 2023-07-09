@@ -10,9 +10,9 @@ class MaintainAngle(val r: Robot): CommandBase() {
     }
 
     override fun execute(){
-        r.turret.targetAngle = -HelperFunctions.toDegrees(
+        r.turret.targetAngle = HelperFunctions.toDegrees(
                 HelperFunctions.toRobotRelativeAngle(
-                    HelperFunctions.toRadians(0.0),
+                    HelperFunctions.toRadians(r.turret.fieldRelativeTargetAngle),
                     HelperFunctions.toRadians(r.drivetrain.getYaw())
                 )
             )

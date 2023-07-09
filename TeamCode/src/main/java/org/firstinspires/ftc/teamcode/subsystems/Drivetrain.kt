@@ -15,6 +15,7 @@ class Drivetrain(val hw: HardwareMap, val robot: Robot): SubsystemBase() {
     private val backR = MotorEx(hw, "backR")
     private val backL = MotorEx(hw, "backL")
     val drive = MecanumDrive(frontL, frontR, backL, backR)
+    var offset = 0.0
 
     private val imu: IMU = hw.get(IMU::
     class.java, "imu")
@@ -23,7 +24,6 @@ class Drivetrain(val hw: HardwareMap, val robot: Robot): SubsystemBase() {
             DriveConstants.LOGO_FACING_DIR, DriveConstants.USB_FACING_DIR
         )
     )
-
     init {
         imu.initialize(parameters)
         frontR.inverted = true
@@ -33,14 +33,19 @@ class Drivetrain(val hw: HardwareMap, val robot: Robot): SubsystemBase() {
     }
 
     fun getYaw(): Double{
-        return imu.robotYawPitchRollAngles.getYaw(AngleUnit.DEGREES)
+        return imu.robotYawPitchRollAngles.getYaw(AngleUnit.DEGREES) - offset
     }
+
+    fun resetHeading(){
+        offset = getYaw()
+    }
+
+
 
     override fun periodic(){
-        robot.t.addData("Beambreak",robot.claw.holdingCone)
-        robot.t.update()
+//        robot.t.addData("Mode", robot.mode)
+//        robot.t.update()
     }
-
     init {
         register()
     }

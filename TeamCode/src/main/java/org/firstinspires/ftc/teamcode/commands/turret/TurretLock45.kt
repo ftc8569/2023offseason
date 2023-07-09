@@ -31,16 +31,16 @@ class TurretLock45(
                 closestDistance = distToAngle
             }
         }
-        val robotRelativeAngle = -HelperFunctions.toRobotRelativeAngle(
+        val robotRelativeAngle = HelperFunctions.toRobotRelativeAngle(
             closestAngle,
             robotHeading
         )
 
         val angleDegrees = HelperFunctions.toDegrees(robotRelativeAngle)
 
-        turret.targetAngle = angleDegrees
+            turret.targetAngle = angleDegrees
 
-        print(turret)
+
     }
     override fun isFinished() = false
 }

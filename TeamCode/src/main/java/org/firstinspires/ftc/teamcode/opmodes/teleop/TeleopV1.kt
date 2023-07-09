@@ -1,22 +1,15 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop
 
-import com.arcrobotics.ftclib.command.CommandOpMode
-import com.arcrobotics.ftclib.command.ConditionalCommand
-import com.arcrobotics.ftclib.command.InstantCommand
-import com.arcrobotics.ftclib.command.ParallelCommandGroup
-import com.arcrobotics.ftclib.command.button.Trigger
+import com.arcrobotics.ftclib.command.*
 import com.arcrobotics.ftclib.gamepad.GamepadEx
 import com.arcrobotics.ftclib.gamepad.GamepadKeys
-import com.arcrobotics.ftclib.geometry.Vector2d
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.commands.drivetrain.DriveMec
+import org.firstinspires.ftc.teamcode.commands.drivetrain.DriveMecSnap
+import org.firstinspires.ftc.teamcode.commands.scoring.HomeScoring
 import org.firstinspires.ftc.teamcode.commands.scoring.Score
 import org.firstinspires.ftc.teamcode.commands.scoring.ToIntakePosition
-import org.firstinspires.ftc.teamcode.commands.turret.MaintainAngle
-import org.firstinspires.ftc.teamcode.commands.turret.TurretLock45
-import org.firstinspires.ftc.teamcode.commands.turret.TurretLock90
 import org.firstinspires.ftc.teamcode.subsystems.Robot
-import org.firstinspires.ftc.teamcode.utilities.HelperFunctions
 import org.firstinspires.ftc.teamcode.utilities.Mode
 import org.firstinspires.ftc.teamcode.utilities.ScoringConfigs.*
 import kotlin.math.pow
@@ -33,23 +26,23 @@ class TeleopV1 : CommandOpMode() {
             r.drivetrain,
             { driver.leftY.pow(2) * sign(driver.leftY) },
             { driver.leftX.pow(2) * sign(driver.leftX) },
-            { driver.rightX.pow(4) * sign(driver.rightX) },
+            { driver.rightX.pow(2) * sign(driver.rightX) },
         )
+
+        driver.getGamepadButton(GamepadKeys.Button.A)
+            .whenPressed(InstantCommand({ r.drivetrain.resetHeading() }, r.drivetrain))
+
 
         // Turret should maintain field relative angle
-        r.turret.defaultCommand = MaintainAngle(r)
-
-        Trigger { gunner.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1 }.whenActive(
-            ConditionalCommand(
-                TurretLock45(
-                    r.turret,
-                    { HelperFunctions.toRadians(r.drivetrain.getYaw()) },
-                    { Vector2d(gunner.leftX, gunner.leftY) }),
-                TurretLock90(r.turret,
-                    { HelperFunctions.toRadians(r.drivetrain.getYaw()) },
-                    { Vector2d(gunner.leftX, gunner.leftY) })
-            ) { r.mode == Mode.SCORE }
+//        r.turret.defaultCommand = MaintainAngle(r)
+        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whileHeld(
+            DriveMecSnap(
+                r.drivetrain, 0.0,
+                { driver.leftY.pow(2) * sign(driver.leftY) },
+                { driver.leftX.pow(2) * sign(driver.leftX) },
+            )
         )
+
 
         gunner.getGamepadButton(GamepadKeys.Button.B).whenPressed(
             ToIntakePosition(r)
@@ -64,21 +57,31 @@ class TeleopV1 : CommandOpMode() {
         gunner.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
             .whenPressed(Score(r, GROUND_ANGLE, GROUND_LENGTH, GROUND_WRIST, GROUND_ALIGNER))
 
+        gunner.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+            .whenPressed(InstantCommand({ r.turret.fieldRelativeTargetAngle += 45.0 }, r.turret))
+
+        gunner.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+            .whenPressed(InstantCommand({ r.turret.fieldRelativeTargetAngle -= 45.0 }, r.turret))
+
         gunner.getGamepadButton(GamepadKeys.Button.A).whenPressed(
             ConditionalCommand(
-                InstantCommand(
-                    { r.claw.openClaw(); r.mode = Mode.INTAKE; r.extension.home() },
-                    r.claw,
-                    r.extension
+                SequentialCommandGroup(
+                    InstantCommand(
+                        { r.claw.openClaw(); r.mode = Mode.INTAKE; },
+                        r.claw
+                    ),
+                    HomeScoring(r)
                 ),
-                InstantCommand(
-                    { r.claw.closeClaw(); r.mode = Mode.SCORE }, r.claw
+                SequentialCommandGroup(
+                    InstantCommand(
+                        { r.claw.closeClaw(); r.mode = Mode.SCORE }, r.claw
+                    ),
+                    WaitCommand(100),
+                    HomeScoring(r)
                 )
+
             ) { r.mode == Mode.SCORE }
         )
-
-        gunner.getGamepadButton(GamepadKeys.Button.Y)
-            .whenPressed(InstantCommand({ r.fallenCone = !r.fallenCone }))
 
 
     }

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
+import androidx.core.math.MathUtils.clamp
 import com.acmerobotics.roadrunner.profile.MotionProfile
 import com.acmerobotics.roadrunner.profile.MotionProfileGenerator
 import com.acmerobotics.roadrunner.profile.MotionState
@@ -7,62 +8,73 @@ import com.arcrobotics.ftclib.command.SubsystemBase
 import com.arcrobotics.ftclib.controller.PIDController
 import com.arcrobotics.ftclib.hardware.motors.Motor
 import com.arcrobotics.ftclib.hardware.motors.MotorEx
-import com.arcrobotics.ftclib.kotlin.extensions.util.clamp
 import com.qualcomm.robotcore.util.ElapsedTime
-import org.firstinspires.ftc.teamcode.Cons.MOTOR_TO_TURRET_GEAR_RATIO
-import org.firstinspires.ftc.teamcode.Cons.TURRET_KD
-import org.firstinspires.ftc.teamcode.Cons.TURRET_KI
-import org.firstinspires.ftc.teamcode.Cons.TURRET_KP
-import org.firstinspires.ftc.teamcode.Cons.TURRET_MAX_A
-import org.firstinspires.ftc.teamcode.Cons.TURRET_MAX_V
-import org.firstinspires.ftc.teamcode.Cons.TURRET_MOTOR_TICKS_PER_REV
+import org.firstinspires.ftc.teamcode.Cons.*
+import org.firstinspires.ftc.teamcode.utilities.HelperFunctions
+import kotlin.math.abs
+import kotlin.math.floor
+import kotlin.math.sign
 
 // Put timer in constructor, mock a timer
 class Turret(val motor: MotorEx, val robot: Robot) : SubsystemBase() {
     init {
-        motor.setRunMode(Motor.RunMode.VelocityControl)
+        motor.setRunMode(Motor.RunMode.RawPower)
     }
 
+    var calcOutput = 0.0
+    var adjustedOutput = 0.0
+    var numWraps = 0
+
     var curAngle = 0.0
+    var fieldRelativeTargetAngle = 0.0
     var targetAngle = 0.0
-        set(targetAngle: Double){
+        set(targetAngle: Double) {
             field = targetAngle
             this.targetPosition = angleToEncoderTicks(targetAngle).toInt()
         }
     var curPosition = 0
     var targetPosition = 0
-        set(targetPosition: Int){
-            field = targetPosition
-            this.profile = MotionProfileGenerator.generateSimpleMotionProfile(
-                MotionState(curPosition.toDouble(), motor.velocity, motor.acceleration),
-                MotionState(targetPosition.toDouble(), 0.0, 0.0),
-                TURRET_MAX_V,
-                TURRET_MAX_A
-            )
-            time.reset()
-        }
     var atTarget = true
-    private lateinit var profile: MotionProfile
-    private var time: ElapsedTime = ElapsedTime()
     var profiled = true
     var controller = PIDController(TURRET_KP, TURRET_KI, TURRET_KD)
 
     override fun periodic() {
         atTarget = kotlin.math.abs(curPosition - targetPosition) < 10
+        targetAngle = if(numWraps > 2){
+            -HelperFunctions.toDegrees(
+                HelperFunctions.toRobotRelativeAngle(
+                    HelperFunctions.toRadians(fieldRelativeTargetAngle),
+                    HelperFunctions.toRadians(robot.drivetrain.getYaw())
+                )
+            )
+        } else {
+            -HelperFunctions.toDegrees(
+                HelperFunctions.toRobotRelativeAngleNoNorm(
+                    HelperFunctions.toRadians(fieldRelativeTargetAngle),
+                    HelperFunctions.toRadians(robot.drivetrain.getYaw())
+                )
+            )
+        }
+
+        val curX = motor.currentPosition
+        curAngle = encodersToAngle(curX.toDouble())
+        numWraps = (abs(curAngle) / 360.0).toInt()
+
         if (!atTarget && profiled) {
-            val curX = motor.currentPosition
-            val tempXTarget = profile[time.time()].x
-            val tempVTarget = profile[time.time()].v
-            val tempATarget = profile[time.time()].a
-//            var output = TURRET_KV * tempVTarget + TURRET_KA * tempATarget
 
             // Raw PID for unit testing, can add motion profile back in later
-            var output = controller.calculate(curX.toDouble(), targetPosition.toDouble())
-            output.clamp(-0.5, 0.5)
-            motor.set(output)
+            calcOutput =
+                clamp(controller.calculate(curX.toDouble(), targetPosition.toDouble()), -1.0, 1.0)
 
-            robot.t.addData("Turret targ", targetAngle)
+            motor.set(calcOutput)
+
         } else motor.set(0.0)
+
+        robot.t.addData("Field Relative Target Angle", fieldRelativeTargetAngle)
+        robot.t.addData("Robot relative target angle", targetAngle)
+        robot.t.addData("Current Angle", curAngle)
+        robot.t.addData("Num wraps", numWraps)
+        robot.t.update()
     }
 
     // Angles in degrees
@@ -70,12 +82,20 @@ class Turret(val motor: MotorEx, val robot: Robot) : SubsystemBase() {
         return (angle / 360) * (TURRET_MOTOR_TICKS_PER_REV / MOTOR_TO_TURRET_GEAR_RATIO)
     }
 
-//    fun encoderTicksToAngle(ticks: Double): Double {
-//
-//    }
+    private fun encodersToAngle(ticks: Double): Double {
+        return (ticks * 360 * MOTOR_TO_TURRET_GEAR_RATIO) / TURRET_MOTOR_TICKS_PER_REV
+    }
+
     init {
         controller.setTolerance(13.0)
         register()
     }
 
+
+//                var velocity = motor.velocity
+//            var vContribution = clamp(velocity * TURRET_KV, -1.0, 1.0)
+//            val plannedAccel = (calcOutput - vContribution) / TURRET_KA
+//            var accel =
+//                sign(plannedAccel) * Math.min(abs(plannedAccel), abs(TURRET_MAX_A)) * TURRET_KA
+//            adjustedOutput = vContribution + accel
 }

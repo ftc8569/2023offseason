@@ -35,7 +35,7 @@ class Robot(val hw: HardwareMap, val telemetry: Telemetry) {
     val turret: Turret = Turret(MotorEx(hw, "turret"), this)
     val extension = Extension(hw.get(ServoImplEx::class.java, "extension"))
     val elbow = Elbow(MotorEx(hw, "leftElbow"), MotorEx(hw, "rightElbow"), this)
-//    val aligner: Aligner = Aligner(AxonServo(hw, "aligner", "alignerAnalog", 500.0, 2500.0), this)
+    val aligner: Aligner = Aligner(hw.get(ServoImplEx::class.java, "aligner"), this)
 
     val wrist: DiffWrist = DiffWrist( AxonServo(hw, "leftWrist", 500.0, 2500.0,),
         AxonServo(hw, "rightWrist", 500.0, 2500.0),

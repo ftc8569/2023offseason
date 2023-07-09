@@ -17,10 +17,18 @@ import kotlin.math.*
 
 class Extension(val servo: ServoImplEx) : SubsystemBase() {
 
-    var position = 1.0
+    var position = EXTENSION_HOME
         set(pos){
-            servo.position = pos
-            field = pos
+            var temp = pos
+//            if(temp > EXTENSION_MAX){
+//                temp = EXTENSION_MAX
+//            }
+//            if (temp < EXTENSION_HOME){
+//                temp = EXTENSION_HOME
+//            }
+            servo.position = temp
+
+            field = temp
         }
     var extended = false
 
@@ -29,7 +37,7 @@ class Extension(val servo: ServoImplEx) : SubsystemBase() {
     }
 
     fun home(){
-        servo.position = 1.0
+        servo.position = EXTENSION_HOME
         extended = false
     }
 

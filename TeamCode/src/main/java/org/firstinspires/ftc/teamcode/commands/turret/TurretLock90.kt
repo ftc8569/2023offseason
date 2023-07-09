@@ -32,9 +32,9 @@ class TurretLock90(
             }
         }
         if(vec.x == 0.0 && vec.y ==0.0){
-            closestAngle = PI;
+            closestAngle = 0.0;
         }
-        val robotRelativeAngle = -HelperFunctions.toRobotRelativeAngle(
+        val robotRelativeAngle = HelperFunctions.toRobotRelativeAngle(
             closestAngle,
             robotHeading
         )

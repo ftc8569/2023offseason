@@ -7,6 +7,9 @@ import org.firstinspires.ftc.teamcode.Cons.CLAW_CLOSE
 import org.firstinspires.ftc.teamcode.Cons.CLAW_OPEN
 
 class Claw(private val servo: AxonServo, val beamBreak: DigitalChannel): SubsystemBase() {
+    init {
+        beamBreak.mode = DigitalChannel.Mode.INPUT
+    }
     var holdingCone = beamBreak.state
     override fun periodic(){
         holdingCone = beamBreak.state
