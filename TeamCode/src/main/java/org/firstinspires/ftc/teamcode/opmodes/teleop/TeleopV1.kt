@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.commands.scoring.ToIntakePosition
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain
 import org.firstinspires.ftc.teamcode.subsystems.Robot
 import org.firstinspires.ftc.teamcode.utilities.Mode
+import org.firstinspires.ftc.teamcode.utilities.PostAutoPoses.*
 import org.firstinspires.ftc.teamcode.utilities.ScoringConfigs.*
 import kotlin.math.pow
 import kotlin.math.sign
@@ -24,6 +25,7 @@ class TeleopV1 : CommandOpMode() {
         val gunner = GamepadEx(gamepad2)
         val drivetrain = Drivetrain(hardwareMap)
         val r = Robot(hardwareMap, telemetry) { drivetrain.getYaw() }
+        overwritevalues()
 
 
         drivetrain.defaultCommand = DriveMec(
@@ -43,19 +45,19 @@ class TeleopV1 : CommandOpMode() {
 
 
 //
-//        driver.getGamepadButton(GamepadKeys.Button.A)
-//            .whenPressed(InstantCommand({ r.drivetrain.resetHeading() }, r.drivetrain))
+        driver.getGamepadButton(GamepadKeys.Button.A)
+            .whenPressed(InstantCommand({ drivetrain.resetHeading() }, drivetrain))
 
 
         // Turret should maintain field relative angle
 //        r.turret.defaultCommand = MaintainAngle(r)
-//        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whileHeld(
-//            DriveMecSnap(
-//                r.drivetrain, 0.0,
-//                { driver.leftY.pow(2) * sign(driver.leftY) },
-//                { driver.leftX.pow(2) * sign(driver.leftX) },
-//            )
-//        )
+        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whileHeld(
+            DriveMecSnap(
+                drivetrain, 0.0,
+                { driver.leftY.pow(2) * sign(driver.leftY) },
+                { driver.leftX.pow(2) * sign(driver.leftX) },
+            )
+        )
 
 
         gunner.getGamepadButton(GamepadKeys.Button.B).whenPressed(
@@ -98,5 +100,10 @@ class TeleopV1 : CommandOpMode() {
         )
 
 
+    }
+    fun overwritevalues(){
+        TURRET_ANGLE = 0.0
+        ELBOW_ANGLE = 0.0
+        DRIVETRAIN_HEADING = 0.0
     }
 }

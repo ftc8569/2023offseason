@@ -11,6 +11,7 @@ import com.arcrobotics.ftclib.hardware.motors.MotorEx
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.Cons.*
 import org.firstinspires.ftc.teamcode.utilities.HelperFunctions
+import org.firstinspires.ftc.teamcode.utilities.PostAutoPoses.*
 import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.sign
@@ -21,8 +22,18 @@ class Turret(val motor: MotorEx, val robot: Robot, val headingSupplier: ()-> Dou
         motor.setRunMode(Motor.RunMode.RawPower)
     }
 
+    var angleStartOffset = 0.0
+    init {
+        // We're basically assuming that if all the values are in the static class are equal to zero
+        // then they probably haven't been edited. The best guess that we can make about our position
+        // is that we're in our starting position
+        angleStartOffset = if(TURRET_ANGLE == 0.0 && ELBOW_ANGLE == 0.0 && DRIVETRAIN_HEADING == 0.0 ){
+            TURRET_STARTING_ANGLE
+        } else {
+            TURRET_ANGLE
+        }
+    }
     var calcOutput = 0.0
-    var adjustedOutput = 0.0
     var numWraps = 0
     var fieldRelativeControl = false
 
@@ -31,7 +42,7 @@ class Turret(val motor: MotorEx, val robot: Robot, val headingSupplier: ()-> Dou
     var targetAngle = 0.0
         set(targetAngle: Double) {
             field = targetAngle
-            this.targetPosition = angleToEncoderTicks(targetAngle).toInt() - angleToEncoderTicks(TURRET_STARTING_ANGLE).toInt()
+            this.targetPosition = angleToEncoderTicks(targetAngle).toInt() - angleToEncoderTicks(angleStartOffset).toInt()
         }
     var targetPosition = 0
     var atTarget = false
@@ -60,7 +71,7 @@ class Turret(val motor: MotorEx, val robot: Robot, val headingSupplier: ()-> Dou
 
         val curX = motor.currentPosition
 
-        curAngle = encodersToAngle(curX.toDouble()) + TURRET_STARTING_ANGLE
+        curAngle = encodersToAngle(curX.toDouble()) + angleStartOffset
         atTarget = kotlin.math.abs(targetAngle - curAngle) < 5
         numWraps = (abs(curAngle) / 360.0).toInt()
 
