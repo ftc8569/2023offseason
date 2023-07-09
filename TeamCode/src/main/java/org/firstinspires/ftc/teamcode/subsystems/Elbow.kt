@@ -5,9 +5,7 @@ import com.arcrobotics.ftclib.controller.PIDController
 import com.arcrobotics.ftclib.hardware.motors.Motor
 import com.arcrobotics.ftclib.hardware.motors.MotorEx
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup
-import org.firstinspires.ftc.teamcode.Cons.ELBOW_KD
-import org.firstinspires.ftc.teamcode.Cons.ELBOW_KI
-import org.firstinspires.ftc.teamcode.Cons.ELBOW_KP
+import org.firstinspires.ftc.teamcode.Cons.*
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.cos
@@ -33,7 +31,7 @@ class Elbow(private val motor1: MotorEx, private val motor2: MotorEx, val robot:
     override fun periodic() {
         if (enabled) {
             currentAngle =
-                (motor.positions[0] / 696.5) * 90
+                (motor.positions[0] / 696.5) * 90 + ELBOW_START_ANGLE
 
             atTargetPosition = abs(targetAngle - currentAngle) < 10
 

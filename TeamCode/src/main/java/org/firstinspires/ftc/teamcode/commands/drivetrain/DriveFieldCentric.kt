@@ -14,8 +14,6 @@ class DriveFieldCentric(
         addRequirements(dt)
     }
 
-
-
     override fun execute() {
         dt.driveFieldCentric(
             strafeSpeed.invoke(),

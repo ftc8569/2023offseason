@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.commands.drivetrain
 
 import com.arcrobotics.ftclib.command.CommandBase
+import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence
+import org.firstinspires.ftc.teamcode.subsystems.AutoDrive
 import org.firstinspires.ftc.teamcode.subsystems.RRDrivetrain
 
 class TrajectoryCommand(
-    private val autodrive: RRDrivetrain,
+    private val autodrive: AutoDrive,
     private val trajectory: TrajectorySequence
 ) :
     CommandBase() {
@@ -15,14 +17,14 @@ class TrajectoryCommand(
     }
 
     override fun initialize() {
-        autodrive.followTrajectorySequenceAsync(trajectory)
+        autodrive.drive.followTrajectorySequenceAsync(trajectory)
     }
 
     override fun execute() {
-        autodrive.update()
+        autodrive.drive.update()
     }
 
     override fun isFinished(): Boolean {
-        return !autodrive.isBusy
+        return !autodrive.drive.isBusy
     }
 }

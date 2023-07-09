@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.IMU
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants
 
-class Drivetrain(val hw: HardwareMap, val robot: Robot): SubsystemBase() {
+class Drivetrain(val hw: HardwareMap): SubsystemBase() {
     private val frontR = MotorEx(hw, "frontR")
     private val frontL = MotorEx(hw, "frontL")
     private val backR = MotorEx(hw, "backR")

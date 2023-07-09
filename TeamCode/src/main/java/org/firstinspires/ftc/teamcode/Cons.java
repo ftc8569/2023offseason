@@ -49,14 +49,14 @@ public class Cons {
     public static double WRIST_ZETA = 0.7;
 
     // Extension
-    public static double EXTENSION_HOME = 0.785;
+    public static double EXTENSION_HOME = 0.6;
     public static double EXTENSION_MAX = 0.0;
 
 
     // Starting position constants
-    public static double TURRET_STARTING_ENCODER = 100;
-    public static double EXTENSION_STARTING_ENCODER = 65;
-    public static double ELBOW_EXTENSION_STARTING_ENCODER = 10;
+    public static double TURRET_STARTING_ANGLE = -40.0;
+
+    public static double ELBOW_START_ANGLE = -54.5;
 
 
     // Drivetrain Constants

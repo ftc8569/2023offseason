@@ -7,10 +7,10 @@ import org.firstinspires.ftc.teamcode.subsystems.Robot
 
 @Autonomous
 class TestAuto1: LinearOpMode() {
-    val r = Robot(hardwareMap, telemetry)
+//    val r = Robot(hardwareMap, telemetry)
 
     override fun runOpMode() {
-        waitForStart()
+//        waitForStart()
 
 //        val driveToStackCommand = TrajectoryCommand(r.drivetrain, )
     }

@@ -4,11 +4,13 @@ import com.arcrobotics.ftclib.command.*
 import com.arcrobotics.ftclib.gamepad.GamepadEx
 import com.arcrobotics.ftclib.gamepad.GamepadKeys
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import org.firstinspires.ftc.teamcode.commands.drivetrain.DriveFieldCentric
 import org.firstinspires.ftc.teamcode.commands.drivetrain.DriveMec
 import org.firstinspires.ftc.teamcode.commands.drivetrain.DriveMecSnap
 import org.firstinspires.ftc.teamcode.commands.scoring.HomeScoring
 import org.firstinspires.ftc.teamcode.commands.scoring.Score
 import org.firstinspires.ftc.teamcode.commands.scoring.ToIntakePosition
+import org.firstinspires.ftc.teamcode.subsystems.Drivetrain
 import org.firstinspires.ftc.teamcode.subsystems.Robot
 import org.firstinspires.ftc.teamcode.utilities.Mode
 import org.firstinspires.ftc.teamcode.utilities.ScoringConfigs.*
@@ -20,28 +22,40 @@ class TeleopV1 : CommandOpMode() {
     override fun initialize() {
         val driver = GamepadEx(gamepad1)
         val gunner = GamepadEx(gamepad2)
-        val r = Robot(hardwareMap, telemetry)
+        val drivetrain = Drivetrain(hardwareMap)
+        val r = Robot(hardwareMap, telemetry) { drivetrain.getYaw() }
 
-        r.drivetrain.defaultCommand = DriveMec(
-            r.drivetrain,
+
+        drivetrain.defaultCommand = DriveMec(
+            drivetrain,
             { driver.leftY.pow(2) * sign(driver.leftY) },
             { driver.leftX.pow(2) * sign(driver.leftX) },
             { driver.rightX.pow(2) * sign(driver.rightX) },
         )
 
-        driver.getGamepadButton(GamepadKeys.Button.A)
-            .whenPressed(InstantCommand({ r.drivetrain.resetHeading() }, r.drivetrain))
+//        r.drivetrain.defaultCommand = DriveFieldCentric(
+//            r.drivetrain,
+//            { driver.leftY.pow(2) * sign(driver.leftY) },
+//            { driver.leftX.pow(2) * sign(driver.leftX) },
+//            { driver.rightX.pow(2) * sign(driver.rightX) },
+//            {r.drivetrain.rawExternalHeading},
+//        )
+
+
+//
+//        driver.getGamepadButton(GamepadKeys.Button.A)
+//            .whenPressed(InstantCommand({ r.drivetrain.resetHeading() }, r.drivetrain))
 
 
         // Turret should maintain field relative angle
 //        r.turret.defaultCommand = MaintainAngle(r)
-        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whileHeld(
-            DriveMecSnap(
-                r.drivetrain, 0.0,
-                { driver.leftY.pow(2) * sign(driver.leftY) },
-                { driver.leftX.pow(2) * sign(driver.leftX) },
-            )
-        )
+//        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whileHeld(
+//            DriveMecSnap(
+//                r.drivetrain, 0.0,
+//                { driver.leftY.pow(2) * sign(driver.leftY) },
+//                { driver.leftX.pow(2) * sign(driver.leftX) },
+//            )
+//        )
 
 
         gunner.getGamepadButton(GamepadKeys.Button.B).whenPressed(

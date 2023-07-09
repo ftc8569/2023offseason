@@ -16,7 +16,7 @@ import kotlin.math.floor
 import kotlin.math.sign
 
 // Put timer in constructor, mock a timer
-class Turret(val motor: MotorEx, val robot: Robot) : SubsystemBase() {
+class Turret(val motor: MotorEx, val robot: Robot, val headingSupplier: ()-> Double) : SubsystemBase() {
     init {
         motor.setRunMode(Motor.RunMode.RawPower)
     }
@@ -24,56 +24,54 @@ class Turret(val motor: MotorEx, val robot: Robot) : SubsystemBase() {
     var calcOutput = 0.0
     var adjustedOutput = 0.0
     var numWraps = 0
+    var fieldRelativeControl = false
 
     var curAngle = 0.0
     var fieldRelativeTargetAngle = 0.0
     var targetAngle = 0.0
         set(targetAngle: Double) {
             field = targetAngle
-            this.targetPosition = angleToEncoderTicks(targetAngle).toInt()
+            this.targetPosition = angleToEncoderTicks(targetAngle).toInt() - angleToEncoderTicks(TURRET_STARTING_ANGLE).toInt()
         }
-    var curPosition = 0
     var targetPosition = 0
-    var atTarget = true
-    var profiled = true
+    var atTarget = false
     var controller = PIDController(TURRET_KP, TURRET_KI, TURRET_KD)
 
     override fun periodic() {
-        atTarget = kotlin.math.abs(curPosition - targetPosition) < 10
-        targetAngle = if(numWraps > 2){
-            -HelperFunctions.toDegrees(
-                HelperFunctions.toRobotRelativeAngle(
-                    HelperFunctions.toRadians(fieldRelativeTargetAngle),
-                    HelperFunctions.toRadians(robot.drivetrain.getYaw())
+        if (fieldRelativeControl) {
+            targetAngle = if(numWraps > 2){
+                -HelperFunctions.toDegrees(
+                    HelperFunctions.toRobotRelativeAngle(
+                        HelperFunctions.toRadians(fieldRelativeTargetAngle),
+                        HelperFunctions.toRadians(headingSupplier.invoke())
+                    )
                 )
-            )
+            } else {
+                -HelperFunctions.toDegrees(
+                    HelperFunctions.toRobotRelativeAngleNoNorm(
+                        HelperFunctions.toRadians(fieldRelativeTargetAngle),
+                        HelperFunctions.toRadians(headingSupplier.invoke())
+                    )
+                )
+            }
         } else {
-            -HelperFunctions.toDegrees(
-                HelperFunctions.toRobotRelativeAngleNoNorm(
-                    HelperFunctions.toRadians(fieldRelativeTargetAngle),
-                    HelperFunctions.toRadians(robot.drivetrain.getYaw())
-                )
-            )
+            targetAngle = fieldRelativeTargetAngle
         }
 
         val curX = motor.currentPosition
-        curAngle = encodersToAngle(curX.toDouble())
+
+        curAngle = encodersToAngle(curX.toDouble()) + TURRET_STARTING_ANGLE
+        atTarget = kotlin.math.abs(targetAngle - curAngle) < 5
         numWraps = (abs(curAngle) / 360.0).toInt()
 
-        if (!atTarget && profiled) {
+        // Raw PID for unit testing, can add motion profile back in later
+        calcOutput =
+            clamp(controller.calculate(curX.toDouble(), targetPosition.toDouble()), -1.0, 1.0)
 
-            // Raw PID for unit testing, can add motion profile back in later
-            calcOutput =
-                clamp(controller.calculate(curX.toDouble(), targetPosition.toDouble()), -1.0, 1.0)
+        motor.set(calcOutput)
 
-            motor.set(calcOutput)
-
-        } else motor.set(0.0)
-
-        robot.t.addData("Field Relative Target Angle", fieldRelativeTargetAngle)
         robot.t.addData("Robot relative target angle", targetAngle)
         robot.t.addData("Current Angle", curAngle)
-        robot.t.addData("Num wraps", numWraps)
         robot.t.update()
     }
 
@@ -87,15 +85,8 @@ class Turret(val motor: MotorEx, val robot: Robot) : SubsystemBase() {
     }
 
     init {
-        controller.setTolerance(13.0)
         register()
     }
 
 
-//                var velocity = motor.velocity
-//            var vContribution = clamp(velocity * TURRET_KV, -1.0, 1.0)
-//            val plannedAccel = (calcOutput - vContribution) / TURRET_KA
-//            var accel =
-//                sign(plannedAccel) * Math.min(abs(plannedAccel), abs(TURRET_MAX_A)) * TURRET_KA
-//            adjustedOutput = vContribution + accel
 }

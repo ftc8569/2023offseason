@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.utilities.ScoringConfigs.ALIGNER_HOME
 
 class HomeScoring(val r: Robot): CommandBase() {
     init {
-        addRequirements(r.elbow, r.extension)
+        addRequirements(r.elbow, r.extension, r.aligner)
     }
 
     override fun initialize(){
