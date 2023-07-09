@@ -41,7 +41,7 @@ class TurretLock90(
 
         val angleDegrees = HelperFunctions.toDegrees(robotRelativeAngle)
 
-        turret.targetAngle = angleDegrees
+        turret.robotRelativeTargetAngle = angleDegrees
 
         print(turret)
     }

@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.commands.turret
 
 import com.arcrobotics.ftclib.command.CommandBase
-import org.firstinspires.ftc.teamcode.subsystems.Robot
 import org.firstinspires.ftc.teamcode.subsystems.Turret
 
 
@@ -11,7 +10,7 @@ class SetTurretAngle(val turret: Turret, val ang: Double): CommandBase() {
     }
 
     override fun initialize(){
-        turret.fieldRelativeTargetAngle = ang
+        turret.targetAngle = ang
     }
 
     override fun isFinished() = (turret.atTarget)

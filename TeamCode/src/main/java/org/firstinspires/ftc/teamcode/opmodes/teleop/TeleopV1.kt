@@ -4,7 +4,6 @@ import com.arcrobotics.ftclib.command.*
 import com.arcrobotics.ftclib.gamepad.GamepadEx
 import com.arcrobotics.ftclib.gamepad.GamepadKeys
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import org.firstinspires.ftc.teamcode.commands.drivetrain.DriveFieldCentric
 import org.firstinspires.ftc.teamcode.commands.drivetrain.DriveMec
 import org.firstinspires.ftc.teamcode.commands.drivetrain.DriveMecSnap
 import org.firstinspires.ftc.teamcode.commands.scoring.HomeScoring
@@ -25,6 +24,7 @@ class TeleopV1 : CommandOpMode() {
         val gunner = GamepadEx(gamepad2)
         val drivetrain = Drivetrain(hardwareMap)
         val r = Robot(hardwareMap, telemetry) { drivetrain.getYaw() }
+        r.turret.fieldRelativeControl = true
         overwritevalues()
 
 
@@ -35,22 +35,9 @@ class TeleopV1 : CommandOpMode() {
             { driver.rightX.pow(2) * sign(driver.rightX) },
         )
 
-//        r.drivetrain.defaultCommand = DriveFieldCentric(
-//            r.drivetrain,
-//            { driver.leftY.pow(2) * sign(driver.leftY) },
-//            { driver.leftX.pow(2) * sign(driver.leftX) },
-//            { driver.rightX.pow(2) * sign(driver.rightX) },
-//            {r.drivetrain.rawExternalHeading},
-//        )
-
-
-//
         driver.getGamepadButton(GamepadKeys.Button.A)
             .whenPressed(InstantCommand({ drivetrain.resetHeading() }, drivetrain))
 
-
-        // Turret should maintain field relative angle
-//        r.turret.defaultCommand = MaintainAngle(r)
         driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whileHeld(
             DriveMecSnap(
                 drivetrain, 0.0,
@@ -58,7 +45,6 @@ class TeleopV1 : CommandOpMode() {
                 { driver.leftX.pow(2) * sign(driver.leftX) },
             )
         )
-
 
         gunner.getGamepadButton(GamepadKeys.Button.B).whenPressed(
             ToIntakePosition(r)
@@ -74,10 +60,10 @@ class TeleopV1 : CommandOpMode() {
             .whenPressed(Score(r, GROUND_ANGLE, GROUND_LENGTH, GROUND_WRIST, GROUND_ALIGNER))
 
         gunner.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-            .whenPressed(InstantCommand({ r.turret.fieldRelativeTargetAngle += 45.0 }, r.turret))
+            .whenPressed(InstantCommand({ r.turret.targetAngle += 45.0 }, r.turret))
 
         gunner.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-            .whenPressed(InstantCommand({ r.turret.fieldRelativeTargetAngle -= 45.0 }, r.turret))
+            .whenPressed(InstantCommand({ r.turret.targetAngle -= 45.0 }, r.turret))
 
         gunner.getGamepadButton(GamepadKeys.Button.A).whenPressed(
             ConditionalCommand(
@@ -99,9 +85,8 @@ class TeleopV1 : CommandOpMode() {
             ) { r.mode == Mode.SCORE }
         )
 
-
     }
-    fun overwritevalues(){
+    private fun overwritevalues(){
         TURRET_ANGLE = 0.0
         ELBOW_ANGLE = 0.0
         DRIVETRAIN_HEADING = 0.0

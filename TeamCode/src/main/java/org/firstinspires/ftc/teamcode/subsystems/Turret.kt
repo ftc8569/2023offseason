@@ -1,20 +1,14 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
 import androidx.core.math.MathUtils.clamp
-import com.acmerobotics.roadrunner.profile.MotionProfile
-import com.acmerobotics.roadrunner.profile.MotionProfileGenerator
-import com.acmerobotics.roadrunner.profile.MotionState
 import com.arcrobotics.ftclib.command.SubsystemBase
 import com.arcrobotics.ftclib.controller.PIDController
 import com.arcrobotics.ftclib.hardware.motors.Motor
 import com.arcrobotics.ftclib.hardware.motors.MotorEx
-import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.Cons.*
 import org.firstinspires.ftc.teamcode.utilities.HelperFunctions
 import org.firstinspires.ftc.teamcode.utilities.PostAutoPoses.*
 import kotlin.math.abs
-import kotlin.math.floor
-import kotlin.math.sign
 
 // Put timer in constructor, mock a timer
 class Turret(val motor: MotorEx, val robot: Robot, val headingSupplier: ()-> Double) : SubsystemBase() {
@@ -38,41 +32,47 @@ class Turret(val motor: MotorEx, val robot: Robot, val headingSupplier: ()-> Dou
     var fieldRelativeControl = false
 
     var curAngle = 0.0
-    var fieldRelativeTargetAngle = 0.0
+
+    // if fieldRelativeControl == true, this is a fieldRelative angle, and a transform will be applied to get the robot relative angle
+    // otherwise, this will be the same as [robotRelativeTargetAngle]
     var targetAngle = 0.0
+
+    // This will always be the absolute angle of the turret
+    var robotRelativeTargetAngle = 0.0
         set(targetAngle: Double) {
             field = targetAngle
             this.targetPosition = angleToEncoderTicks(targetAngle).toInt() - angleToEncoderTicks(angleStartOffset).toInt()
         }
+
     var targetPosition = 0
     var atTarget = false
     var controller = PIDController(TURRET_KP, TURRET_KI, TURRET_KD)
 
     override fun periodic() {
         if (fieldRelativeControl) {
-            targetAngle = if(numWraps > 2){
+            robotRelativeTargetAngle = if(numWraps > 2){
                 -HelperFunctions.toDegrees(
                     HelperFunctions.toRobotRelativeAngle(
-                        HelperFunctions.toRadians(fieldRelativeTargetAngle),
+                        HelperFunctions.toRadians(targetAngle),
                         HelperFunctions.toRadians(headingSupplier.invoke())
                     )
                 )
             } else {
                 -HelperFunctions.toDegrees(
                     HelperFunctions.toRobotRelativeAngleNoNorm(
-                        HelperFunctions.toRadians(fieldRelativeTargetAngle),
+                        HelperFunctions.toRadians(targetAngle),
                         HelperFunctions.toRadians(headingSupplier.invoke())
                     )
                 )
             }
         } else {
-            targetAngle = fieldRelativeTargetAngle
+            robotRelativeTargetAngle = targetAngle
         }
 
         val curX = motor.currentPosition
 
         curAngle = encodersToAngle(curX.toDouble()) + angleStartOffset
-        atTarget = kotlin.math.abs(targetAngle - curAngle) < 5
+        atTarget = kotlin.math.abs(robotRelativeTargetAngle - curAngle) < 5
         numWraps = (abs(curAngle) / 360.0).toInt()
 
         // Raw PID for unit testing, can add motion profile back in later
@@ -81,7 +81,7 @@ class Turret(val motor: MotorEx, val robot: Robot, val headingSupplier: ()-> Dou
 
         motor.set(calcOutput)
 
-        robot.t.addData("Robot relative target angle", targetAngle)
+        robot.t.addData("Robot relative target angle", robotRelativeTargetAngle)
         robot.t.addData("Current Angle", curAngle)
         robot.t.update()
     }

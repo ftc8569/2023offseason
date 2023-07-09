@@ -48,14 +48,12 @@ class Elbow(private val motor1: MotorEx, private val motor2: MotorEx, val robot:
                 (motor.positions[0] / 696.5) * 90 + angleStartOffset
 
             atTargetPosition = abs(targetAngle - currentAngle) < 10
-
             var power = controller.calculate(currentAngle, targetAngle)
             if (robot.extension.extended) power += 0.1
             motor.set(power)
 
         }
     }
-
     init {
         register()
     }

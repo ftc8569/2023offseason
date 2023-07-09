@@ -24,7 +24,7 @@ public class ScoringConfigs {
     public static double GROUND_WRIST = -20.0;
     public static double GROUND_ALIGNER = 0.5;
 
-    public static double ALIGNER_HOME = 0.765;
+    public static double ALIGNER_HOME = 0.5;
     public static double ALIGNER_SCORE = 0.304;
 
 
