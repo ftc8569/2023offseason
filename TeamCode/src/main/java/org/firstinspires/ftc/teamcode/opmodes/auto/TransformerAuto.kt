@@ -12,8 +12,6 @@ import org.firstinspires.ftc.teamcode.commands.scoring.HomeScoring
 import org.firstinspires.ftc.teamcode.commands.turret.SetTurretAngle
 import org.firstinspires.ftc.teamcode.subsystems.Robot
 import org.firstinspires.ftc.teamcode.utilities.FixedSequentialCommandGroup
-import org.firstinspires.ftc.teamcode.utilities.HelperFunctions
-import org.firstinspires.ftc.teamcode.utilities.PostAutoPoses.*
 import org.openftc.apriltag.AprilTagDetection
 import org.openftc.easyopencv.OpenCvCamera.AsyncCameraOpenListener
 import org.openftc.easyopencv.OpenCvCameraFactory
@@ -66,7 +64,7 @@ class TransformerAuto: CommandOpMode() {
             .build()
         val startToConesCommand = TrajectoryCommand(drive, startToFirstPoint)
         val turnTurret = SetTurretAngle(robot.turret, 60.0)
-        val extend = InstantCommand({robot.extension.position = 0.0; robot.wrist.bend = -10.0}, robot.extension, robot.wrist)
+        val extend = InstantCommand({robot.extension.position = 0.0; robot.wrist.bendAngleDegrees = -10.0}, robot.extension, robot.wrist)
 
         /////////// START PARKING CONFIGURATION ///////////
         val park1traj = drive.trajectorySequenceBuilder(Pose2d(firstPoint, PI))
@@ -101,7 +99,7 @@ class TransformerAuto: CommandOpMode() {
             FixedSequentialCommandGroup(
                 home,
                 SetTurretAngle(robot.turret, 0.0),
-                InstantCommand({robot.wrist.bend = -30.0}, robot.wrist),
+                InstantCommand({robot.wrist.bendAngleDegrees = -30.0}, robot.wrist),
                 startToConesCommand,
                 turnTurret.deadlineWith(WaitCommand(1000)),
                 SetElbowTarget(robot, -26.0),

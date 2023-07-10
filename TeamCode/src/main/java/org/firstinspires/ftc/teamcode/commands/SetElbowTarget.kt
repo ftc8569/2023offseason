@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.commands
 
 import com.arcrobotics.ftclib.command.CommandBase
 import org.firstinspires.ftc.teamcode.subsystems.Robot
+import kotlin.math.abs
 
 
 class SetElbowTarget(val r: Robot, val ang: Double): CommandBase() {
@@ -10,10 +11,11 @@ class SetElbowTarget(val r: Robot, val ang: Double): CommandBase() {
     }
 
     override fun initialize(){
-        r.elbow.targetAngle = ang
+        r.elbow.targetAngleDegrees = ang
     }
 
-    override fun isFinished() = (r.elbow.atTargetPosition)
-
+    override fun isFinished() : Boolean {
+        return r.elbow.isCloseEnoughToTargetAngle()
+    }
 
 }

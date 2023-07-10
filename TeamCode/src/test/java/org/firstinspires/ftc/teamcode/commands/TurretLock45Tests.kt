@@ -1,13 +1,5 @@
 package org.firstinspires.ftc.teamcode.commands
 
-import com.arcrobotics.ftclib.geometry.Vector2d
-import com.arcrobotics.ftclib.hardware.motors.MotorEx
-import junit.framework.TestCase.assertEquals
-import org.firstinspires.ftc.teamcode.commands.turret.TurretLock45
-import org.firstinspires.ftc.teamcode.subsystems.Turret
-import org.junit.Test
-import org.mockito.kotlin.mock
-
 class TurretLock45Tests {
 
 //    @Test
@@ -17,7 +9,7 @@ class TurretLock45Tests {
 //        val input = {Vector2d(1.0, 0.5)}
 //        val command = TurretLock45(turret, heading, input)
 //        command.execute()
-//        assertEquals(45.0,turret.targetAngle, 1e-5)
+//        assertEquals(45.0,turret.targetAngleDegrees, 1e-5)
 //    }
 //
 //    @Test
@@ -27,7 +19,7 @@ class TurretLock45Tests {
 //        val input = {Vector2d(-1.0, 0.5)}
 //        val command = TurretLock45(turret, heading, input)
 //        command.execute()
-//        assertEquals(-45.0,turret.targetAngle, 1e-5)
+//        assertEquals(-45.0,turret.targetAngleDegrees, 1e-5)
 //    }
 //
 //    @Test
@@ -37,7 +29,7 @@ class TurretLock45Tests {
 //        val input = {Vector2d(1.0, -0.5)}
 //        val command = TurretLock45(turret, heading, input)
 //        command.execute()
-//        assertEquals(135.0,turret.targetAngle, 1e-5)
+//        assertEquals(135.0,turret.targetAngleDegrees, 1e-5)
 //    }
 //
 //    @Test
@@ -47,7 +39,7 @@ class TurretLock45Tests {
 //        val input = {Vector2d(-1.0, -0.5)}
 //        val command = TurretLock45(turret, heading, input)
 //        command.execute()
-//        assertEquals(-135.0,turret.targetAngle, 1e-5)
+//        assertEquals(-135.0,turret.targetAngleDegrees, 1e-5)
 //    }
 
 }

@@ -30,12 +30,12 @@ class AlignerTest : CommandOpMode() {
         a.whenPressed(InstantCommand({
             servo_pos += 0.05
             robot.aligner.servo.position = servo_pos
-            robot.t.addData("Servo Position", servo_pos)
+            robot.telemetry.addData("Servo Position", servo_pos)
         }))
         b.whenPressed(InstantCommand({
             servo_pos -= 0.05
             robot.aligner.servo.position = servo_pos
-            robot.t.addData("Servo Position", servo_pos)
+            robot.telemetry.addData("Servo Position", servo_pos)
         }))
 
         register(robot.aligner)

@@ -35,18 +35,18 @@ class ScoringHeights: LinearOpMode(){
 //            }
 //
 //            if(gp1.wasJustPressed(GamepadKeys.Button.Y)){
-//                bend += 5
+//                bendAngleDegrees += 5
 //            } else if(gp1.wasJustPressed(GamepadKeys.Button.A)){
-//                bend -= 5
+//                bendAngleDegrees -= 5
 //            }
 //
-//            robot.elbow.targetAngle = angle
+//            robot.elbow.targetAngleDegrees = angle
 //            robot.extension.position = distance
-//            robot.wrist.bend = bend
+//            robot.wrist.bendAngleDegrees = bendAngleDegrees
 //
 //            robot.t.addData("Angle", angle)
 //            robot.t.addData("Length", distance)
-//            robot.t.addData("Bend", bend)
+//            robot.t.addData("Bend", bendAngleDegrees)
 //            robot.t.update()
 
         }

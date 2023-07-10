@@ -1,26 +1,20 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
 import com.arcrobotics.ftclib.command.SubsystemBase
-import com.qualcomm.robotcore.hardware.CRServoImplEx
 import com.qualcomm.robotcore.hardware.PwmControl
 import com.qualcomm.robotcore.hardware.ServoImplEx
-import org.firstinspires.ftc.teamcode.utilities.AxonServo
 import org.firstinspires.ftc.teamcode.utilities.ScoringConfigs.ALIGNER_HOME
 
-class Aligner(val servo: ServoImplEx, private val robot: Robot) : SubsystemBase() {
-
-    var position = ALIGNER_HOME
-        set(pos) {
-            servo.position = pos
-            field = pos
-        }
-
+class PoleAlignerSubsystem(private val robot: Robot, val servo: ServoImplEx) : SubsystemBase() {
     init {
         servo.pwmRange = PwmControl.PwmRange(500.0,2500.0)
-        position = ALIGNER_HOME
-    }
-
-    init {
+        servo.position = ALIGNER_HOME
         register()
     }
+
+    var position : Double
+        get() = servo.position
+        set(value) {
+            servo.position = value
+        }
 }

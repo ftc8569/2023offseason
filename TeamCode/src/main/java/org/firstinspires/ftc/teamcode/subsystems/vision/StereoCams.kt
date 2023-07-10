@@ -10,10 +10,10 @@ import org.openftc.easyopencv.OpenCvCameraRotation
 import org.openftc.easyopencv.OpenCvWebcam
 
 class StereoCams(val robot: Robot) : SubsystemBase() {
-    private val cameraMonitorViewId = robot.hw.appContext.resources.getIdentifier(
+    private val cameraMonitorViewId = robot.hardwareMap.appContext.resources.getIdentifier(
         "cameraMonitorViewId",
         "id",
-        robot.hw.appContext.packageName
+        robot.hardwareMap.appContext.packageName
     )
     private val cameraIds: IntArray = OpenCvCameraFactory.getInstance()
         .splitLayoutForMultipleViewports(
@@ -22,9 +22,9 @@ class StereoCams(val robot: Robot) : SubsystemBase() {
             OpenCvCameraFactory.ViewportSplitMethod.VERTICALLY
         )
     private val leftWebcam: OpenCvWebcam = OpenCvCameraFactory.getInstance()
-        .createWebcam(robot.hw.get(WebcamName::class.java, "leftWebcam"), cameraIds[0])
+        .createWebcam(robot.hardwareMap.get(WebcamName::class.java, "leftWebcam"), cameraIds[0])
     private val rightWebcam: OpenCvWebcam = OpenCvCameraFactory.getInstance()
-        .createWebcam(robot.hw.get(WebcamName::class.java, "rightWebcam"), cameraIds[1])
+        .createWebcam(robot.hardwareMap.get(WebcamName::class.java, "rightWebcam"), cameraIds[1])
 
     private val leftCameraX = -9
     private val rightCameraX = 9

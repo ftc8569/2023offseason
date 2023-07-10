@@ -17,7 +17,7 @@ forgive me for my sins -- Jack Fetkovich, 06/18/2023
 
 Granted - Carl & Ben 7/9/2023
 * */
-class DrivetrainSubsystem(hw: HardwareMap, val robot: Robot) : JuicyMecanumDrive(hw), Subsystem {
+class DrivetrainSubsystem(val robot : Robot) : JuicyMecanumDrive(robot.hardwareMap), Subsystem {
     fun driveFieldCentric(strafeSpeed: Double, forwardSpeed: Double, turnSpeed: Double, heading: Double) {
         val strafeSpeed = clamp(strafeSpeed, -1.0, 1.0)
         val forwardSpeed = clamp(forwardSpeed, -1.0, 1.0)

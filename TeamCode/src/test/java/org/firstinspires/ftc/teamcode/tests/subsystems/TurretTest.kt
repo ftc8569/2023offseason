@@ -5,7 +5,7 @@ import com.arcrobotics.ftclib.hardware.motors.MotorEx
 import junit.framework.TestCase.assertEquals
 import org.firstinspires.ftc.teamcode.commands.turret.SetTurretAngle
 import org.firstinspires.ftc.teamcode.subsystems.Robot
-import org.firstinspires.ftc.teamcode.subsystems.Turret
+import org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem
 import org.junit.Test
 import org.mockito.ArgumentMatchers
 import org.mockito.kotlin.doAnswer
@@ -39,7 +39,7 @@ class TurretTest {
             on{currentPosition} doAnswer {curPos.toInt()}
         }
 
-        val turret = Turret(motor, mock<Robot>(), {0.0})
+        val turret = TurretSubsystem(motor, mock<Robot>(), {0.0})
         turret.robotRelativeTargetAngle = 90.0
         for(i in 0..1500){
             turret.periodic()
@@ -60,7 +60,7 @@ class TurretTest {
             on {t} doReturn mock<MultipleTelemetry>()
         }
 
-        val turret = Turret(motor, robot) {45.0}
+        val turret = TurretSubsystem(motor, robot) {45.0}
         turret.periodic()
         val angleCommand = SetTurretAngle(turret, -40.0)
         angleCommand.initialize()

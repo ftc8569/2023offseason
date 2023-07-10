@@ -6,11 +6,9 @@ package org.firstinspires.ftc.teamcode.opmodes.auto
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.arcrobotics.ftclib.command.CommandOpMode
-import com.arcrobotics.ftclib.command.CommandScheduler
 import com.arcrobotics.ftclib.command.InstantCommand
 import com.arcrobotics.ftclib.command.WaitCommand
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.commands.SetElbowTarget
 import org.firstinspires.ftc.teamcode.commands.drivetrain.TrajectoryCommand
 import org.firstinspires.ftc.teamcode.commands.scoring.HomeScoring
@@ -36,12 +34,12 @@ class RightScoreAuto: CommandOpMode() {
             .build()
         val startToConesCommand = TrajectoryCommand(robot.drivetrain, startToFirstPoint)
         val turnTurret = SetTurretAngle(robot.turret, 90.0)
-        val extend = InstantCommand({robot.extension.position = 0.0; robot.wrist.bend = -10.0}, robot.extension, robot.wrist)
+        val extend = InstantCommand({robot.extension.position = 0.0; robot.wrist.bendAngleDegrees = -10.0}, robot.extension, robot.wrist)
         schedule(FixedSequentialCommandGroup(
             home,
             SetTurretAngle(robot.turret, 0.0),
             InstantCommand({robot.claw.openClaw()}, robot.claw),
-            InstantCommand({robot.wrist.bend = -30.0}, robot.wrist),
+            InstantCommand({robot.wrist.bendAngleDegrees = -30.0}, robot.wrist),
             startToConesCommand,
             turnTurret.deadlineWith(WaitCommand(1000)),
             SetElbowTarget(robot, -15.0),

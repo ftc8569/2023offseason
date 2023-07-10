@@ -1,14 +1,5 @@
 package org.firstinspires.ftc.teamcode.tests.subsystems
 
-import com.qualcomm.robotcore.hardware.CRServoImplEx
-import junit.framework.TestCase.assertEquals
-
-import org.firstinspires.ftc.teamcode.subsystems.Extension
-import org.firstinspires.ftc.teamcode.utilities.AxonCRServo
-import org.junit.Test
-import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.mock
-
 
 class ExtensionTest {
 

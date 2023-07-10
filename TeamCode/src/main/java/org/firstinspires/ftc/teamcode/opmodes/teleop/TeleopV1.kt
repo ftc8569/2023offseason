@@ -23,7 +23,6 @@ class TeleopV1 : CommandOpMode() {
         val gunner = GamepadEx(gamepad2)
 
         val robot = Robot(hardwareMap, telemetry)
-        robot.turret.fieldRelativeControl = true
         zeroStaticValuesForSomePurpose()
 
 
@@ -60,10 +59,10 @@ class TeleopV1 : CommandOpMode() {
             .whenPressed(Score(robot, GROUND_ANGLE, GROUND_LENGTH, GROUND_WRIST, GROUND_ALIGNER))
 
         gunner.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-            .whenPressed(InstantCommand({ robot.turret.targetAngle += 45.0 }, robot.turret))
+            .whenPressed(InstantCommand({ robot.turret.targetAngleDegrees += 45.0 }, robot.turret))
 
         gunner.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-            .whenPressed(InstantCommand({ robot.turret.targetAngle -= 45.0 }, robot.turret))
+            .whenPressed(InstantCommand({ robot.turret.targetAngleDegrees -= 45.0 }, robot.turret))
 
         gunner.getGamepadButton(GamepadKeys.Button.A).whenPressed(
             ConditionalCommand(
