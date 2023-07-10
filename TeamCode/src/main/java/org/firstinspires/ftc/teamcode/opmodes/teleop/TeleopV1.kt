@@ -9,7 +9,6 @@ import org.firstinspires.ftc.teamcode.commands.drivetrain.DriveMecSnap
 import org.firstinspires.ftc.teamcode.commands.scoring.HomeScoring
 import org.firstinspires.ftc.teamcode.commands.scoring.Score
 import org.firstinspires.ftc.teamcode.commands.scoring.ToIntakePosition
-import org.firstinspires.ftc.teamcode.subsystems.Drivetrain
 import org.firstinspires.ftc.teamcode.subsystems.Robot
 import org.firstinspires.ftc.teamcode.utilities.Mode
 import org.firstinspires.ftc.teamcode.utilities.PostAutoPoses.*
@@ -22,71 +21,72 @@ class TeleopV1 : CommandOpMode() {
     override fun initialize() {
         val driver = GamepadEx(gamepad1)
         val gunner = GamepadEx(gamepad2)
-        val drivetrain = Drivetrain(hardwareMap)
-        val r = Robot(hardwareMap, telemetry) { drivetrain.getYaw() }
-        r.turret.fieldRelativeControl = true
-        overwritevalues()
+
+        val robot = Robot(hardwareMap, telemetry)
+        robot.turret.fieldRelativeControl = true
+        zeroStaticValuesForSomePurpose()
 
 
-        drivetrain.defaultCommand = DriveMec(
-            drivetrain,
+        robot.drivetrain.defaultCommand = DriveMec(
+            robot.drivetrain,
             { driver.leftY.pow(2) * sign(driver.leftY) },
             { driver.leftX.pow(2) * sign(driver.leftX) },
+            // TODO test with driver hub since joystick mapping is weird with dash
             { driver.rightX.pow(2) * sign(driver.rightX) },
         )
 
         driver.getGamepadButton(GamepadKeys.Button.A)
-            .whenPressed(InstantCommand({ drivetrain.resetHeading() }, drivetrain))
+            .whenPressed(InstantCommand({ robot.drivetrain.resetHeading() }, robot.drivetrain))
 
         driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whileHeld(
             DriveMecSnap(
-                drivetrain, 0.0,
+                robot.drivetrain, 0.0,
                 { driver.leftY.pow(2) * sign(driver.leftY) },
                 { driver.leftX.pow(2) * sign(driver.leftX) },
             )
         )
 
         gunner.getGamepadButton(GamepadKeys.Button.B).whenPressed(
-            ToIntakePosition(r)
+            ToIntakePosition(robot)
         )
 
         gunner.getGamepadButton(GamepadKeys.Button.DPAD_UP)
-            .whenPressed(Score(r, HIGH_ANGLE, HIGH_LENGTH, HIGH_WRIST, HIGH_ALIGNER))
+            .whenPressed(Score(robot, HIGH_ANGLE, HIGH_LENGTH, HIGH_WRIST, HIGH_ALIGNER))
         gunner.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
-            .whenPressed(Score(r, MED_ANGLE, MED_LENGTH, MED_WRIST, MED_ALIGNER))
+            .whenPressed(Score(robot, MED_ANGLE, MED_LENGTH, MED_WRIST, MED_ALIGNER))
         gunner.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
-            .whenPressed(Score(r, LOW_ANGLE, LOW_LENGTH, LOW_WRIST, LOW_ALIGNER))
+            .whenPressed(Score(robot, LOW_ANGLE, LOW_LENGTH, LOW_WRIST, LOW_ALIGNER))
         gunner.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
-            .whenPressed(Score(r, GROUND_ANGLE, GROUND_LENGTH, GROUND_WRIST, GROUND_ALIGNER))
+            .whenPressed(Score(robot, GROUND_ANGLE, GROUND_LENGTH, GROUND_WRIST, GROUND_ALIGNER))
 
         gunner.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-            .whenPressed(InstantCommand({ r.turret.targetAngle += 45.0 }, r.turret))
+            .whenPressed(InstantCommand({ robot.turret.targetAngle += 45.0 }, robot.turret))
 
         gunner.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-            .whenPressed(InstantCommand({ r.turret.targetAngle -= 45.0 }, r.turret))
+            .whenPressed(InstantCommand({ robot.turret.targetAngle -= 45.0 }, robot.turret))
 
         gunner.getGamepadButton(GamepadKeys.Button.A).whenPressed(
             ConditionalCommand(
                 SequentialCommandGroup(
                     InstantCommand(
-                        { r.claw.openClaw(); r.mode = Mode.INTAKE; },
-                        r.claw
+                        { robot.claw.openClaw(); robot.mode = Mode.INTAKE; },
+                        robot.claw
                     ),
-                    HomeScoring(r)
+                    HomeScoring(robot)
                 ),
                 SequentialCommandGroup(
                     InstantCommand(
-                        { r.claw.closeClaw(); r.mode = Mode.SCORE }, r.claw
+                        { robot.claw.closeClaw(); robot.mode = Mode.SCORE }, robot.claw
                     ),
                     WaitCommand(100),
-                    HomeScoring(r)
+                    HomeScoring(robot)
                 )
 
-            ) { r.mode == Mode.SCORE }
+            ) { robot.mode == Mode.SCORE }
         )
 
     }
-    private fun overwritevalues(){
+    private fun zeroStaticValuesForSomePurpose(){
         TURRET_ANGLE = 0.0
         ELBOW_ANGLE = 0.0
         DRIVETRAIN_HEADING = 0.0

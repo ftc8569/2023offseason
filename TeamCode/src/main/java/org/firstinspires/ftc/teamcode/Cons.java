@@ -27,7 +27,7 @@ public class Cons {
     public static double TURRET_MAX_A = 800;
     public static double TURRET_KV = 0.0005;
     public static double TURRET_KA = 0.0001;
-    public static double TURRET_KP = 0.002;
+    public static double TURRET_KP = 2;
     public static double TURRET_KI = 0.0;
     public static double TURRET_KD = 0.0002;
     public static double TURRET_MOTOR_TICKS_PER_REV = 751.8; // For a 223RPM motor
@@ -60,7 +60,7 @@ public class Cons {
 
 
     // Drivetrain Constants
-    public static double HEADING_KP = 0.04;
-    public static double HEADING_KD = 0.005;
+    public static double HEADING_KP = 5;
+    public static double HEADING_KD = 1;
 
 }

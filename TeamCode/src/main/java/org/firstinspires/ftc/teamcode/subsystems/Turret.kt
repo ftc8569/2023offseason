@@ -1,10 +1,18 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
 import androidx.core.math.MathUtils.clamp
+import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.AngleController
+import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.BasicPID
+import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficients
+import com.acmerobotics.roadrunner.profile.AccelerationConstraint
+import com.acmerobotics.roadrunner.profile.MotionProfileGenerator
+import com.acmerobotics.roadrunner.profile.MotionState
+import com.acmerobotics.roadrunner.profile.VelocityConstraint
 import com.arcrobotics.ftclib.command.SubsystemBase
 import com.arcrobotics.ftclib.controller.PIDController
 import com.arcrobotics.ftclib.hardware.motors.Motor
 import com.arcrobotics.ftclib.hardware.motors.MotorEx
+import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.Cons.*
 import org.firstinspires.ftc.teamcode.utilities.HelperFunctions
 import org.firstinspires.ftc.teamcode.utilities.PostAutoPoses.*
@@ -30,6 +38,15 @@ class Turret(val motor: MotorEx, val robot: Robot, val headingSupplier: ()-> Dou
     var calcOutput = 0.0
     var numWraps = 0
     var fieldRelativeControl = false
+    var previous_reference = 0.0;
+
+    var m_profile = MotionProfileGenerator.generateMotionProfile(
+                                                                MotionState(0.0,0.0,0.0),
+                                                                MotionState(0.0,0.0,0.0),
+                                                                {Math.toRadians(180.0)},
+                                                                {Math.toRadians(90.0)})
+
+    var timer = ElapsedTime()
 
     var curAngle = 0.0
 
@@ -46,7 +63,9 @@ class Turret(val motor: MotorEx, val robot: Robot, val headingSupplier: ()-> Dou
 
     var targetPosition = 0
     var atTarget = false
-    var controller = PIDController(TURRET_KP, TURRET_KI, TURRET_KD)
+
+    var pid = BasicPID(PIDCoefficients(TURRET_KP, TURRET_KI, TURRET_KD))
+    var controller = AngleController(pid)
 
     override fun periodic() {
         if (fieldRelativeControl) {
@@ -72,12 +91,20 @@ class Turret(val motor: MotorEx, val robot: Robot, val headingSupplier: ()-> Dou
         val curX = motor.currentPosition
 
         curAngle = encodersToAngle(curX.toDouble()) + angleStartOffset
-        atTarget = kotlin.math.abs(robotRelativeTargetAngle - curAngle) < 5
+        atTarget = abs(robotRelativeTargetAngle - curAngle) < 5
         numWraps = (abs(curAngle) / 360.0).toInt()
+        var curAngleRad = Math.toRadians(curAngle)
 
         // Raw PID for unit testing, can add motion profile back in later
+        var reference = Math.toRadians(encodersToAngle(targetPosition.toDouble()))
+        var state = curAngleRad
+
+        generateMotionProfile(reference, state)
+
+        var motion_profile_reference = m_profile[timer.seconds()].x
+
         calcOutput =
-            clamp(controller.calculate(curX.toDouble(), targetPosition.toDouble()), -1.0, 1.0)
+            clamp(controller.calculate(motion_profile_reference, state), -1.0, 1.0)
 
         motor.set(calcOutput)
 
@@ -97,6 +124,20 @@ class Turret(val motor: MotorEx, val robot: Robot, val headingSupplier: ()-> Dou
 
     init {
         register()
+    }
+
+    private fun generateMotionProfile(reference: Double, state: Double) {
+        if (previous_reference == reference) {
+            return
+        }
+        previous_reference = reference
+        m_profile = MotionProfileGenerator.generateMotionProfile(
+            MotionState(state, 0.0, 0.0),
+            MotionState(reference, 0.0, 0.0),
+            { Math.toRadians(360.0) },
+            { Math.toRadians(900.0) },
+        )
+        timer.reset()
     }
 
 

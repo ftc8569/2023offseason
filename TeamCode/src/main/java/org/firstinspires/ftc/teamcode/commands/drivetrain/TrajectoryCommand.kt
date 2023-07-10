@@ -1,30 +1,28 @@
 package org.firstinspires.ftc.teamcode.commands.drivetrain
 
 import com.arcrobotics.ftclib.command.CommandBase
-import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence
-import org.firstinspires.ftc.teamcode.subsystems.AutoDrive
-import org.firstinspires.ftc.teamcode.subsystems.RRDrivetrain
+import org.firstinspires.ftc.teamcode.subsystems.DrivetrainSubsystem
 
 class TrajectoryCommand(
-    private val autodrive: AutoDrive,
+    private val drive: DrivetrainSubsystem,
     private val trajectory: TrajectorySequence
 ) :
     CommandBase() {
 
     init {
-        addRequirements(autodrive)
+        addRequirements(drive)
     }
 
     override fun initialize() {
-        autodrive.drive.followTrajectorySequenceAsync(trajectory)
+        drive.followTrajectorySequenceAsync(trajectory)
     }
 
     override fun execute() {
-        autodrive.drive.update()
+        drive.update()
     }
 
     override fun isFinished(): Boolean {
-        return !autodrive.drive.isBusy
+        return !drive.isBusy
     }
 }

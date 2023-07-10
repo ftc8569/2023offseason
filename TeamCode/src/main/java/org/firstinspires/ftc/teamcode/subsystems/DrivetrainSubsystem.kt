@@ -1,10 +1,11 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
+import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.arcrobotics.ftclib.command.CommandScheduler
 import com.arcrobotics.ftclib.command.Subsystem
 import com.arcrobotics.ftclib.util.MathUtils.clamp
 import com.qualcomm.robotcore.hardware.HardwareMap
-import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive
+import org.firstinspires.ftc.teamcode.roadrunner.drive.JuicyMecanumDrive
 import kotlin.math.abs
 
 
@@ -13,40 +14,19 @@ an FTCLib subsystem. In the regular season code, we had two drivetrain classes: 
 used roadrunner, and one for teleop that used FTCLib. This is unnecessary, and makes it more
 difficult to use RR odometry within TeleOp. Instead, we will be using RR exclusively. Please
 forgive me for my sins -- Jack Fetkovich, 06/18/2023
+
+Granted - Carl & Ben 7/9/2023
 * */
-class RRDrivetrain(val hw: HardwareMap, val robot: Robot) : SampleMecanumDrive(hw), Subsystem {
-    fun driveFieldCentric(
-        strafeSpeed: Double, forwardSpeed: Double,
-        turnSpeed: Double, gyroAngle: Double
-    ) {
-        var strafeSpeed = clamp(strafeSpeed, -1.0, 1.0)
-        var forwardSpeed = clamp(forwardSpeed, -1.0, 1.0)
-        var turnSpeed = clamp(turnSpeed, -1.0, 1.0)
+class DrivetrainSubsystem(hw: HardwareMap, val robot: Robot) : JuicyMecanumDrive(hw), Subsystem {
+    fun driveFieldCentric(strafeSpeed: Double, forwardSpeed: Double, turnSpeed: Double, heading: Double) {
+        val strafeSpeed = clamp(strafeSpeed, -1.0, 1.0)
+        val forwardSpeed = clamp(forwardSpeed, -1.0, 1.0)
+        val turnSpeed = clamp(turnSpeed, -1.0, 1.0)
 
-        var input = com.arcrobotics.ftclib.geometry.Vector2d(strafeSpeed, forwardSpeed)
-        input = input.rotateBy(-gyroAngle)
+        var input = com.arcrobotics.ftclib.geometry.Vector2d(forwardSpeed, strafeSpeed)
+        input = input.rotateBy(Math.toDegrees(heading))
 
-        val theta = input.angle()
-
-        var wheelSpeeds = DoubleArray(4)
-        wheelSpeeds[0] = Math.sin(theta + Math.PI / 4)
-        wheelSpeeds[3] = Math.sin(theta - Math.PI / 4)
-        wheelSpeeds[1] = Math.sin(theta - Math.PI / 4)
-        wheelSpeeds[2] = Math.sin(theta + Math.PI / 4)
-
-        val newList = normalize(wheelSpeeds, input.magnitude())
-
-        newList[0] += turnSpeed
-        newList[3] -= turnSpeed
-        newList[1] += turnSpeed
-        newList[2] -= turnSpeed
-
-        val secondNewList = normalize(newList)
-
-        setMotorPowers(secondNewList[0], secondNewList[1], secondNewList[2], secondNewList[3])
-        robot.t.addData("leftFront", secondNewList[0])
-        robot.t.update()
-//        update()
+        setWeightedDrivePower(Pose2d(input.x, -input.y, -turnSpeed))
     }
 
     /* Everything from SubsystemBase class, implmenting Subsystem interface so that I can
@@ -109,6 +89,14 @@ class RRDrivetrain(val hw: HardwareMap, val robot: Robot) : SampleMecanumDrive(h
         }
 
         return normalizedList
+    }
+
+     fun resetHeading() {
+        poseEstimate = Pose2d(poseEstimate.x,poseEstimate.y,0.0)
+    }
+
+    override fun periodic() {
+        update()
     }
 
 }

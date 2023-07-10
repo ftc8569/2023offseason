@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode.commands.drivetrain
 
 import com.arcrobotics.ftclib.command.CommandBase
-import org.firstinspires.ftc.teamcode.subsystems.Drivetrain
+import org.firstinspires.ftc.teamcode.subsystems.DrivetrainSubsystem
 
 class DriveMec(
-    val drive: Drivetrain,
+    val drive: DrivetrainSubsystem,
     private val fwdSupplier: () -> Double,
     private val strafeSupplier: () -> Double,
     private val turnSupplier: () -> Double
@@ -15,11 +15,11 @@ class DriveMec(
     }
 
     override fun execute() {
-        drive.drive.driveFieldCentric(
+        drive.driveFieldCentric(
             strafeSupplier.invoke(),
             fwdSupplier.invoke(),
             turnSupplier.invoke(),
-            drive.getYaw()
+            drive.poseEstimate.heading
         )
     }
 

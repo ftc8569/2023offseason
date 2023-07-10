@@ -2,6 +2,8 @@ repositories {
     mavenCentral()
     google() // Needed for androidx
     maven { url = 'https://maven.brott.dev/' }
+    maven { url 'https://jitpack.io' }
+
     flatDir {
         dirs rootProject.file('libs')
     }
@@ -21,5 +23,6 @@ dependencies {
     implementation 'org.firstinspires.ftc:gameAssets-PowerPlay:1.0.0'
     implementation 'com.acmerobotics.roadrunner:core:0.5.6'
     implementation 'com.acmerobotics.dashboard:dashboard:0.4.9'
+    implementation 'com.github.Thermal-Equilibrium:homeostasis-FTC:1.0.8'
 }
 

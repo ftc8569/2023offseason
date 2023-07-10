@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.utilities.PoleState
 * look at the state of any of the subsystems also on the robot
 */
 
-class Robot(val hw: HardwareMap, val telemetry: Telemetry, val headingSupplier: () -> Double) {
+class Robot(val hw: HardwareMap, val telemetry: Telemetry) {
     init {
         val hubs = hw.getAll(LynxModule::class.java)
         for (hub in hubs) {
@@ -30,8 +30,8 @@ class Robot(val hw: HardwareMap, val telemetry: Telemetry, val headingSupplier: 
     }
     val t = MultipleTelemetry(FtcDashboard.getInstance().telemetry, telemetry)
 
-//    val drivetrain = RRDrivetrain(hw, this)
-    val turret: Turret = Turret(MotorEx(hw, "turret"), this, headingSupplier)
+    val drivetrain = DrivetrainSubsystem(hw, this)
+    val turret: Turret = Turret(MotorEx(hw, "turret"), this) { drivetrain.poseEstimate.heading }
     val extension = Extension(hw.get(ServoImplEx::class.java, "extension"))
     val elbow = Elbow(MotorEx(hw, "leftElbow"), MotorEx(hw, "rightElbow"), this)
     val aligner: Aligner = Aligner(hw.get(ServoImplEx::class.java, "aligner"), this)
