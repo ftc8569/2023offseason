@@ -26,14 +26,14 @@ class ElbowSubsystem(val robot: Robot, motor1: MotorEx, motor2: MotorEx) : Subsy
         register()
         motor1.inverted = true
         motors.setRunMode(Motor.RunMode.RawPower)
-        motors.resetEncoder()
 
-        // TODO make this better. This is a hacky way to do it
-        // We're basically assuming that if all the values are in the static class are equal to zero
-        // then they probably haven't been edited. The best guess that we can make about our position
-        // is that we're in our starting position
-        if (PostAutoPoses.TURRET_ANGLE == 0.0 && PostAutoPoses.ELBOW_ANGLE == 0.0 && PostAutoPoses.DRIVETRAIN_HEADING == 0.0) {
+        // if there are any saved encoder angles from the end of autonomous, use them
+        if(RelativeEncoderStateMonitorSubsystem.savedEncoderAngles != null) {
+            angleStartOffset = RelativeEncoderStateMonitorSubsystem.savedEncoderAngles!!.elbowAngle
+        }
+        else {
             angleStartOffset = ELBOW_START_ANGLE
+            motors.resetEncoder()
         }
     }
 

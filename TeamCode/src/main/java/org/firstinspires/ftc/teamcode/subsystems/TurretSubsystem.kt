@@ -36,14 +36,14 @@ class TurretSubsystem(val robot: Robot, val motor: MotorEx) : SubsystemBase() {
     init {
         motor.setRunMode(Motor.RunMode.RawPower)
 
-        // TODO make this better. This is a hacky way to do it
-        // We're basically assuming that if all the values are in the static class are equal to zero
-        // then they probably haven't been edited. The best guess that we can make about our position
-        // is that we're in our starting position
-        if(TURRET_ANGLE == 0.0 && ELBOW_ANGLE == 0.0 && DRIVETRAIN_HEADING == 0.0 ){
-            angleStartOffsetDegrees = TURRET_STARTING_ANGLE
+        // if there are any saved encoder angles from the end of autonomous, use them
+        if(RelativeEncoderStateMonitorSubsystem.savedEncoderAngles != null) {
+            angleStartOffsetDegrees = RelativeEncoderStateMonitorSubsystem.savedEncoderAngles!!.turretAngle
         }
-
+        else {
+            angleStartOffsetDegrees = TURRET_STARTING_ANGLE
+            motor.resetEncoder()
+        }
         register()
     }
 

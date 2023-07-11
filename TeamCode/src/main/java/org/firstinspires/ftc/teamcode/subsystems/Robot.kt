@@ -12,14 +12,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.utilities.AxonServo
 import org.firstinspires.ftc.teamcode.utilities.Mode
 
-/*
-* All subsystems have a reference to the robot that they are a member of
-* This is so for safety functions (eg - "Don't go down until this other thing is out of the way")
-* we don't have to pick and choose which other subsystems that subsystem is aware of. It can
-* look at the state of any of the subsystems also on the robot
-*/
-
-class Robot(val hardwareMap: HardwareMap, t: Telemetry) : com.arcrobotics.ftclib.command.Robot() {
+enum class OpModeType {
+    TELEOP, AUTONOMOUS
+}
+class Robot(val hardwareMap: HardwareMap, t: Telemetry, val opModeType: OpModeType = OpModeType.TELEOP) : com.arcrobotics.ftclib.command.Robot() {
     init {
         val hubs = hardwareMap.getAll(LynxModule::class.java)
         for (hub in hubs) {
@@ -49,8 +45,11 @@ class Robot(val hardwareMap: HardwareMap, t: Telemetry) : com.arcrobotics.ftclib
     private val beamBreakDigitalChannel = hardwareMap.get(DigitalChannel::class.java, "beamBreak")
     val claw = ClawSubsystem(this, clawServo, beamBreakDigitalChannel )
 
+    val relativeEncoderStateMonitorSubsystem = RelativeEncoderStateMonitorSubsystem(this)
+
     var mode: Mode = Mode.INTAKE
     var fallenCone = false
     val leds =  LEDSubsystem(hardwareMap.get(RevBlinkinLedDriver::class.java, "blinkin"), this)
+
 
 }
