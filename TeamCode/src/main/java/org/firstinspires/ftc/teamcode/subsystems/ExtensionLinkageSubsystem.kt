@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
+import android.annotation.SuppressLint
 import com.acmerobotics.roadrunner.profile.MotionProfileGenerator
 import com.acmerobotics.roadrunner.profile.MotionState
 import com.arcrobotics.ftclib.command.SubsystemBase
@@ -83,23 +84,39 @@ class ExtensionLinkageSubsystem(val robot: Robot, val servo: AxonServo) : Subsys
             robot.telemetry.addData("theta", solveTheta(actualPositionExtensionInches))
             robot.telemetry.addData("theta (deg)", Math.toDegrees(solveTheta(actualPositionExtensionInches)))
             robot.telemetry.addData("motion profile distance", currentExtensionDistanceInches)
+            robot.telemetry.addData("servo position calculation", angleRadiansToServoPosition(solveTheta(actualPositionExtensionInches)))
             robot.telemetry.update()
         }
     }
 
     private fun solveTheta(linkage_length_inches: Double): Double {
-        val a = 0.00111573
-        val b = -0.03578329
-        val c = 0.49251416
-        val d = -0.51091554
-        var  theta =  linkage_length_inches.pow(3.0) * a
-                    + linkage_length_inches.pow(2.0) * b
-                    + linkage_length_inches * c + d
-        if (linkage_length_inches <= 0) {
+        val initialGuess = Math.PI / 2
+        var theta = initialGuess
+        val epsilon = 1E-10
+        val mmToInchesConversion = 0.03937008
+        val l1 = 175.0 * mmToInchesConversion
+        val l2 = 250.0 * mmToInchesConversion
+
+        if (linkage_length_inches < 5) {
             theta = 0.0
+        } else {
+            for (i in 1..10) {
+                val f = cos(theta) * l1 + sqrt(l2.pow(2) - (sin(theta) * l1).pow(2)) - linkage_length_inches
+                val df = -sin(theta) * l1 - (l1.pow(2) * sin(theta) * cos(theta)) / sqrt(l2.pow(2) - (sin(theta) * l1).pow(2))
+                val thetaNext = theta - f / df
+
+                if (abs(thetaNext - theta) < epsilon) {
+                    theta = thetaNext
+                    break
+                }
+                theta = thetaNext
+            }
+            theta = Math.toRadians(180.0) - theta
         }
 
-        return Math.toRadians(180.0) - theta - Math.toRadians(90.0)
+
+        // we want the exterior angle
+        return theta - Math.toRadians(90.0)
     }
 
     private fun angleRadiansToServoPosition(radian_angle : Double) : Double {

@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.opmodes.test
 
 import com.arcrobotics.ftclib.command.CommandOpMode
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.subsystems.Robot
 
-class TestLimitSwitches() : CommandOpMode() {
+@TeleOp
+class LimitSwitchesTest() : CommandOpMode() {
     override fun initialize() {
         val robot = Robot(hardwareMap, telemetry)
         robot.telemetry.addLine("Testing Limit Switches")

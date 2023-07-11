@@ -39,7 +39,7 @@ class DetermineArmAngles : CommandOpMode() {
         bButton.whenPressed(InstantCommand({ robot.wrist.bendAngleDegrees -= 1.0 }, robot.wrist))
 
         // x/y is extension movement
-        robot.extension.isTelemetryEnabled = false
+        robot.extension.isTelemetryEnabled = true
         xButton.whenPressed(InstantCommand({ robot.extension.actualPositionExtensionInches -= 0.25 }, robot.extension))
         yButton.whenPressed(InstantCommand({ robot.extension.actualPositionExtensionInches += 0.25 }, robot.extension))
 

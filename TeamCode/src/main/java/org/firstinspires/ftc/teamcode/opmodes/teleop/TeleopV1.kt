@@ -64,25 +64,25 @@ class TeleopV1 : CommandOpMode() {
         gunner.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
             .whenPressed(InstantCommand({ robot.turret.targetAngleDegrees -= 45.0 }, robot.turret))
 
-        gunner.getGamepadButton(GamepadKeys.Button.A).whenPressed(
-            ConditionalCommand(
-                SequentialCommandGroup(
-                    InstantCommand(
-                        { robot.claw.openClaw(); robot.mode = Mode.INTAKE; },
-                        robot.claw
-                    ),
-                    HomeScoring(robot)
-                ),
-                SequentialCommandGroup(
-                    InstantCommand(
-                        { robot.claw.closeClaw(); robot.mode = Mode.SCORE }, robot.claw
-                    ),
-                    WaitCommand(100),
-                    HomeScoring(robot)
-                )
-
-            ) { robot.mode == Mode.SCORE }
-        )
+//        gunner.getGamepadButton(GamepadKeys.Button.A).whenPressed(
+//            ConditionalCommand(
+//                SequentialCommandGroup(
+//                    InstantCommand(
+//                        { robot.claw.openClaw(); robot.mode = Mode.INTAKE; },
+//                        robot.claw
+//                    ),
+//                    HomeScoring(robot)
+//                ),
+//                SequentialCommandGroup(
+//                    InstantCommand(
+//                        { robot.claw.closeClaw(); robot.mode = Mode.SCORE }, robot.claw
+//                    ),
+//                    WaitCommand(100),
+//                    HomeScoring(robot)
+//                )
+//
+//            ) { robot.mode == Mode.SCORE }
+//        )
 
     }
     private fun zeroStaticValuesForSomePurpose(){

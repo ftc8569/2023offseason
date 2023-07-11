@@ -10,7 +10,6 @@ class Score(val r: Robot, val angle: Double, val length: Double, val wrist: Doub
     }
 
     override fun initialize() {
-        r.mode = Mode.SCORE
         r.extension.actualPositionExtensionInches = length
         r.elbow.targetAngleDegrees = angle
         r.wrist.bendAngleDegrees = wrist
