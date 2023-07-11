@@ -6,19 +6,22 @@ import com.arcrobotics.ftclib.hardware.motors.Motor
 import com.arcrobotics.ftclib.hardware.motors.MotorEx
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup
 import org.firstinspires.ftc.teamcode.Cons.*
-import org.firstinspires.ftc.teamcode.utilities.PostAutoPoses
 import kotlin.math.abs
 
-class ElbowSubsystem(val robot: Robot, motor1: MotorEx, motor2: MotorEx) : SubsystemBase() {
+class ElbowSubsystem(private val robot: Robot, motor1: MotorEx, motor2: MotorEx, private val homingResult: HomingResult) : SubsystemBase() {
     private val controller = PIDController(ELBOW_KP, ELBOW_KI, ELBOW_KD)
     private val motors = MotorGroup(motor1, motor2)
     private val encoderTicksPerRevolution = 2782
     private val closeEnoughToTargetAngleDegrees = 1.0
 
     var isTelemetryEnabled = false
+    private val angleStartOffsetDegrees = homingResult.homeAngles.elbowAngle
+    val angleRange = AngleRange(-50.0, 60.0)
     var targetAngleDegrees = 0.0
+        set(value) {
+            field = value.coerceIn(angleRange.minimumAngle, angleRange.maximumAngle)
+        }
     var isEnabled = true
-    var angleStartOffset = ELBOW_START_ANGLE
     val currentAngleDegrees : Double
         get() = getCurrentElbowAngle()
 
@@ -27,14 +30,11 @@ class ElbowSubsystem(val robot: Robot, motor1: MotorEx, motor2: MotorEx) : Subsy
         motor1.inverted = true
         motors.setRunMode(Motor.RunMode.RawPower)
 
-        // if there are any saved encoder angles from the end of autonomous, use them
-        if(RelativeEncoderStateMonitorSubsystem.savedEncoderAngles != null) {
-            angleStartOffset = RelativeEncoderStateMonitorSubsystem.savedEncoderAngles!!.elbowAngle
-        }
-        else {
-            angleStartOffset = ELBOW_START_ANGLE
+        // if we are homing with the limit switch, reset the encoder
+        if(homingResult.method == HomingMethod.LIMIT_SWITCH) {
             motors.resetEncoder()
         }
+
     }
 
     override fun periodic() {
@@ -64,7 +64,7 @@ class ElbowSubsystem(val robot: Robot, motor1: MotorEx, motor2: MotorEx) : Subsy
     }
     private fun getCurrentElbowAngle(): Double {
         // just use the first motor encoder
-        return convertEncoderTicksToDegrees(motors.positions[0])  + angleStartOffset
+        return convertEncoderTicksToDegrees(motors.positions[0])  + angleStartOffsetDegrees
     }
     private fun convertEncoderTicksToDegrees(ticks: Double): Double {
         return (ticks / encoderTicksPerRevolution) * 360.0

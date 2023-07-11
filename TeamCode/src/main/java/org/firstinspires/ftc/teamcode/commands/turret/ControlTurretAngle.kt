@@ -7,9 +7,10 @@ import org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem
 class ControlTurretAngle(val turret : TurretSubsystem,  val turrentAngleProvider : () -> Vector2d) : CommandBase() {
     init {
         addRequirements(turret)
+        turret.isTelemetryEnabled = true
     }
     override fun execute() {
-        turret.targetAngleDegrees = turrentAngleProvider.invoke().angle()
+        turret.targetAngleDegrees = Math.toDegrees(turrentAngleProvider.invoke().angle())
     }
     override fun isFinished(): Boolean {
         return false

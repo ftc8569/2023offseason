@@ -3,7 +3,9 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.arcrobotics.ftclib.command.CommandOpMode
 import com.arcrobotics.ftclib.gamepad.GamepadEx
+import com.arcrobotics.ftclib.gamepad.GamepadKeys
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import org.firstinspires.ftc.teamcode.commands.commandgroups.*
 import org.firstinspires.ftc.teamcode.commands.drivetrain.DriveMec
 import org.firstinspires.ftc.teamcode.commands.drivetrain.DriveMecSnap
 import org.firstinspires.ftc.teamcode.commands.turret.ControlTurretAngle
@@ -12,7 +14,7 @@ import kotlin.math.pow
 import kotlin.math.sign
 
 @TeleOp
-class TeleopV2 : CommandOpMode {
+class TeleopV2 : CommandOpMode() {
     override fun initialize() {
         val robot = Robot(hardwareMap, telemetry)
 
@@ -32,7 +34,32 @@ class TeleopV2 : CommandOpMode {
         })
 
 
-
+//        driver.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(
+//            ScoreHighJunction(robot)
+//        )
+//
+//        driver.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(
+//            ScoreMediumJunction(robot)
+//        )
+//
+//        driver.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(
+//            ScoreLowJunction(robot)
+//        )
+//
+//        driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(
+//            DepositCone(robot)
+//        )
+//
+//        driver.getGamepadButton(GamepadKeys.Button.RIGHT_STICK_BUTTON).whenPressed(
+//            TeleopIntakeCone(robot)
+//        )
+//
+//        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenPressed(
+//            PickupCone(robot)
+//        )
+//
+//
+//
 
 
 

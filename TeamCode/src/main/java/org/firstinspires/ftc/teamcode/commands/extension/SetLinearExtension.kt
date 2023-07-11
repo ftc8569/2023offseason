@@ -1,7 +1,6 @@
-package org.firstinspires.ftc.teamcode.commands.Extension
+package org.firstinspires.ftc.teamcode.commands.extension
 
 import com.arcrobotics.ftclib.command.CommandBase
-import com.arcrobotics.ftclib.command.CommandOpMode
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.subsystems.ExtensionLinkageSubsystem
 

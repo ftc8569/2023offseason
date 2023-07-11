@@ -29,7 +29,7 @@ class ElbowExtensionTest: LinearOpMode() {
 //            }
 //
 //            if(gp1.wasJustPressed(GamepadKeys.Button.X)){
-//                scheduler.schedule(InstantCommand({r.extension.home()}, r.extension))
+//                scheduler.schedule(InstantCommand({r.extension.homeMecahnisms()}, r.extension))
 //            } else if (gp1.wasJustPressed(GamepadKeys.Button.B)){
 //                scheduler.schedule(InstantCommand({r.extension.length = 0.4}, r.extension))
 //            }

@@ -17,7 +17,7 @@ class TurretLock45Test: CommandOpMode() {
 //        )
 //        gp1.getGamepadButton(GamepadKeys.Button.A).whenPressed(
 //            ParallelCommandGroup(
-//                InstantCommand({r.extension.home()}, r.extension),
+//                InstantCommand({r.extension.homeMecahnisms()}, r.extension),
 //                InstantCommand({r.elbow.targetAngleDegrees = .0}, r.elbow)
 //            )
 //        )

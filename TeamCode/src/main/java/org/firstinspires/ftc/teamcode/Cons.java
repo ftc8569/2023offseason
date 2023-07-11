@@ -54,9 +54,8 @@ public class Cons {
 
 
     // Starting position constants
-    public static double TURRET_STARTING_ANGLE = -40.0;
-
-    public static double ELBOW_START_ANGLE = -54.5;
+    public static double TURRET_MAX_ANGULAR_VELOCITY = 360.0;
+    public static double TURRET_MAX_ANGULAR_ACCELERATION = 720.0;
 
 
     // Drivetrain Constants

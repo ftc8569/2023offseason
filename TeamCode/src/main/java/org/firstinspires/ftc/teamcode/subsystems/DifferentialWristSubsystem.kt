@@ -6,9 +6,20 @@ import org.firstinspires.ftc.teamcode.utilities.AxonServo
 
 class DifferentialWristSubsystem( val robot: Robot, private val leftServo: AxonServo, private val rightServo: AxonServo) : SubsystemBase() {
 
+    val twistAngleRange = AngleRange(-90.0, 90.0)
     var twistAngleDegrees : Double = 0.0
+        set(value) {
+            field = value.coerceIn(twistAngleRange.minimumAngle, twistAngleRange.maximumAngle)
+        }
+
+    val bendAngleRange = AngleRange(-135.0, 80.0)
     var bendAngleDegrees : Double = 0.0
+        set(value) {
+            field = value.coerceIn(bendAngleRange.minimumAngle, bendAngleRange.maximumAngle)
+        }
+
     var isTelemetryEnabled = false
+
 
     init {
         // reverse the right servo
@@ -40,4 +51,10 @@ class DifferentialWristSubsystem( val robot: Robot, private val leftServo: AxonS
         }
     }
 
+}
+
+data class AngleRange(val minimumAngle: Double, val maximumAngle: Double) {
+    fun clampAngle(angle: Double) : Double {
+        return angle.coerceIn(minimumAngle, maximumAngle)
+    }
 }
