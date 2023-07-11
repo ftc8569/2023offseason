@@ -21,6 +21,16 @@ class ExtensionLinkageSubsystem(val robot: Robot, val servo: AxonServo) : Subsys
     private val velocity = 50.0 // inches / second
     private val acceleration = 30.0 // inches / second ^ 2
 
+
+    companion object {
+        const val MINIMUM_EXTENSION = 5.19
+        const val GROUND = 5.19
+        const val LOW = 8.0
+        const val MID = 10.0
+        const val HIGH = 16.0
+        const val PICKUP = MINIMUM_EXTENSION
+    }
+
     val isExtended : Boolean
         get() = servo.servo.position > EXTENSION_HOME
 

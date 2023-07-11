@@ -1,38 +1,32 @@
+import com.arcrobotics.ftclib.command.CommandOpMode
+import com.arcrobotics.ftclib.command.InstantCommand
+import com.arcrobotics.ftclib.gamepad.GamepadEx
+import com.arcrobotics.ftclib.gamepad.GamepadKeys
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import org.firstinspires.ftc.teamcode.subsystems.ExtensionLinkageSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.Robot
 
 
 @TeleOp
-class ExtensionTest: LinearOpMode() {
+class ExtensionTest: CommandOpMode() {
 
-    override fun runOpMode() {
-//        val scheduler = CommandScheduler.getInstance()
-//        val dashboard:FtcDashboard = FtcDashboard.getInstance()
-//        val t = MultipleTelemetry(telemetry, dashboard.telemetry)
-//        val extension = Extension(hardwareMap.get(ServoImplEx::class.java, "extension"))
-//        val gp1 = GamepadEx(gamepad1)
-//        waitForStart()
-//
-//        while(opModeIsActive() && !isStopRequested){
-//            gp1.readButtons()
-//            if(gp1.wasJustPressed(GamepadKeys.Button.Y)){
-//                scheduler.schedule(InstantCommand({extension.length = 0.3}, extension))
-//            } else if (gp1.wasJustPressed(GamepadKeys.Button.A)){
-//                scheduler.schedule(InstantCommand({extension.home()}, extension))
-//            } else if (gp1.wasJustPressed(GamepadKeys.Button.B)){
-//                scheduler.schedule(InstantCommand({extension.length=0.4}, extension))
-//            }
-//
-//            t.addData("Phi ", extension.phi)
-//            t.addData("Target phi ", extension.targetPhi)
-//            t.addData("Theta", extension.theta)
-//            t.addData("Target theta", extension.targetTheta)
-//            t.addData("Target Pos", extension.targetPosition)
-//            t.addData("Current Pos", extension.servo.position)
-//            t.update()
-//            scheduler.run()
-//        }
-//        scheduler.reset()
+    override fun initialize() {
+        val robot = Robot(hardwareMap, telemetry)
+        val driver = GamepadEx(gamepad1)
+        val rightDpad = driver.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
+        val leftDpad = driver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
+        val upDpad = driver.getGamepadButton(GamepadKeys.Button.DPAD_UP)
+        val downDpad = driver.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
+
+        robot.wrist.isTelemetryEnabled = true
+        robot.telemetry.addLine("Extension Test Initialized")
+        robot.telemetry.update()
+
+        rightDpad.whenPressed(InstantCommand({ robot.extension.extensionTargetInches = ExtensionLinkageSubsystem.MINIMUM_EXTENSION}, robot.extension))
+        leftDpad.whenPressed(InstantCommand({ robot.extension.extensionTargetInches = ExtensionLinkageSubsystem.LOW }, robot.extension))
+        upDpad.whenPressed(InstantCommand({ robot.extension.extensionTargetInches = ExtensionLinkageSubsystem.MID }, robot.extension))
+        downDpad.whenPressed(InstantCommand({ robot.extension.extensionTargetInches = ExtensionLinkageSubsystem.HIGH }, robot.extension))
     }
 
 }
