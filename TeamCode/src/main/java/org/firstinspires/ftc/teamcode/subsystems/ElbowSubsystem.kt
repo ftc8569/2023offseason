@@ -9,8 +9,7 @@ import org.firstinspires.ftc.teamcode.Cons.*
 import org.firstinspires.ftc.teamcode.utilities.PostAutoPoses
 import kotlin.math.abs
 
-class ElbowSubsystem(val robot: Robot, private val motor1: MotorEx, private val motor2: MotorEx) :
-    SubsystemBase() {
+class ElbowSubsystem(val robot: Robot, motor1: MotorEx, motor2: MotorEx) : SubsystemBase() {
     private val controller = PIDController(ELBOW_KP, ELBOW_KI, ELBOW_KD)
     private val motors = MotorGroup(motor1, motor2)
     private val encoderTicksPerRevolution = 2782
@@ -46,7 +45,7 @@ class ElbowSubsystem(val robot: Robot, private val motor1: MotorEx, private val 
             power = controller.calculate(currentAngle, targetAngleDegrees)
 
             // TODO: ensure that this the right way. I think it is, but I'm not sure
-            if (robot.extension.isExenteded) power += 0.1
+            if (robot.extension.isExtended) power += 0.1
         }
 
         motors.set(power)
@@ -60,7 +59,7 @@ class ElbowSubsystem(val robot: Robot, private val motor1: MotorEx, private val 
             robot.telemetry.update()
         }
     }
-    public fun isCloseEnoughToTargetAngle(tolerance : Double = closeEnoughToTargetAngleDegrees) : Boolean {
+    fun isCloseEnoughToTargetAngle(tolerance : Double = closeEnoughToTargetAngleDegrees) : Boolean {
         return abs(currentAngleDegrees - targetAngleDegrees) < closeEnoughToTargetAngleDegrees
     }
     private fun getCurrentElbowAngle(): Double {

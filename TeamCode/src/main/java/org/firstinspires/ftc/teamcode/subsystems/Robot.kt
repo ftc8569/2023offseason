@@ -33,8 +33,8 @@ class Robot(val hardwareMap: HardwareMap, t: Telemetry) : com.arcrobotics.ftclib
 
     val turret: TurretSubsystem = TurretSubsystem(this, MotorEx(hardwareMap, "turret"))
 
-    private val extensionServo = AxonServo(hardwareMap, "extension", 500.0, 2500.0)
-    val extension = ExtensionLinkageSubsystem(this, hardwareMap.get(ServoImplEx::class.java, "extension"))
+    private val extensionServo = AxonServo(hardwareMap, "extension", 500.0, 2500.0, 355.0)
+    val extension = ExtensionLinkageSubsystem(this, extensionServo)
 
     val elbow = ElbowSubsystem(this, MotorEx(hardwareMap, "leftElbow"), MotorEx(hardwareMap, "rightElbow"))
 
