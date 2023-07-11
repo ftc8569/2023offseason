@@ -19,14 +19,14 @@ class ExtensionTest: CommandOpMode() {
         val upDpad = driver.getGamepadButton(GamepadKeys.Button.DPAD_UP)
         val downDpad = driver.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
 
-        robot.wrist.isTelemetryEnabled = true
+        robot.extension.isTelemetryEnabled = true
         robot.telemetry.addLine("Extension Test Initialized")
         robot.telemetry.update()
 
-        rightDpad.whenPressed(InstantCommand({ robot.extension.extensionTargetInches = ExtensionLinkageSubsystem.MINIMUM_EXTENSION}, robot.extension))
-        leftDpad.whenPressed(InstantCommand({ robot.extension.extensionTargetInches = ExtensionLinkageSubsystem.LOW }, robot.extension))
-        upDpad.whenPressed(InstantCommand({ robot.extension.extensionTargetInches = ExtensionLinkageSubsystem.MID }, robot.extension))
-        downDpad.whenPressed(InstantCommand({ robot.extension.extensionTargetInches = ExtensionLinkageSubsystem.HIGH }, robot.extension))
+        rightDpad.whenPressed(InstantCommand({ robot.extension.actualPositionExtensionInches = 0.0}, robot.extension))
+        leftDpad.whenPressed(InstantCommand({ robot.extension.actualPositionExtensionInches = ExtensionLinkageSubsystem.LOW }, robot.extension))
+        upDpad.whenPressed(InstantCommand({ robot.extension.actualPositionExtensionInches = ExtensionLinkageSubsystem.MID }, robot.extension))
+        downDpad.whenPressed(InstantCommand({ robot.extension.actualPositionExtensionInches = ExtensionLinkageSubsystem.HIGH }, robot.extension))
     }
 
 }

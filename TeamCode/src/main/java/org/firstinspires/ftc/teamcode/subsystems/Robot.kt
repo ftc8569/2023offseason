@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.ServoImplEx
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.utilities.AxonServo
-import org.firstinspires.ftc.teamcode.utilities.Mode
 
 enum class OpModeType {
     TELEOP, AUTONOMOUS
@@ -47,8 +46,10 @@ class Robot(val hardwareMap: HardwareMap, t: Telemetry, val opModeType: OpModeTy
 
     val relativeEncoderStateMonitorSubsystem = RelativeEncoderStateMonitorSubsystem(this)
 
-    var mode: Mode = Mode.INTAKE
-    var fallenCone = false
+    val leftLimitSwitch = hardwareMap.get(DigitalChannel::class.java, "LeftLimitSwitch")
+    val rightLimitSwitch = hardwareMap.get(DigitalChannel::class.java, "RightLimitSwitch")
+    val limitSwitches = LimitSwitchesSubsystem(this, leftLimitSwitch, rightLimitSwitch)
+
     val leds =  LEDSubsystem(hardwareMap.get(RevBlinkinLedDriver::class.java, "blinkin"), this)
 
 

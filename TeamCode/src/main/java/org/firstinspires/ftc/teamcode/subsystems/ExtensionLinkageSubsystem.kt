@@ -18,12 +18,14 @@ class ExtensionLinkageSubsystem(val robot: Robot, val servo: AxonServo) : Subsys
     }
 
 
-    private val velocity = 50.0 // inches / second
-    private val acceleration = 30.0 // inches / second ^ 2
+    var isTelemetryEnabled = false
+
+    private val velocity = 2.0 // inches / second
+    private val acceleration = 2.0 // inches / second ^ 2
 
 
     companion object {
-        const val MINIMUM_EXTENSION = 5.19
+        const val MINIMUM_EXTENSION = 0.0
         const val GROUND = 5.19
         const val LOW = 8.0
         const val MID = 10.0
@@ -45,6 +47,7 @@ class ExtensionLinkageSubsystem(val robot: Robot, val servo: AxonServo) : Subsys
     // set this directly to make the servo go to that position
     var actualPositionExtensionInches: Double = 0.0
         set(value) {
+            field = value
             position = angleRadiansToServoPosition(solveTheta(value))
         }
 
@@ -57,10 +60,12 @@ class ExtensionLinkageSubsystem(val robot: Robot, val servo: AxonServo) : Subsys
 
     var timer = ElapsedTime()
 
-    private var position : Double
+    private var position : Double = 0.0
         get() = servo.servo.position
         set(value) {
-            servo.servo.position = value
+            field = value
+            var offset = 0.925
+            servo.servo.position = offset - value
         }
 
     fun home(){
@@ -68,9 +73,18 @@ class ExtensionLinkageSubsystem(val robot: Robot, val servo: AxonServo) : Subsys
     }
 
     override fun periodic() {
-        generateMotionProfile(extensionTargetInches, actualPositionExtensionInches)
-        currentExtensionDistanceInches = mProfile[timer.seconds()].x
-        actualPositionExtensionInches = solveTheta(currentExtensionDistanceInches)
+//        generateMotionProfile(extensionTargetInches, actualPositionExtensionInches)
+//        currentExtensionDistanceInches = mProfile[timer.seconds()].x
+//        actualPositionExtensionInches = currentExtensionDistanceInches
+        if(isTelemetryEnabled) {
+            robot.telemetry.addLine("Extension: Telemetry Enabled")
+            robot.telemetry.addData("Extension Actual Inches:", actualPositionExtensionInches)
+            robot.telemetry.addData("raw servo position", servo.servo.position)
+            robot.telemetry.addData("theta", solveTheta(actualPositionExtensionInches))
+            robot.telemetry.addData("theta (deg)", Math.toDegrees(solveTheta(actualPositionExtensionInches)))
+            robot.telemetry.addData("motion profile distance", currentExtensionDistanceInches)
+            robot.telemetry.update()
+        }
     }
 
     private fun solveTheta(linkage_length_inches: Double): Double {
@@ -84,6 +98,7 @@ class ExtensionLinkageSubsystem(val robot: Robot, val servo: AxonServo) : Subsys
         if (linkage_length_inches <= 0) {
             theta = 0.0
         }
+
         return Math.toRadians(180.0) - theta - Math.toRadians(90.0)
     }
 
