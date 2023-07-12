@@ -6,7 +6,7 @@ import com.arcrobotics.ftclib.command.*
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.teamcode.apriltags.AprilTagDetectionPipeline
-import org.firstinspires.ftc.teamcode.commands.SetElbowTarget
+import org.firstinspires.ftc.teamcode.commands.elbow.SetElbowAngle
 import org.firstinspires.ftc.teamcode.commands.drivetrain.TrajectoryCommand
 import org.firstinspires.ftc.teamcode.commands.scoring.HomeScoring
 import org.firstinspires.ftc.teamcode.commands.turret.SetTurretAngle
@@ -102,7 +102,7 @@ class TransformerAuto: CommandOpMode() {
                 InstantCommand({robot.wrist.bendAngleDegrees = -30.0}, robot.wrist),
                 startToConesCommand,
                 turnTurret.deadlineWith(WaitCommand(1000)),
-                SetElbowTarget(robot, -26.0),
+                SetElbowAngle(robot.elbow, -26.0),
                 extend.deadlineWith(WaitCommand(1000)),
                 InstantCommand({robot.claw.openClaw()}, robot.claw),
                 WaitCommand(1000),

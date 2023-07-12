@@ -1,61 +1,45 @@
 package org.firstinspires.ftc.teamcode.commands.commandgroups
 
+import com.arcrobotics.ftclib.command.CommandBase
 import com.arcrobotics.ftclib.command.InstantCommand
 import com.arcrobotics.ftclib.command.ParallelCommandGroup
+import com.arcrobotics.ftclib.command.SelectCommand
 import com.arcrobotics.ftclib.command.SequentialCommandGroup
-import org.firstinspires.ftc.teamcode.Cons
-import org.firstinspires.ftc.teamcode.commands.SetElbowTarget
-import org.firstinspires.ftc.teamcode.commands.extension.SetLinearExtension
+import com.arcrobotics.ftclib.command.WaitCommand
+import org.firstinspires.ftc.teamcode.commands.UpdateTelemetry
+import org.firstinspires.ftc.teamcode.commands.elbow.SetElbowAngle
+import org.firstinspires.ftc.teamcode.commands.extension.SetExtensionLinkage
 import org.firstinspires.ftc.teamcode.commands.scoring.SetAligner
 import org.firstinspires.ftc.teamcode.commands.turret.SetTurretAngle
 import org.firstinspires.ftc.teamcode.commands.wrist.SetWristAngles
-import org.firstinspires.ftc.teamcode.subsystems.ArmState
-import org.firstinspires.ftc.teamcode.subsystems.ExtensionLinkageSubsystem
-import org.firstinspires.ftc.teamcode.subsystems.Robot
+import org.firstinspires.ftc.teamcode.subsystems.*
 
-class DepositCone(val robot : Robot) : SequentialCommandGroup() {
-    var earlyExit = false
-    init {
-        val wristTwistAngleDegrees = 0.0
+class DepositCone(val robot : Robot) : SelectCommand({ generateCommand(robot) })  {
+    companion object {
+        fun generateCommand(robot: Robot): CommandBase {
+            val canDepositCone = when(robot.armState) {
+                ArmState.HIGH, ArmState.MED, ArmState.LOW, ArmState.GROUND -> true
+                else -> false
+            }
 
-        when(robot.armState) {
-            ArmState.HIGH -> {
-                val wristBendAngleDegrees = 21.0
-                addCommands(SetWristAngles(robot.wrist, wristBendAngleDegrees, wristTwistAngleDegrees),)
-            }
-            ArmState.MED -> {
-                val wristBendAngleDegrees = 4.0
-                addCommands(SetWristAngles(robot.wrist, wristBendAngleDegrees, wristTwistAngleDegrees),)
-            }
-            ArmState.LOW -> {
-                val wristBendAngleDegrees = -5.0
-                addCommands(SetWristAngles(robot.wrist, wristBendAngleDegrees, wristTwistAngleDegrees),)
-            }
-            ArmState.GROUND -> {
-                val wristBendAngleDegrees = -20.0
-                addCommands(SetWristAngles(robot.wrist, wristBendAngleDegrees, wristTwistAngleDegrees),)
-            }
-            else -> {
-                earlyExit = true
+            if(!canDepositCone)
+                return UpdateTelemetry(robot, "Cannot deposit cone with arm state ${robot.armState}")
+            else {
+                val wrist = when (robot.armState) {
+                    ArmState.HIGH -> ArmStates.SCORE_HIGH.wrist
+                    ArmState.MED -> ArmStates.SCORE_MIDDLE.wrist
+                    ArmState.LOW -> ArmStates.SCORE_LOW.wrist
+                    ArmState.GROUND -> ArmStates.SCORE_GROUND.wrist
+                    else -> ArmStates.ARM_HOME.wrist
+                    }
+
+                return SequentialCommandGroup(
+                    SetWristAngles(robot.wrist, wrist.depositBendAngle, 0.0),
+                    InstantCommand({ robot.claw.openClaw() }, robot.claw),
+                    WaitCommand(500),
+                    MoveToTravel(robot)
+                    )
             }
         }
-        addCommands(InstantCommand( {robot.claw.openClaw() }, robot.claw))
-        addCommands(ParallelCommandGroup(
-            InstantCommand( { robot.armState = ArmState.TRAVEL }, robot.elbow),
-            SetAligner(robot.aligner, 0.0),
-            SetLinearExtension(robot.extension, ExtensionLinkageSubsystem.MINIMUM_EXTENSION)))
-        addCommands(SequentialCommandGroup(
-            SetTurretAngle(robot.turret, 180.0),
-            SetElbowTarget(robot, -50.0),
-            SetWristAngles(robot.wrist, -120.0, 0.0)
-        ))
-    }
-
-    override fun initialize() {
-        if(!earlyExit)
-            super.initialize()
-    }
-    override fun isFinished(): Boolean {
-        return super.isFinished() || earlyExit
     }
 }

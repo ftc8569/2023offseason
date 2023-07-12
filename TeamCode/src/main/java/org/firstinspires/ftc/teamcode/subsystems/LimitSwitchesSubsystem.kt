@@ -56,7 +56,7 @@ enum class HomePosition {
 }
 data class LimitSwitchHomeAngles(val turretAngle : Double, val elbowAngle : Double) {
     companion object {
-        val LEFT_HOME = LimitSwitchHomeAngles(-53.0, -45.0)
-        val RIGHT_HOME = LimitSwitchHomeAngles(55.0, -50.5)
+        val LEFT_HOME = LimitSwitchHomeAngles(ArmStates.START_LEFT.turret.angle, ArmStates.START_LEFT.arm.elbow.angle)
+        val RIGHT_HOME = LimitSwitchHomeAngles(ArmStates.START_RIGHT.turret.angle, ArmStates.START_RIGHT.arm.elbow.angle)
     }
 }

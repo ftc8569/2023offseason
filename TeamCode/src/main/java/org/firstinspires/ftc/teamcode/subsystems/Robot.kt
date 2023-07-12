@@ -32,6 +32,14 @@ class Robot(val hardwareMap: HardwareMap, t: Telemetry, val opModeType: OpModeTy
     }
 
     var armState = ArmState.START
+    set (value) {
+        field = value
+        if (isTelemetryEnabled) {
+            telemetry.addData("Arm State", value)
+            telemetry.update()
+        }
+    }
+
     var robotState = RobotState.NOT_HOMED
         private set
 
@@ -56,7 +64,7 @@ class Robot(val hardwareMap: HardwareMap, t: Telemetry, val opModeType: OpModeTy
     private val extensionServo = AxonServo(hardwareMap, "extension", 500.0, 2500.0, 355.0)
     val extension = ExtensionLinkageSubsystem(this, extensionServo)
 
-    val poleAlignerServo = hardwareMap.get(ServoImplEx::class.java, "aligner")
+    private val poleAlignerServo = hardwareMap.get(ServoImplEx::class.java, "aligner")
     val aligner: PoleAlignerSubsystem = PoleAlignerSubsystem(this, poleAlignerServo)
 
     private val leftDifferentialServo = AxonServo(hardwareMap, "leftWrist", 500.0, 2500.0, 355.0)

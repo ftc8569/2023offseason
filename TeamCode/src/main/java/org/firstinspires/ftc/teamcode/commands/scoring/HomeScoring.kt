@@ -12,7 +12,7 @@ class HomeScoring(val r: Robot): CommandBase() {
     override fun initialize(){
         r.elbow.targetAngleDegrees = 60.0
         r.extension.actualPositionExtensionInches = 1.0
-        r.aligner.position = ALIGNER_HOME
+        r.aligner.home()
     }
 
     override fun isFinished() : Boolean {

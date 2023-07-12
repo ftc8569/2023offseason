@@ -13,7 +13,7 @@ class Score(val r: Robot, val angle: Double, val length: Double, val wrist: Doub
         r.extension.actualPositionExtensionInches = length
         r.elbow.targetAngleDegrees = angle
         r.wrist.bendAngleDegrees = wrist
-        r.aligner.position = aligner
+        r.aligner.angle = r.aligner.convertPositionToAngle(aligner)
     }
 
     override fun isFinished() = r.elbow.isCloseEnoughToTargetAngle()

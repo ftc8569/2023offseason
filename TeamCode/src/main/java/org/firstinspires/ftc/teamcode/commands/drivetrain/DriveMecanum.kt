@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.commands.drivetrain
 import com.arcrobotics.ftclib.command.CommandBase
 import org.firstinspires.ftc.teamcode.subsystems.DrivetrainSubsystem
 
-class DriveMec(
+class DriveMecanum(
     val drive: DrivetrainSubsystem,
     private val fwdSupplier: () -> Double,
     private val strafeSupplier: () -> Double,

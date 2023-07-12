@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.Cons.*
 import org.opencv.core.Mat
 import kotlin.math.abs
+import kotlin.math.sign
 
 // Put timer in constructor, mock a timer
 class TurretSubsystem(val robot: Robot, val motor: MotorEx, private val homingResult: HomingResult) : SubsystemBase() {
@@ -66,7 +67,11 @@ class TurretSubsystem(val robot: Robot, val motor: MotorEx, private val homingRe
 
         val pidPower =
             if(useMotionProfile) {
-                generateMotionProfileInAngleRadians(targetAngleRadians, currentAngleRadians)
+                // using the current motion profile target as the starting point for the next motion profile
+                // this is to ensure continuity between motion profiles (eliminates jitter where the motor as moved past current angle
+                // and the motion profile will generate a first location that is backwards from the current direction of motion)
+                val currentIntermediateTargetAngleRadians = motionProfile[motionProfileTimer.seconds()].x
+                generateMotionProfileInAngleRadians(targetAngleRadians, currentIntermediateTargetAngleRadians)
                 val intermediateTargetAngleRadians = motionProfile[motionProfileTimer.seconds()].x
                 clamp(controller.calculate(intermediateTargetAngleRadians, currentAngleRadians), -1.0, 1.0)
             } else {
@@ -94,6 +99,8 @@ class TurretSubsystem(val robot: Robot, val motor: MotorEx, private val homingRe
     }
     private fun generateMotionProfileInAngleRadians(target: Double, current: Double) {
         if (!nearlyEqual(previousTarget, target)) {
+//            val approximateUpdateInterval = 0.010 //seconds
+//            val continuityNudge = (Math.toRadians(maxAngularVelocity) * approximateUpdateInterval) * sign(previousTarget - current)
             previousTarget = target
             motionProfile = MotionProfileGenerator.generateMotionProfile(
                 MotionState(current, 0.0, 0.0),

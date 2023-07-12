@@ -23,12 +23,11 @@ class BeamBreakTest : CommandOpMode() {
 
         schedule(MonitorBeamBreak(beamBreak, t))
     }
-
 }
 
 class MonitorBeamBreak(private val beamBreak : DigitalChannel, private val telemetry: MultipleTelemetry) : CommandBase() {
     override fun execute() {
-        telemetry.addData("Beam Break", beamBreak.state)
+        telemetry.addData("Beam Broken", !beamBreak.state)
         telemetry.update()
     }
 

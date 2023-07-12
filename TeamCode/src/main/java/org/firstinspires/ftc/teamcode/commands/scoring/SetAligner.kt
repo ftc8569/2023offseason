@@ -4,7 +4,7 @@ import com.arcrobotics.ftclib.command.CommandBase
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.subsystems.PoleAlignerSubsystem
 
-class SetAligner(private val aligner : PoleAlignerSubsystem, private val position : Double) : CommandBase() {
+class SetAligner(private val aligner : PoleAlignerSubsystem, private val angle : Double) : CommandBase() {
 
     init {
         addRequirements(aligner)
@@ -15,7 +15,7 @@ class SetAligner(private val aligner : PoleAlignerSubsystem, private val positio
     val duration = 0.15
 
     override fun initialize() {
-        aligner.position = position
+        aligner.angle = angle
         timer.reset()
     }
 

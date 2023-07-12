@@ -40,7 +40,6 @@ class TurretTest {
         }
 
         val turret = TurretSubsystem(motor, mock<Robot>(), {0.0})
-        turret.robotRelativeTargetAngle = 90.0
         for(i in 0..1500){
             turret.periodic()
         }

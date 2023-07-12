@@ -4,16 +4,12 @@ import com.arcrobotics.ftclib.command.CommandBase
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.subsystems.ExtensionLinkageSubsystem
 
-class SetLinearExtension(private val linkage : ExtensionLinkageSubsystem, private val length_in : Double) : CommandBase() {
-
+class SetExtensionLinkage(private val linkage : ExtensionLinkageSubsystem, private val length_in : Double) : CommandBase() {
     init {
         addRequirements(linkage)
     }
-
     private val timer = ElapsedTime()
-
-    private val duration = 0.35; // seconds
-
+    private val duration = 0.5; // seconds
 
     override fun initialize() {
         linkage.actualPositionExtensionInches = length_in;

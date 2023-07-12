@@ -4,13 +4,11 @@ import com.arcrobotics.ftclib.command.*
 import com.arcrobotics.ftclib.gamepad.GamepadEx
 import com.arcrobotics.ftclib.gamepad.GamepadKeys
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import org.firstinspires.ftc.teamcode.commands.drivetrain.DriveMec
-import org.firstinspires.ftc.teamcode.commands.drivetrain.DriveMecSnap
-import org.firstinspires.ftc.teamcode.commands.scoring.HomeScoring
+import org.firstinspires.ftc.teamcode.commands.drivetrain.DriveMecanum
+import org.firstinspires.ftc.teamcode.commands.drivetrain.DriveMecanumSnap
 import org.firstinspires.ftc.teamcode.commands.scoring.Score
 import org.firstinspires.ftc.teamcode.commands.scoring.ToIntakePosition
 import org.firstinspires.ftc.teamcode.subsystems.Robot
-import org.firstinspires.ftc.teamcode.utilities.Mode
 import org.firstinspires.ftc.teamcode.utilities.PostAutoPoses.*
 import org.firstinspires.ftc.teamcode.utilities.ScoringConfigs.*
 import kotlin.math.pow
@@ -26,7 +24,7 @@ class TeleopV1 : CommandOpMode() {
         zeroStaticValuesForSomePurpose()
 
 
-        robot.drivetrain.defaultCommand = DriveMec(
+        robot.drivetrain.defaultCommand = DriveMecanum(
             robot.drivetrain,
             { driver.leftY.pow(2) * sign(driver.leftY) },
             { driver.leftX.pow(2) * sign(driver.leftX) },
@@ -38,7 +36,7 @@ class TeleopV1 : CommandOpMode() {
             .whenPressed(InstantCommand({ robot.drivetrain.resetHeading() }, robot.drivetrain))
 
         driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whileHeld(
-            DriveMecSnap(
+            DriveMecanumSnap(
                 robot.drivetrain, 0.0,
                 { driver.leftY.pow(2) * sign(driver.leftY) },
                 { driver.leftX.pow(2) * sign(driver.leftX) },
