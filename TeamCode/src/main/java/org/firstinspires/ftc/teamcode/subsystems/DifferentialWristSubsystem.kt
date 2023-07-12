@@ -30,8 +30,8 @@ class DifferentialWristSubsystem( val robot: Robot, private val leftServo: AxonS
         var leftServoAngle = bendAngleDegrees - twistAngleDegrees / 2.0
         var rightServoAngle = bendAngleDegrees + twistAngleDegrees /2.0
 
-        leftServo.servo.position = leftServo.getServoPositionFromAngleDegrees(leftServoAngle)
-        rightServo.servo.position = 1.0 - rightServo.getServoPositionFromAngleDegrees(rightServoAngle)
+        leftServo.angle = leftServoAngle
+        rightServo.angle = rightServoAngle
 
         if(isTelemetryEnabled) {
             robot.telemetry.addLine("Differential Wrist: Telemetry Enabled")
@@ -40,12 +40,6 @@ class DifferentialWristSubsystem( val robot: Robot, private val leftServo: AxonS
 
             robot.telemetry.addData("Left Servo Angle:", leftServoAngle)
             robot.telemetry.addData("Right Servo Angle:", rightServoAngle)
-
-            robot.telemetry.addData("Left Servo Position:", leftServo.servo.position)
-            robot.telemetry.addData("Right Servo Position:", rightServo.servo.position)
-
-            robot.telemetry.addData("Left Servo Pulse Width:", leftServo.getServoPulseWidthFromPosition(leftServo.servo.position))
-            robot.telemetry.addData("Right Servo Pulse Width:", rightServo.getServoPulseWidthFromPosition(rightServo.servo.position))
 
             robot.telemetry.update()
         }

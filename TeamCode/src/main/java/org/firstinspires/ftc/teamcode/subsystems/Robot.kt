@@ -68,7 +68,7 @@ class Robot(val hardwareMap: HardwareMap, t: Telemetry, val opModeType: OpModeTy
     val aligner: PoleAlignerSubsystem = PoleAlignerSubsystem(this, poleAlignerServo)
 
     private val leftDifferentialServo = AxonServo(hardwareMap, "leftWrist", 500.0, 2500.0, 355.0)
-    private val rightDifferentialServo = AxonServo(hardwareMap, "rightWrist", 500.0, 2500.0, 355.0)
+    private val rightDifferentialServo = AxonServo(hardwareMap, "rightWrist", 500.0, 2500.0, 355.0, true )
     val wrist: DifferentialWristSubsystem = DifferentialWristSubsystem(this, leftDifferentialServo, rightDifferentialServo)
 
     private val clawServo = AxonServo(hardwareMap, "claw", 500.0, 2500.0)
@@ -134,6 +134,7 @@ class Robot(val hardwareMap: HardwareMap, t: Telemetry, val opModeType: OpModeTy
             telemetry.addData("Waiting for Homing...", timer.seconds())
             telemetry.update()
         }
+        telemetry.clearAll()
     }
 }
 

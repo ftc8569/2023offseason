@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.commands.elbow.SetElbowAngle
 import org.firstinspires.ftc.teamcode.commands.drivetrain.TrajectoryCommand
 import org.firstinspires.ftc.teamcode.commands.scoring.HomeScoring
 import org.firstinspires.ftc.teamcode.commands.turret.SetTurretAngle
+import org.firstinspires.ftc.teamcode.subsystems.ClawPositions
 import org.firstinspires.ftc.teamcode.subsystems.Robot
 import org.firstinspires.ftc.teamcode.utilities.FixedSequentialCommandGroup
 import org.openftc.apriltag.AprilTagDetection
@@ -64,7 +65,7 @@ class TransformerAuto: CommandOpMode() {
             .build()
         val startToConesCommand = TrajectoryCommand(drive, startToFirstPoint)
         val turnTurret = SetTurretAngle(robot.turret, 60.0)
-        val extend = InstantCommand({robot.extension.actualPositionExtensionInches = 0.0; robot.wrist.bendAngleDegrees = -10.0}, robot.extension, robot.wrist)
+        val extend = InstantCommand({robot.extension.extensionLength = 0.0; robot.wrist.bendAngleDegrees = -10.0}, robot.extension, robot.wrist)
 
         /////////// START PARKING CONFIGURATION ///////////
         val park1traj = drive.trajectorySequenceBuilder(Pose2d(firstPoint, PI))
@@ -104,9 +105,9 @@ class TransformerAuto: CommandOpMode() {
                 turnTurret.deadlineWith(WaitCommand(1000)),
                 SetElbowAngle(robot.elbow, -26.0),
                 extend.deadlineWith(WaitCommand(1000)),
-                InstantCommand({robot.claw.openClaw()}, robot.claw),
+                InstantCommand({robot.claw.position = ClawPositions.OPEN_FOR_INTAKE}, robot.claw),
                 WaitCommand(1000),
-                InstantCommand({robot.claw.closeClaw()}, robot.claw),
+                InstantCommand({robot.claw.position = ClawPositions.HOLD_CONE}, robot.claw),
                 home,
                 parkCommand
             )

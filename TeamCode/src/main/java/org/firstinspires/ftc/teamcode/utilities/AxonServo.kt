@@ -10,24 +10,39 @@ class AxonServo(
     servoName: String,
     minimumPulseWidth: Double,
     maximumPulseWidth: Double,
-    private val maximumRotationRangeDegrees :Double = 180.0)
+    private val maximumRotationRangeDegrees :Double = 180.0,
+    private val isReversed: Boolean = false)
 {
-    val servo: ServoImplEx
+    private val servo: ServoImplEx
 
     init {
         servo = hw.get(ServoImplEx::class.java, servoName)
         servo.pwmRange = PwmRange(minimumPulseWidth, maximumPulseWidth)
     }
 
+    val minimumAngle = -maximumRotationRangeDegrees / 2
+    val maximumAngle = maximumRotationRangeDegrees / 2
+    val servoMiddlePosition = 0.5
+
+    var angle : Double
+        get() = getAngleDegreesFromServoPosition(servo.position)
+        set(angle) {
+            if(isReversed)
+                servo.position = getServoPositionFromAngleDegrees(-angle)
+            else
+                servo.position = getServoPositionFromAngleDegrees(angle)
+        }
+
     fun getServoPositionFromAngleDegrees(angle : Double) : Double {
-        val servoMiddlePosition = 0.5
         return clamp(angle/maximumRotationRangeDegrees + servoMiddlePosition, 0.0, 1.0)
+    }
+    fun getAngleDegreesFromServoPosition(servoPosition: Double) : Double {
+        return (clamp(servoPosition, 0.0, 1.0) - servoMiddlePosition) * maximumRotationRangeDegrees
     }
     fun getServoPulseWidthFromAngleDegrees(angle : Double) : Double {
         val servoPosition = getServoPositionFromAngleDegrees(angle)
         return getServoPulseWidthFromPosition(servoPosition)
     }
-
     fun getServoPulseWidthFromPosition(position : Double) : Double {
         return position * (servo.pwmRange.usPulseUpper - servo.pwmRange.usPulseLower) + servo.pwmRange.usPulseLower
     }

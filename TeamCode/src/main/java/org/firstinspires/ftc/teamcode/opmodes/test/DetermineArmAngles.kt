@@ -54,14 +54,14 @@ class DetermineArmAngles : CommandOpMode() {
         bButtonGunner.whenPressed(InstantCommand({ robot.aligner.angle -= 1.0 * multiplier}, robot.aligner))
 
         // x/y is extension movement
-        xButton.whenPressed(InstantCommand({ robot.extension.actualPositionExtensionInches -= 0.25 * multiplier }, robot.extension))
-        yButton.whenPressed(InstantCommand({ robot.extension.actualPositionExtensionInches += 0.25 * multiplier }, robot.extension))
+        xButton.whenPressed(InstantCommand({ robot.extension.extensionLength -= 0.25 * multiplier }, robot.extension))
+        yButton.whenPressed(InstantCommand({ robot.extension.extensionLength += 0.25 * multiplier }, robot.extension))
 
         schedule(UpdateTelemetry(robot) {
             robot.telemetry.addData("Turret Angle", robot.turret.currentAngleDegrees)
             robot.telemetry.addData("Elbow Angle", robot.elbow.currentAngleDegrees)
             robot.telemetry.addData("Wrist Bend Angle", robot.wrist.bendAngleDegrees)
-            robot.telemetry.addData("Extension Position", robot.extension.actualPositionExtensionInches)
+            robot.telemetry.addData("Extension Position", robot.extension.extensionLength)
             robot.telemetry.addData("Pole Aligner Angle", robot.aligner.angle)
             robot.telemetry.addData("angleMultiplier", multiplier)
             robot.telemetry.update()

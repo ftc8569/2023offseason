@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.commands.elbow.SetElbowAngle
 import org.firstinspires.ftc.teamcode.commands.drivetrain.TrajectoryCommand
 import org.firstinspires.ftc.teamcode.commands.scoring.HomeScoring
 import org.firstinspires.ftc.teamcode.commands.turret.SetTurretAngle
+import org.firstinspires.ftc.teamcode.subsystems.ClawPositions
 import org.firstinspires.ftc.teamcode.subsystems.Robot
 import org.firstinspires.ftc.teamcode.utilities.FixedSequentialCommandGroup
 import org.firstinspires.ftc.teamcode.utilities.ScoringConfigs.ALIGNER_SCORE
@@ -34,23 +35,23 @@ class RightScoreAuto: CommandOpMode() {
             .build()
         val startToConesCommand = TrajectoryCommand(robot.drivetrain, startToFirstPoint)
         val turnTurret = SetTurretAngle(robot.turret, 90.0)
-        val extend = InstantCommand({robot.extension.actualPositionExtensionInches = 0.0; robot.wrist.bendAngleDegrees = -10.0}, robot.extension, robot.wrist)
+        val extend = InstantCommand({robot.extension.extensionLength = 0.0; robot.wrist.bendAngleDegrees = -10.0}, robot.extension, robot.wrist)
         schedule(FixedSequentialCommandGroup(
             home,
             SetTurretAngle(robot.turret, 0.0),
-            InstantCommand({robot.claw.openClaw()}, robot.claw),
+            InstantCommand({robot.claw.position = ClawPositions.OPEN_FOR_INTAKE}, robot.claw),
             InstantCommand({robot.wrist.bendAngleDegrees = -30.0}, robot.wrist),
             startToConesCommand,
             turnTurret.deadlineWith(WaitCommand(1000)),
             SetElbowAngle(robot.elbow, -15.0),
             extend.deadlineWith(WaitCommand(1000)),
             WaitCommand(1000),
-            InstantCommand({robot.claw.closeClaw()}, robot.claw),
+            InstantCommand({robot.claw.position = ClawPositions.HOLD_CONE}, robot.claw),
             WaitCommand(1000),
             SetElbowAngle(robot.elbow, 60.0),
             SetTurretAngle(robot.turret, -45.0),
             InstantCommand({robot.aligner.angle = robot.aligner.convertPositionToAngle(ALIGNER_SCORE) }, robot.aligner),
-            InstantCommand({robot.claw.openClaw()}, robot.claw),
+            InstantCommand({robot.claw.position = ClawPositions.OPEN_FOR_INTAKE}, robot.claw),
             home
         ))
     }

@@ -5,15 +5,18 @@ import com.arcrobotics.ftclib.command.CommandBase
 import org.apache.commons.math3.util.FastMath.round
 import org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem
 
-class ControlTurretAngle(val turret : TurretSubsystem, val snapAngle: Double,  val turrentAngleProvider : () -> Vector2d) : CommandBase() {
+class ControlTurretAngle(private val turret : TurretSubsystem,
+                         private val snapAngle: Double = 45.0,
+                         private val turrentAngleProvider : () -> Vector2d) : CommandBase() {
     init {
         addRequirements(turret)
-        turret.isTelemetryEnabled = true
     }
+
+    private val minimumMagnitude = 0.9
     override fun execute() {
         val vector = turrentAngleProvider.invoke()
         val magnitude = vector.norm()
-        if (magnitude > 0.9) {
+        if (magnitude > minimumMagnitude) {
             val joystickAngle =  normalizeDegrees(Math.toDegrees(vector.angle()))
             val currentAngle = turret.currentAngleDegrees
             val angleDiff = shortestArc(currentAngle, joystickAngle)

@@ -8,13 +8,13 @@ import org.firstinspires.ftc.teamcode.Cons.HEADING_KD
 import org.firstinspires.ftc.teamcode.Cons.HEADING_KP
 import org.firstinspires.ftc.teamcode.subsystems.DrivetrainSubsystem
 
-class DriveMecanumSnap (
-    val drive: DrivetrainSubsystem,private val goalHeading:Double, private val fwdSupplier: () -> Double,
-    private val strafeSupplier: () -> Double,
-) : CommandBase() {
+class DriveMecanumSnap (private val drive: DrivetrainSubsystem,
+                        private val goalHeading:Double,
+                        private val fwdSupplier: () -> Double,
+                        private val strafeSupplier: () -> Double) : CommandBase() {
+
     val pid_basic = BasicPID(PIDCoefficients(HEADING_KP, 0.0, HEADING_KD))
     val angle_controller = AngleController(pid_basic)
-
 
     init {
         addRequirements(drive)
@@ -24,8 +24,8 @@ class DriveMecanumSnap (
         val out = angle_controller.calculate(goalHeading,drive.poseEstimate.heading)
 
         drive.driveFieldCentric(
-            strafeSupplier.invoke(),
-            fwdSupplier.invoke(),
+            strafeSupplier(),
+            fwdSupplier(),
             -out,
             drive.poseEstimate.heading
         )

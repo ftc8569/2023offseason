@@ -3,16 +3,15 @@ package org.firstinspires.ftc.teamcode.commands.elbow
 import com.arcrobotics.ftclib.command.CommandBase
 import org.firstinspires.ftc.teamcode.subsystems.ElbowSubsystem
 
-class SetElbowAngle(val elbow : ElbowSubsystem, val ang: Double): CommandBase() {
+class SetElbowAngle(private val elbow : ElbowSubsystem, private val angle: Double): CommandBase() {
     init {
         addRequirements(elbow)
     }
     override fun initialize() {
         super.initialize()
-        elbow.targetAngleDegrees = ang
+        elbow.targetAngleDegrees = angle
     }
     override fun isFinished() : Boolean {
         return elbow.isCloseEnoughToTargetAngle()
     }
-
 }

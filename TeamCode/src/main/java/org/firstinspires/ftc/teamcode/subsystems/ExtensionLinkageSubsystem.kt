@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
-import android.annotation.SuppressLint
 import com.acmerobotics.roadrunner.profile.MotionProfileGenerator
 import com.acmerobotics.roadrunner.profile.MotionState
 import com.arcrobotics.ftclib.command.SubsystemBase
@@ -20,10 +19,8 @@ class ExtensionLinkageSubsystem(val robot: Robot, val servo: AxonServo) : Subsys
 
 
     var isTelemetryEnabled = false
-
     private val velocity = 2.0 // inches / second
     private val acceleration = 2.0 // inches / second ^ 2
-
 
     companion object {
         const val MINIMUM_EXTENSION = 0.0
@@ -35,94 +32,91 @@ class ExtensionLinkageSubsystem(val robot: Robot, val servo: AxonServo) : Subsys
     }
 
     val isExtended : Boolean
-        get() = servo.servo.position > EXTENSION_HOME
-
-
-    // set this to do motion profiling
+        get() = servo.angle > servo.getAngleDegreesFromServoPosition(EXTENSION_HOME)
     var extensionTargetInches: Double = 0.0
-
     private var currentExtensionDistanceInches: Double = 0.0
-
     private var previousTargetExtensionInches: Double = 0.0
-
-    // set this directly to make the servo go to that position
-    var actualPositionExtensionInches: Double = 0.0
-        set(value) {
-            field = value
-            position = angleRadiansToServoPosition(solveTheta(value))
-        }
-
+    var extensionLength : Double = EXTENSION_HOME
     private var mProfile = MotionProfileGenerator.generateMotionProfile(
         MotionState(extensionTargetInches, 0.0, 0.0),
         MotionState(extensionTargetInches, 0.0, 0.0),
         { velocity },
         { acceleration },
     )
-
     var timer = ElapsedTime()
 
-    private var position : Double = 0.0
-        get() = servo.servo.position
-        set(value) {
-            field = value
-            var offset = 0.925
-            servo.servo.position = offset - value
-        }
-
-    fun home(){
-        servo.servo.position = EXTENSION_HOME
-    }
-
     override fun periodic() {
-//        generateMotionProfile(extensionTargetInches, actualPositionExtensionInches)
+//        generateMotionProfile(extensionTargetInches, extensionLength)
 //        currentExtensionDistanceInches = mProfile[timer.seconds()].x
-//        actualPositionExtensionInches = currentExtensionDistanceInches
+//        extensionLength = currentExtensionDistanceInches
+
+        servo.angle = baseLinkageToServoAngle(solveBaseLinkageAngleDegrees(extensionLength))
+
         if(isTelemetryEnabled) {
             robot.telemetry.addLine("Extension: Telemetry Enabled")
-            robot.telemetry.addData("Extension Actual Inches:", actualPositionExtensionInches)
-            robot.telemetry.addData("raw servo position", servo.servo.position)
-            robot.telemetry.addData("theta", solveTheta(actualPositionExtensionInches))
-            robot.telemetry.addData("theta (deg)", Math.toDegrees(solveTheta(actualPositionExtensionInches)))
+            robot.telemetry.addData("extension length (inches)", extensionLength)
+            robot.telemetry.addData("servo angle (deg)", servo.angle)
+            robot.telemetry.addData("base linkage angle (deg)", solveBaseLinkageAngleDegrees(extensionLength))
             robot.telemetry.addData("motion profile distance", currentExtensionDistanceInches)
-            robot.telemetry.addData("servo position calculation", angleRadiansToServoPosition(solveTheta(actualPositionExtensionInches)))
             robot.telemetry.update()
         }
     }
 
-    private fun solveTheta(linkage_length_inches: Double): Double {
-        val initialGuess = Math.PI / 2
-        var theta = initialGuess
-        val epsilon = 1E-10
-        val mmToInchesConversion = 0.03937008
-        val l1 = 175.0 * mmToInchesConversion
-        val l2 = 250.0 * mmToInchesConversion
+    private val minimumExtensionSolveLength = 5.0
+    private val thetaAtMinimumExtensionSolveLength = solveBaseLinkageAngleDegrees(minimumExtensionSolveLength)
+    private val maximumExtensionSolveLength = 15.0
+    private val thetaAtMaximumExtensionSolveLength = solveBaseLinkageAngleDegrees(maximumExtensionSolveLength)
+    private fun solveBaseLinkageAngleDegrees(linkage_length_inches: Double): Double {
 
-        if (linkage_length_inches < 5) {
-            theta = 0.0
-        } else {
+        return if (linkage_length_inches < minimumExtensionSolveLength) {
+            interpolateBaseLinkageAngle(linkage_length_inches)
+        }
+        else if (linkage_length_inches > maximumExtensionSolveLength) {
+            thetaAtMaximumExtensionSolveLength
+        }
+        else {
+            val mmToInchesConversion = 0.03937008
+            // center to center distance of the two linkages
+            val baseLinkageLength_mm = 175.0
+            val secondaryLinkageLength_mm = 250.0
+            val l1 = baseLinkageLength_mm * mmToInchesConversion
+            val l2 = secondaryLinkageLength_mm * mmToInchesConversion
+            val initialGuess = Math.PI / 2
+            var thetaRadians = initialGuess
+            val solveTolerance = Math.PI/180.0 // 1 degree is good enough
+
+            // Newton's Method Solve
             for (i in 1..10) {
-                val f = cos(theta) * l1 + sqrt(l2.pow(2) - (sin(theta) * l1).pow(2)) - linkage_length_inches
-                val df = -sin(theta) * l1 - (l1.pow(2) * sin(theta) * cos(theta)) / sqrt(l2.pow(2) - (sin(theta) * l1).pow(2))
-                val thetaNext = theta - f / df
+                val f = cos(thetaRadians) * l1 + sqrt(l2.pow(2) - (sin(thetaRadians) * l1).pow(2)) - linkage_length_inches
+                val df = -sin(thetaRadians) * l1 - (l1.pow(2) * sin(thetaRadians) * cos(thetaRadians)) / sqrt(l2.pow(2) - (sin(thetaRadians) * l1).pow(2))
+                val thetaNext = thetaRadians - f / df
 
-                if (abs(thetaNext - theta) < epsilon) {
-                    theta = thetaNext
+                if (abs(thetaNext - thetaRadians) < solveTolerance) {
+                    thetaRadians = thetaNext
                     break
                 }
-                theta = thetaNext
+                thetaRadians = thetaNext
             }
-            theta = Math.toRadians(180.0) - theta
+
+            // we want the exterior angle
+            180.0 - Math.toDegrees(thetaRadians)
         }
-
-
-        // we want the exterior angle
-        return theta - Math.toRadians(90.0)
+    }
+    fun interpolateBaseLinkageAngle(length: Double): Double {
+        if(length < 5.0 && length > 0.0) {
+            val slope = thetaAtMinimumExtensionSolveLength / minimumExtensionSolveLength
+            return slope * length
+        }
+        else
+            throw IllegalArgumentException("Length must be between 0 and 5 inches")
     }
 
-    private fun angleRadiansToServoPosition(radian_angle : Double) : Double {
-        return servo.getServoPositionFromAngleDegrees(Math.toDegrees(radian_angle * 2))
+    private fun baseLinkageToServoAngle(baseLinkageAngle : Double) : Double {
+        val gearRatio = 2.0
+        val servoAngleAtZerobaseLinkageAngle = 164.0
+        // Note the servo angle is reversed from the base linkage angle
+        return servoAngleAtZerobaseLinkageAngle - (baseLinkageAngle * gearRatio)
     }
-
 
     private fun generateMotionProfile(reference: Double, state: Double) {
         if (previousTargetExtensionInches == reference) {

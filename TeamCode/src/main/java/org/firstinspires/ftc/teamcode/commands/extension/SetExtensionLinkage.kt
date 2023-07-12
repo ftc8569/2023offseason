@@ -12,7 +12,7 @@ class SetExtensionLinkage(private val linkage : ExtensionLinkageSubsystem, priva
     private val duration = 0.5; // seconds
 
     override fun initialize() {
-        linkage.actualPositionExtensionInches = length_in;
+        linkage.extensionLength = length_in;
         timer.reset()
     }
 

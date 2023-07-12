@@ -3,12 +3,10 @@ package org.firstinspires.ftc.teamcode.commands.drivetrain
 import com.arcrobotics.ftclib.command.CommandBase
 import org.firstinspires.ftc.teamcode.subsystems.DrivetrainSubsystem
 
-class DriveMecanum(
-    val drive: DrivetrainSubsystem,
-    private val fwdSupplier: () -> Double,
-    private val strafeSupplier: () -> Double,
-    private val turnSupplier: () -> Double
-) : CommandBase() {
+class DriveMecanum(val drive: DrivetrainSubsystem,
+                   private val fwdSupplier: () -> Double,
+                   private val strafeSupplier: () -> Double,
+                   private val turnSupplier: () -> Double) : CommandBase() {
 
     init {
         addRequirements(drive)
@@ -22,6 +20,4 @@ class DriveMecanum(
             drive.poseEstimate.heading
         )
     }
-
-
 }

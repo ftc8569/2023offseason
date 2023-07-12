@@ -1,24 +1,27 @@
 package org.firstinspires.ftc.teamcode.commands.commandgroups
 
-import com.arcrobotics.ftclib.command.InstantCommand
-import com.arcrobotics.ftclib.command.ParallelCommandGroup
-import com.arcrobotics.ftclib.command.SequentialCommandGroup
-import com.arcrobotics.ftclib.command.WaitCommand
+import com.arcrobotics.ftclib.command.*
 import org.firstinspires.ftc.teamcode.commands.extension.SetExtensionLinkage
+import org.firstinspires.ftc.teamcode.commands.general.ConfigurableCommandBase
+import org.firstinspires.ftc.teamcode.commands.general.UpdateTelemetry
 import org.firstinspires.ftc.teamcode.commands.wrist.SetWristAngles
 import org.firstinspires.ftc.teamcode.subsystems.ArmState
+import org.firstinspires.ftc.teamcode.subsystems.ClawPositions
 import org.firstinspires.ftc.teamcode.subsystems.ExtensionLinkageSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.Robot
 
-class PickupCone(var robot : Robot) : SequentialCommandGroup() {
+class PickupCone(private val robot : Robot) : ConfigurableCommandBase() {
 
-    init {
-        if (robot.armState == ArmState.INTAKE) {
-            this.addCommands(
-                InstantCommand({robot.claw.closeClaw()}, robot.claw),
+    override fun configure(): CommandBase {
+        return if (robot.armState == ArmState.INTAKE) {
+            SequentialCommandGroup(
+                InstantCommand({ robot.claw.position = ClawPositions.HOLD_CONE }, robot.claw),
                 WaitCommand(150),
                 MoveToTravel(robot)
             )
-        }
+        } else
+            UpdateTelemetry(robot) { telemetry ->
+                telemetry.addLine("PickupCone is not configured for arm state ${robot.armState}")
+            }
     }
 }

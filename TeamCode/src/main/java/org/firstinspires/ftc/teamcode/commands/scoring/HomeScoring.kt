@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.commands.scoring
 
 import com.arcrobotics.ftclib.command.CommandBase
 import org.firstinspires.ftc.teamcode.subsystems.Robot
-import org.firstinspires.ftc.teamcode.utilities.ScoringConfigs.ALIGNER_HOME
 
 class HomeScoring(val r: Robot): CommandBase() {
     init {
@@ -11,7 +10,7 @@ class HomeScoring(val r: Robot): CommandBase() {
 
     override fun initialize(){
         r.elbow.targetAngleDegrees = 60.0
-        r.extension.actualPositionExtensionInches = 1.0
+        r.extension.extensionLength = 1.0
         r.aligner.home()
     }
 

@@ -35,8 +35,9 @@ public class Cons {
 
 
     // Claw Constants
-    public static double CLAW_OPEN = 1500;
-    public static double CLAW_CLOSE = 1100;
+    public static double CLAW_OPEN_FOR_INTAKE = 1500;
+    public static double CLAW_HOLD_CONE = 1100;
+    public static double CLAW_RELEASE_CONE_BUT_HOLD_TSE = 1200;
 
     // Wrist Constants
     public static double WRIST_LEFT_KP = 0.0005;

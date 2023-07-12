@@ -21,7 +21,7 @@ import kotlin.math.sign
 @TeleOp
 class TeleopV2 : CommandOpMode() {
     override fun initialize() {
-        val robot = Robot(hardwareMap, telemetry, isTelemetryEnabled = true)
+        val robot = Robot(hardwareMap, telemetry)
 
         val driver = GamepadEx(gamepad1)
         val gunner = GamepadEx(gamepad2)
@@ -34,7 +34,7 @@ class TeleopV2 : CommandOpMode() {
         )
 
         // Move the turret to the angle to the right joystick
-        schedule(ControlTurretAngle(robot.turret, 45.0) {
+        schedule(ControlTurretAngle(robot.turret) {
             Vector2d(-driver.rightY, driver.rightX)
         })
 

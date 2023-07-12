@@ -1,0 +1,47 @@
+package org.firstinspires.ftc.teamcode.commands.general
+
+import com.arcrobotics.ftclib.command.CommandBase
+
+abstract class ConfigurableCommandBase() : CommandBase() {
+
+    private var command : CommandBase = configure()
+
+    /**
+     * If you override this method, you must call super.initialize() at the beginning of your method.
+     */
+    override fun initialize() {
+        command.initialize()
+    }
+
+    /**
+     * If you override this method, you must call super.initialize() at the beginning of your method.
+     */
+    override fun execute() {
+        command.execute()
+    }
+
+    /**
+     * If you override this method, you must call super.initialize() at the beginning of your method.
+     */
+    override fun isFinished(): Boolean {
+        return command.isFinished()
+    }
+
+    /**
+     * If you override this method, you must call super.initialize() at the beginning of your method.
+     */
+    override fun end(interrupted: Boolean) {
+        command.end(interrupted)
+    }
+
+    /**
+     * This function is called when the command is initialized. It is
+     * used to configure a command or commandgroup that will be executed.
+     * The reason for this is so that the command can be configured
+     * just before it is executed.
+     *
+     * This function must return a CommandBase object.
+     */
+    abstract fun configure() : CommandBase
+
+}

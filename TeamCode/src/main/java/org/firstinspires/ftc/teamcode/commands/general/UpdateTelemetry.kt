@@ -1,15 +1,16 @@
-package org.firstinspires.ftc.teamcode.commands
+package org.firstinspires.ftc.teamcode.commands.general
 
 import com.arcrobotics.ftclib.command.CommandBase
 import com.arcrobotics.ftclib.command.InstantCommand
+import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.subsystems.Robot
 import kotlin.math.round
 
-class UpdateTelemetry(val robot: Robot, val message : String) : CommandBase() {
+class UpdateTelemetry(private val robot: Robot, private val addTelemetry : (Telemetry) -> Unit) : CommandBase() {
 
     override fun initialize() {
         super.initialize()
-        robot.telemetry.addLine(message)
+        addTelemetry(robot.telemetry)
         robot.telemetry.update()
     }
 }
