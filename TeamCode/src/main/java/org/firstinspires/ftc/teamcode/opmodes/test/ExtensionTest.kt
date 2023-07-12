@@ -22,10 +22,10 @@ class ExtensionTest: CommandOpMode() {
         robot.telemetry.addLine("Extension Test Initialized")
         robot.telemetry.update()
 
-        rightDpad.whenPressed(InstantCommand({ robot.extension.extensionLength = 0.0}, robot.extension))
-        leftDpad.whenPressed(InstantCommand({ robot.extension.extensionLength = ExtensionLinkageSubsystem.LOW }, robot.extension))
-        upDpad.whenPressed(InstantCommand({ robot.extension.extensionLength = ExtensionLinkageSubsystem.MID }, robot.extension))
-        downDpad.whenPressed(InstantCommand({ robot.extension.extensionLength = ExtensionLinkageSubsystem.HIGH }, robot.extension))
+        rightDpad.whenPressed(InstantCommand({ robot.extension.targetLength = 0.0}, robot.extension))
+        leftDpad.whenPressed(InstantCommand({ robot.extension.targetLength = ExtensionLinkageSubsystem.LOW }, robot.extension))
+        upDpad.whenPressed(InstantCommand({ robot.extension.targetLength = ExtensionLinkageSubsystem.MID }, robot.extension))
+        downDpad.whenPressed(InstantCommand({ robot.extension.targetLength = ExtensionLinkageSubsystem.HIGH }, robot.extension))
     }
 
 }

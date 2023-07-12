@@ -61,7 +61,7 @@ class Robot(val hardwareMap: HardwareMap, t: Telemetry, val opModeType: OpModeTy
     val turret: TurretSubsystem = TurretSubsystem(this, MotorEx(hardwareMap, "turret"), homingResult)
     val elbow = ElbowSubsystem(this, MotorEx(hardwareMap, "leftElbow"), MotorEx(hardwareMap, "rightElbow"), homingResult)
 
-    private val extensionServo = AxonServo(hardwareMap, "extension", 500.0, 2500.0, 355.0)
+    private val extensionServo = AxonServo(hardwareMap, "extension", 500.0, 2500.0, 355.0, true)
     val extension = ExtensionLinkageSubsystem(this, extensionServo)
 
     private val poleAlignerServo = hardwareMap.get(ServoImplEx::class.java, "aligner")

@@ -10,6 +10,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.commands.commandgroups.*
 import org.firstinspires.ftc.teamcode.commands.drivetrain.DriveMecanumSnap
+import org.firstinspires.ftc.teamcode.commands.general.MonitorRobotTelemetry
 import org.firstinspires.ftc.teamcode.commands.turret.ControlTurretAngle
 import org.firstinspires.ftc.teamcode.subsystems.ArmAndTurretStateData
 import org.firstinspires.ftc.teamcode.subsystems.ArmState
@@ -22,7 +23,6 @@ import kotlin.math.sign
 class TeleopV2 : CommandOpMode() {
     override fun initialize() {
         val robot = Robot(hardwareMap, telemetry)
-
         val driver = GamepadEx(gamepad1)
         val gunner = GamepadEx(gamepad2)
 
@@ -38,6 +38,8 @@ class TeleopV2 : CommandOpMode() {
             Vector2d(-driver.rightY, driver.rightX)
         })
 
+        // turn on the telemetry monitoring of the robot
+        schedule(MonitorRobotTelemetry(robot))
 
         // Score high, medium, or low based on the gamepad buttons
         driver.getGamepadButton(GamepadKeys.Button.Y).whenPressed(
@@ -57,6 +59,7 @@ class TeleopV2 : CommandOpMode() {
             DepositCone(robot)
         )
 
+        robot.extension.isTelemetryEnabled = true
         // Intake position based on the DPAD
         driver.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(
             IntakeCone(robot, ArmStates.INTAKE_REAR)

@@ -16,7 +16,7 @@ class ElbowSubsystem(private val robot: Robot, motor1: MotorEx, motor2: MotorEx,
 
     var isTelemetryEnabled = false
     private val angleStartOffsetDegrees = homingResult.homeAngles.elbowAngle
-    val angleRange = AngleRange(-50.0, 60.0)
+    val angleRange = AngleRange(-50.0, 58.0)
     var targetAngleDegrees = 0.0
         set(value) {
             field = value.coerceIn(angleRange.minimumAngle, angleRange.maximumAngle)

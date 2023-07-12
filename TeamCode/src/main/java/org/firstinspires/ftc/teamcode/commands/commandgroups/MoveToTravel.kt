@@ -20,19 +20,21 @@ class MoveToTravel(val robot : Robot) : ConfigurableCommandBase()  {
         robot.armState = ArmState.TRAVEL
     }
 
+    private val LowerElbowFirst = SequentialCommandGroup(
+            SetElbowAngle(robot.elbow, ArmStates.TRAVEL.elbow.angle),
+            ParallelCommandGroup(
+                SetWristAngles(
+                    robot.wrist,
+                    ArmStates.TRAVEL.wrist.bendAngle,
+                    ArmStates.TRAVEL.wrist.twistAngle
+                ),
+                SetExtensionLinkage(robot.extension, ArmStates.TRAVEL.extension.length),
+                SetAligner(robot.aligner, ArmStates.TRAVEL.aligner.angle)
+            )
+        )
     override fun configure(): CommandBase {
         if (robot.armState == ArmState.INTAKE || robot.armState == ArmState.GROUND) {
             return SequentialCommandGroup(
-                SetElbowAngle(robot.elbow, ArmStates.TRAVEL.elbow.angle),
-                ParallelCommandGroup(
-                    SetWristAngles(
-                        robot.wrist,
-                        ArmStates.TRAVEL.wrist.bendAngle,
-                        ArmStates.TRAVEL.wrist.twistAngle
-                    ),
-                    SetExtensionLinkage(robot.extension, ArmStates.TRAVEL.extension.length),
-                    SetAligner(robot.aligner, ArmStates.TRAVEL.aligner.angle)
-                )
             )
         } else {
             return SequentialCommandGroup(

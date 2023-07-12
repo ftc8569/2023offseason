@@ -4,34 +4,42 @@ import com.arcrobotics.ftclib.command.CommandBase
 
 abstract class ConfigurableCommandBase() : CommandBase() {
 
-    private var command : CommandBase = configure()
+    private var command : CommandBase? = null
 
     /**
      * If you override this method, you must call super.initialize() at the beginning of your method.
      */
     override fun initialize() {
-        command.initialize()
+        command = configure()
+        if(null != command)
+            command!!.initialize()
+
     }
 
     /**
      * If you override this method, you must call super.initialize() at the beginning of your method.
      */
     override fun execute() {
-        command.execute()
+        if(null != command)
+            command!!.execute()
     }
 
     /**
      * If you override this method, you must call super.initialize() at the beginning of your method.
      */
     override fun isFinished(): Boolean {
-        return command.isFinished()
+        return if(null != command)
+            command!!.isFinished()
+        else
+            true
     }
 
     /**
      * If you override this method, you must call super.initialize() at the beginning of your method.
      */
     override fun end(interrupted: Boolean) {
-        command.end(interrupted)
+        if(null != command)
+           command!!.end(interrupted)
     }
 
     /**

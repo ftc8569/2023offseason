@@ -35,7 +35,7 @@ class RightScoreAuto: CommandOpMode() {
             .build()
         val startToConesCommand = TrajectoryCommand(robot.drivetrain, startToFirstPoint)
         val turnTurret = SetTurretAngle(robot.turret, 90.0)
-        val extend = InstantCommand({robot.extension.extensionLength = 0.0; robot.wrist.bendAngleDegrees = -10.0}, robot.extension, robot.wrist)
+        val extend = InstantCommand({robot.extension.targetLength = 0.0; robot.wrist.bendAngleDegrees = -10.0}, robot.extension, robot.wrist)
         schedule(FixedSequentialCommandGroup(
             home,
             SetTurretAngle(robot.turret, 0.0),

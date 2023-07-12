@@ -65,7 +65,7 @@ class TransformerAuto: CommandOpMode() {
             .build()
         val startToConesCommand = TrajectoryCommand(drive, startToFirstPoint)
         val turnTurret = SetTurretAngle(robot.turret, 60.0)
-        val extend = InstantCommand({robot.extension.extensionLength = 0.0; robot.wrist.bendAngleDegrees = -10.0}, robot.extension, robot.wrist)
+        val extend = InstantCommand({robot.extension.targetLength = 0.0; robot.wrist.bendAngleDegrees = -10.0}, robot.extension, robot.wrist)
 
         /////////// START PARKING CONFIGURATION ///////////
         val park1traj = drive.trajectorySequenceBuilder(Pose2d(firstPoint, PI))

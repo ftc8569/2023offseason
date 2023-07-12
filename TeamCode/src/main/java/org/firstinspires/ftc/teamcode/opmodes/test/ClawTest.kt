@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.test
 import com.arcrobotics.ftclib.command.CommandOpMode
 import com.arcrobotics.ftclib.command.SequentialCommandGroup
 import com.arcrobotics.ftclib.command.WaitCommand
+import com.arcrobotics.ftclib.command.button.Trigger
 import com.arcrobotics.ftclib.gamepad.GamepadEx
 import com.arcrobotics.ftclib.gamepad.GamepadKeys
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
@@ -19,6 +20,8 @@ class ClawTest: CommandOpMode() {
         val robot = Robot(hardwareMap, telemetry)
 
         val driver = GamepadEx(gamepad1)
+
+        val beamBreakTrigger = Trigger { robot.claw.holdingCone }.whenActive(SetClawPosition(robot, ClawPositions.HOLD_CONE))
 
         robot.claw.isTelemetryEnabled = true
         driver.getGamepadButton(GamepadKeys.Button.A).whenPressed(
