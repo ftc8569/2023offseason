@@ -9,7 +9,7 @@ public class Cons {
     public static double ELBOW_KA = 0.0;
     public static double ELBOW_KV = 0.0;
     public static double ELBOW_KCOS = 0.0;
-    public static double ELBOW_KP = 0.018;
+    public static double ELBOW_KP = 0.04;
     public static double ELBOW_KI = 0.05;
     public static double ELBOW_KD = 0.0015;
     public static double INITIAL_ANGLE = 0.0;

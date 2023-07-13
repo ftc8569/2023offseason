@@ -23,7 +23,7 @@ open class ScoreJunction(private val robot : Robot, private val targetState : Ar
     override fun configure(): CommandBase {
         val choice = when(targetState) {
             ArmState.HIGH -> Triple(true, ArmStates.SCORE_HIGH, true)
-            ArmState.MED -> Triple(true, ArmStates.SCORE_MIDDLE,true)
+            ArmState.MED -> Triple(false, ArmStates.SCORE_MIDDLE,true)
             ArmState.LOW -> Triple(true, ArmStates.SCORE_LOW, true)
             ArmState.GROUND -> Triple(true, ArmStates.SCORE_GROUND, true)
             else -> Triple(false, ArmStates.ARM_HOME, false)
@@ -35,25 +35,28 @@ open class ScoreJunction(private val robot : Robot, private val targetState : Ar
 
         if(!isArmStateValid)
             return UpdateTelemetry(robot) {
-                robot.telemetry.addLine("Cannot score to arm state $targetState")
+                UpdateTelemetry(robot) { telemetry ->
+                    telemetry.addLine("Cannot score to arm state $targetState")}
             }
 
         if (shouldElbowGoFirst)
             return SequentialCommandGroup(
                 SetElbowAngle(robot.elbow, armState.elbow.angle),
                 ParallelCommandGroup(
-                    SetWristAngles(robot.wrist, armState.wrist.bendAngle, armState.wrist.twistAngle),
-                    SetExtensionLinkage(robot.extension, armState.extension.length),
-                    SetAligner(robot.aligner, armState.aligner.angle)
-                ))
-        else
-            return SequentialCommandGroup(
-                ParallelCommandGroup(
-                    SetWristAngles(robot.wrist, armState.wrist.bendAngle, armState.wrist.twistAngle),
                     SetExtensionLinkage(robot.extension, armState.extension.length),
                     SetAligner(robot.aligner, armState.aligner.angle)
                 ),
-                SetElbowAngle(robot.elbow, armState.elbow.angle))
+                SetWristAngles(robot.wrist, armState.wrist.bendAngle, armState.wrist.twistAngle),
+            )
+        else
+            return SequentialCommandGroup(
+                ParallelCommandGroup(
+                    SetExtensionLinkage(robot.extension, armState.extension.length),
+                    SetAligner(robot.aligner, armState.aligner.angle)
+                ),
+                SetElbowAngle(robot.elbow, armState.elbow.angle),
+                SetWristAngles(robot.wrist, armState.wrist.bendAngle, armState.wrist.twistAngle))
+
     }
 
 }

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.arcrobotics.ftclib.command.CommandOpMode
 import com.arcrobotics.ftclib.command.InstantCommand
+import com.arcrobotics.ftclib.command.ParallelCommandGroup
 import com.arcrobotics.ftclib.command.SelectCommand
 import com.arcrobotics.ftclib.command.WaitCommand
 import com.arcrobotics.ftclib.gamepad.GamepadEx
@@ -11,6 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.commands.commandgroups.*
 import org.firstinspires.ftc.teamcode.commands.drivetrain.DriveMecanumSnap
 import org.firstinspires.ftc.teamcode.commands.general.MonitorRobotTelemetry
+import org.firstinspires.ftc.teamcode.commands.general.UpdateTelemetry
 import org.firstinspires.ftc.teamcode.commands.turret.ControlTurretAngle
 import org.firstinspires.ftc.teamcode.subsystems.ArmAndTurretStateData
 import org.firstinspires.ftc.teamcode.subsystems.ArmState
@@ -25,6 +27,8 @@ class TeleopV2 : CommandOpMode() {
         val robot = Robot(hardwareMap, telemetry)
         val driver = GamepadEx(gamepad1)
         val gunner = GamepadEx(gamepad2)
+
+        schedule(MoveToTravel(robot))
 
         // drive with left joystick snapped to 0 degree heading
         robot.drivetrain.defaultCommand = DriveMecanumSnap(
@@ -59,19 +63,18 @@ class TeleopV2 : CommandOpMode() {
             DepositCone(robot)
         )
 
-        robot.extension.isTelemetryEnabled = true
         // Intake position based on the DPAD
         driver.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(
-            IntakeCone(robot, ArmStates.INTAKE_REAR)
+            IntakeCone(robot, ArmStates.INTAKE_REAR),
         )
         driver.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(
-            IntakeCone(robot, ArmStates.INTAKE_FRONT)
+            IntakeCone(robot, ArmStates.INTAKE_FRONT),
         )
         driver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(
-            IntakeCone(robot, ArmStates.INTAKE_LEFT)
+            IntakeCone(robot, ArmStates.INTAKE_LEFT),
         )
         driver.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(
-            IntakeCone(robot, ArmStates.INTAKE_RIGHT)
+            IntakeCone(robot, ArmStates.INTAKE_RIGHT),
         )
 
         // PICKUP Cone

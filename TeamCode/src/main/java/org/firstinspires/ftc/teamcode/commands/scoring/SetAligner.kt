@@ -11,8 +11,7 @@ class SetAligner(private val aligner : PoleAlignerSubsystem, private val angle :
     }
 
     val timer = ElapsedTime()
-
-    val duration = 0.15
+    val duration = 0.6
 
     override fun initialize() {
         aligner.angle = angle

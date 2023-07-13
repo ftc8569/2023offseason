@@ -20,7 +20,7 @@ class MoveToTravel(val robot : Robot) : ConfigurableCommandBase()  {
         robot.armState = ArmState.TRAVEL
     }
 
-    private val LowerElbowFirst = SequentialCommandGroup(
+    private val elbowFirst = SequentialCommandGroup(
             SetElbowAngle(robot.elbow, ArmStates.TRAVEL.elbow.angle),
             ParallelCommandGroup(
                 SetWristAngles(
@@ -32,23 +32,20 @@ class MoveToTravel(val robot : Robot) : ConfigurableCommandBase()  {
                 SetAligner(robot.aligner, ArmStates.TRAVEL.aligner.angle)
             )
         )
+    private val elbowLast = SequentialCommandGroup(
+        ParallelCommandGroup(
+            SetWristAngles(robot.wrist,ArmStates.TRAVEL.wrist.bendAngle,ArmStates.TRAVEL.wrist.twistAngle),
+            SetExtensionLinkage(robot.extension, ArmStates.TRAVEL.extension.length),
+            SetAligner(robot.aligner, ArmStates.TRAVEL.aligner.angle)
+        ),
+        SetElbowAngle(robot.elbow, ArmStates.TRAVEL.elbow.angle)
+    )
     override fun configure(): CommandBase {
-        if (robot.armState == ArmState.INTAKE || robot.armState == ArmState.GROUND) {
-            return SequentialCommandGroup(
-            )
-        } else {
-            return SequentialCommandGroup(
-                ParallelCommandGroup(
-                    SetWristAngles(
-                        robot.wrist,
-                        ArmStates.TRAVEL.wrist.bendAngle,
-                        ArmStates.TRAVEL.wrist.twistAngle
-                    ),
-                    SetExtensionLinkage(robot.extension, ArmStates.TRAVEL.extension.length),
-                    SetAligner(robot.aligner, ArmStates.TRAVEL.aligner.angle)
-                ),
-                SetElbowAngle(robot.elbow, ArmStates.TRAVEL.elbow.angle)
-            )
-        }
+        return ParallelCommandGroup(
+            SetWristAngles(robot.wrist,ArmStates.TRAVEL.wrist.bendAngle,ArmStates.TRAVEL.wrist.twistAngle),
+            SetExtensionLinkage(robot.extension, ArmStates.TRAVEL.extension.length),
+            SetAligner(robot.aligner, ArmStates.TRAVEL.aligner.angle),
+            SetElbowAngle(robot.elbow, ArmStates.TRAVEL.elbow.angle)
+        )
     }
 }

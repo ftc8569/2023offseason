@@ -64,6 +64,7 @@ public class ArmStates() {
         )
         val SCORE_HIGH = ArmStateData(
             WristStateData(-2.0, 0.0, 34.0),
+
             ElbowStateData(58.0),
             ExtensionStateData(11.6),
             PoleAlignerStateData(8.0),
@@ -71,7 +72,7 @@ public class ArmStates() {
         )
         val SCORE_MIDDLE = ArmStateData(
             WristStateData(-12.0, 0.0, 27.0),
-            ElbowStateData(22.5),
+            ElbowStateData(35.0),
             ExtensionStateData(0.0),
             PoleAlignerStateData(37.0),
             CLAW_HOLD_CONE
@@ -83,17 +84,17 @@ public class ArmStates() {
             PoleAlignerStateData(50.0),
             CLAW_HOLD_CONE
         )
-        val INTAKE = ArmStateData(
+        var INTAKE = ArmStateData(
             WristStateData(-37.0, 0.0),
             ElbowStateData(-45.0),
-            ExtensionStateData(4.25),
+            ExtensionStateData(5.25),
             PoleAlignerStateData(ARM_HOME.aligner.angle),
             CLAW_OPEN_FOR_INTAKE
         )
         val SCORE_GROUND = ArmStateData(
             WristStateData(-37.0, 0.0, -37.0),
             ElbowStateData(-49.0),
-            ExtensionStateData(3.25),
+            ExtensionStateData(4.25),
             PoleAlignerStateData(ARM_HOME.aligner.angle),
             CLAW_HOLD_CONE
         )

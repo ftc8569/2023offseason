@@ -6,6 +6,7 @@ import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.BasicPID
 import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficients
 import com.acmerobotics.roadrunner.profile.MotionProfileGenerator
 import com.acmerobotics.roadrunner.profile.MotionState
+import com.acmerobotics.roadrunner.util.epsilonEquals
 import com.arcrobotics.ftclib.command.SubsystemBase
 import com.arcrobotics.ftclib.hardware.motors.Motor
 import com.arcrobotics.ftclib.hardware.motors.MotorEx
@@ -114,7 +115,7 @@ class TurretSubsystem(val robot: Robot, val motor: MotorEx, private val homingRe
         }
     }
     public fun isCloseEnoughToTargetAngle(tolerance : Double = closeEnoughToTargetAngleDegrees) : Boolean {
-        return abs(currentAngleDegrees - targetAngleDegrees) < closeEnoughToTargetAngleDegrees
+        return abs(currentAngleDegrees - targetAngleDegrees) < closeEnoughToTargetAngleDegrees || motor.velocity epsilonEquals 0.0
     }
     private fun nearlyEqual(a: Double, b: Double, epsilon: Double = 1E-10): Boolean {
         return abs(a - b) < epsilon

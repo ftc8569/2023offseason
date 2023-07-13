@@ -19,7 +19,7 @@ class ExtensionLinkageSubsystem(val robot: Robot, val servo: AxonServo) : Subsys
     }
 
     companion object {
-        const val MINIMUM_EXTENSION = 0.0
+        const val MINIMUM_EXTENSION = 0.25
         const val GROUND = 5.19
         const val LOW = 8.0
         const val MID = 10.0

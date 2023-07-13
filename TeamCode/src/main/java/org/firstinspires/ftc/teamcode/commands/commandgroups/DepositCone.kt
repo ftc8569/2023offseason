@@ -11,12 +11,15 @@ import org.firstinspires.ftc.teamcode.subsystems.*
 
 class DepositCone(val robot : Robot) : ConfigurableCommandBase()  {
 
+
+    var has_initialized = false
+
     override fun configure(): CommandBase {
         val canDepositCone = when(robot.armState) {
             ArmState.HIGH, ArmState.MED, ArmState.LOW, ArmState.GROUND -> true
             else -> false
         }
-
+        has_initialized = true
         if(!canDepositCone)
             return UpdateTelemetry(robot) { telemetry ->
                 telemetry.addLine("DepositCone is not configured for arm state ${robot.armState}")
@@ -37,6 +40,11 @@ class DepositCone(val robot : Robot) : ConfigurableCommandBase()  {
                 MoveToTravel(robot)
             )
         }
+
+    }
+
+    override fun isFinished(): Boolean {
+        return super.isFinished() && has_initialized
     }
 
 }
