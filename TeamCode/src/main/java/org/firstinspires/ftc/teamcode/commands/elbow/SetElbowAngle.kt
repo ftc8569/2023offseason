@@ -12,7 +12,7 @@ class SetElbowAngle(private val elbow : ElbowSubsystem, private val angle: Doubl
     val timeOut = 1.0 // seconds
     override fun initialize() {
         super.initialize()
-        elbow.targetAngleDegrees = angle
+        elbow.targetAngle = angle
         timer.reset()
     }
     override fun isFinished() : Boolean {

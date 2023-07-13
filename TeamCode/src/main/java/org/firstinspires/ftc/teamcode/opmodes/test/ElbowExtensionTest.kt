@@ -23,9 +23,9 @@ class ElbowExtensionTest: LinearOpMode() {
 //            gp1.readButtons()
 //
 //            if(gp1.wasJustPressed(GamepadKeys.Button.Y)){
-//                scheduler.schedule(InstantCommand({r.elbow.targetAngleDegrees = 50.0}, r.elbow))
+//                scheduler.schedule(InstantCommand({r.elbow.targetAngle = 50.0}, r.elbow))
 //            } else if (gp1.wasJustPressed(GamepadKeys.Button.A)){
-//                scheduler.schedule(InstantCommand({r.elbow.targetAngleDegrees = 0.0}, r.elbow))
+//                scheduler.schedule(InstantCommand({r.elbow.targetAngle = 0.0}, r.elbow))
 //            }
 //
 //            if(gp1.wasJustPressed(GamepadKeys.Button.X)){

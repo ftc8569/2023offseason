@@ -9,7 +9,7 @@ class TurretLock45Tests {
 //        val input = {Vector2d(1.0, 0.5)}
 //        val command = TurretLock45(turret, heading, input)
 //        command.execute()
-//        assertEquals(45.0,turret.targetAngleDegrees, 1e-5)
+//        assertEquals(45.0,turret.targetAngle, 1e-5)
 //    }
 //
 //    @Test
@@ -19,7 +19,7 @@ class TurretLock45Tests {
 //        val input = {Vector2d(-1.0, 0.5)}
 //        val command = TurretLock45(turret, heading, input)
 //        command.execute()
-//        assertEquals(-45.0,turret.targetAngleDegrees, 1e-5)
+//        assertEquals(-45.0,turret.targetAngle, 1e-5)
 //    }
 //
 //    @Test
@@ -29,7 +29,7 @@ class TurretLock45Tests {
 //        val input = {Vector2d(1.0, -0.5)}
 //        val command = TurretLock45(turret, heading, input)
 //        command.execute()
-//        assertEquals(135.0,turret.targetAngleDegrees, 1e-5)
+//        assertEquals(135.0,turret.targetAngle, 1e-5)
 //    }
 //
 //    @Test
@@ -39,7 +39,7 @@ class TurretLock45Tests {
 //        val input = {Vector2d(-1.0, -0.5)}
 //        val command = TurretLock45(turret, heading, input)
 //        command.execute()
-//        assertEquals(-135.0,turret.targetAngleDegrees, 1e-5)
+//        assertEquals(-135.0,turret.targetAngle, 1e-5)
 //    }
 
 }

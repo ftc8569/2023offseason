@@ -8,17 +8,14 @@ class SetExtensionLinkage(private val linkage : ExtensionLinkageSubsystem, priva
     init {
         addRequirements(linkage)
     }
-    private val timer = ElapsedTime()
-    private val duration = 0.5; // seconds
 
     override fun initialize() {
         linkage.targetLength = length_in;
         println("SetExtensionLinkage: distance " + linkage.targetLength)
-        timer.reset()
     }
 
     override fun isFinished(): Boolean {
-        return timer.seconds() > duration
+        return linkage.movementShouldBeComplete()
     }
 
 }

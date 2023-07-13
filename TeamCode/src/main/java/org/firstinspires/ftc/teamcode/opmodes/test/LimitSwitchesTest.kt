@@ -20,7 +20,7 @@ class LimitSwitchesTest() : CommandOpMode() {
             robot.telemetry.addData("Left Limit Switch:", robot.limitSwitches.leftLimitSwitchActive)
             robot.telemetry.addData("Right Limit Switch:", robot.limitSwitches.rightLimitSwitchActive)
             robot.telemetry.addData("Elbow Angle:", robot.elbow.currentAngleDegrees)
-            robot.telemetry.addData("Turret Angle:", robot.turret.currentAngleDegrees)
+            robot.telemetry.addData("Turret Angle:", robot.turret.currentAngle)
             robot.telemetry.update()
             })
         }

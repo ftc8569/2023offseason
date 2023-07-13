@@ -12,34 +12,32 @@ import com.arcrobotics.ftclib.hardware.motors.Motor
 import com.arcrobotics.ftclib.hardware.motors.MotorEx
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.Cons.*
-import org.opencv.core.Mat
 import kotlin.math.abs
-import kotlin.math.sign
 
 // Put timer in constructor, mock a timer
 class TurretSubsystem(val robot: Robot, val motor: MotorEx, private val homingResult: HomingResult) : SubsystemBase() {
 
-    val angleStartOffsetDegrees = homingResult.homeAngles.turretAngle
-    var currentAngleDegrees = homingResult.homeAngles.turretAngle
+    val angleStartOffset = homingResult.homeAngles.turretAngle
+    var currentAngle = homingResult.homeAngles.turretAngle
         private set
 
     val angleRange = AngleRange(-360.0, 360.0)
-    var targetAngleDegrees = 0.0
+    var targetAngle = 0.0
         set(value) {
             field = value.coerceIn(angleRange.minimumAngle, angleRange.maximumAngle)
         }
 
     val pid = BasicPID(PIDCoefficients(TURRET_KP, TURRET_KI, TURRET_KD))
-    val controller = AngleController(pid)
 
     var maxAngularVelocity = TURRET_MAX_ANGULAR_VELOCITY
     var maxAngularAcceleration = TURRET_MAX_ANGULAR_ACCELERATION
+
     var previousTarget = 0.0;
     var motionProfile = MotionProfileGenerator.generateMotionProfile(
-        MotionState(Math.toRadians(currentAngleDegrees),.0,0.0,0.0),
-        MotionState(Math.toRadians(targetAngleDegrees),0.0,0.0),
-        { Math.toRadians(maxAngularVelocity) },
-        { Math.toRadians(maxAngularAcceleration) })
+        MotionState(currentAngle,.0,0.0,0.0),
+        MotionState(targetAngle,0.0,0.0),
+        { maxAngularVelocity },
+        { maxAngularAcceleration })
     val motionProfileTimer = ElapsedTime()
 
 
@@ -56,29 +54,40 @@ class TurretSubsystem(val robot: Robot, val motor: MotorEx, private val homingRe
             motor.resetEncoder()
         }
 
-        currentAngleDegrees = encodersToAngleDegrees(motor.currentPosition.toDouble()) + angleStartOffsetDegrees
+        currentAngle = encodersToAngleDegrees(motor.currentPosition.toDouble()) + angleStartOffset
         register()
     }
 
-    override fun periodic() {
-        currentAngleDegrees = encodersToAngleDegrees(motor.currentPosition.toDouble()) + angleStartOffsetDegrees
+    var deltaTimer = ElapsedTime()
+    private var angularX : Double = currentAngle
+    private var angularV : Double = 0.0
+    private var angularA : Double = 0.0
 
-        val currentAngleRadians = Math.toRadians(currentAngleDegrees)
-        val targetAngleRadians = Math.toRadians(targetAngleDegrees)
+    override fun periodic() {
+        currentAngle = encodersToAngleDegrees(motor.currentPosition.toDouble()) + angleStartOffset
+
+        val deltaT = deltaTimer.seconds()
+        deltaTimer.reset()
+
+        val newAngularV = (currentAngle - angularX) / deltaT
+        val newAngularA = (newAngularV - angularV) / deltaT
+        angularX = currentAngle
+        angularV = newAngularV
+        angularA = newAngularA
 
         val pidPower =
             if(useMotionProfile) {
+
                 // using the current motion profile target as the starting point for the next motion profile
                 // this is to ensure continuity between motion profiles (eliminates jitter where the motor as moved past current angle
                 // and the motion profile will generate a first location that is backwards from the current direction of motion)
-                val currentIntermediateTargetAngleRadians = motionProfile[motionProfileTimer.seconds()].x
-                generateMotionProfileInAngleRadians(targetAngleRadians, currentIntermediateTargetAngleRadians)
-                val intermediateTargetAngleRadians = motionProfile[motionProfileTimer.seconds()].x
-                clamp(controller.calculate(intermediateTargetAngleRadians, currentAngleRadians), -1.0, 1.0)
+                val currentMotionProfileX = motionProfile[motionProfileTimer.seconds()].x
+                generateMotionProfile(targetAngle, currentMotionProfileX, angularV, angularA)
+                val intermediateTargetAngle = motionProfile[motionProfileTimer.seconds()].x
+                pid.calculate( intermediateTargetAngle, currentAngle).coerceIn(-1.0, 1.0)
             } else {
-                clamp(controller.calculate(targetAngleRadians, currentAngleRadians), -1.0, 1.0)
+                pid.calculate(targetAngle, currentAngle).coerceIn(-1.0, 1.0)
             }
-
         if(isEnabled)
             motor.set(pidPower)
         else
@@ -87,8 +96,10 @@ class TurretSubsystem(val robot: Robot, val motor: MotorEx, private val homingRe
         if (isTelemetryEnabled) {
             robot.telemetry.addLine("TurretTelemetry")
             robot.telemetry.addData("IsEnabled", isEnabled)
-            robot.telemetry.addData("TargetAngle", targetAngleDegrees)
-            robot.telemetry.addData("CurrentAngle", currentAngleDegrees)
+            robot.telemetry.addData("TargetAngle", targetAngle)
+            robot.telemetry.addData("CurrentAngle", currentAngle)
+            robot.telemetry.addData("AngularV", angularV)
+            robot.telemetry.addData("AngularA", angularA)
             robot.telemetry.update()
         }
     }
@@ -98,24 +109,20 @@ class TurretSubsystem(val robot: Robot, val motor: MotorEx, private val homingRe
     private fun encodersToAngleDegrees(ticks: Double): Double {
         return (ticks * 360 * MOTOR_TO_TURRET_GEAR_RATIO) / TURRET_MOTOR_TICKS_PER_REV
     }
-    private fun generateMotionProfileInAngleRadians(target: Double, current: Double) {
+    private fun generateMotionProfile(target: Double, currentX: Double, currentV: Double, currentA: Double) {
         if (!nearlyEqual(previousTarget, target)) {
-//            val approximateUpdateInterval = 0.010 //seconds
-//            val continuityNudge = (Math.toRadians(maxAngularVelocity) * approximateUpdateInterval) * sign(previousTarget - current)
             previousTarget = target
             motionProfile = MotionProfileGenerator.generateMotionProfile(
-                MotionState(current, 0.0, 0.0),
+                MotionState(currentX, currentV, currentA),
                 MotionState(target, 0.0, 0.0),
-                { Math.toRadians(maxAngularVelocity) },
-                { Math.toRadians(maxAngularAcceleration) },
+                { maxAngularVelocity },
+                { maxAngularAcceleration },
             )
             motionProfileTimer.reset()
-            robot.telemetry.addData("Gen Motion Prof Target = ", target )
-            robot.telemetry.update()
         }
     }
     public fun isCloseEnoughToTargetAngle(tolerance : Double = closeEnoughToTargetAngleDegrees) : Boolean {
-        return abs(currentAngleDegrees - targetAngleDegrees) < closeEnoughToTargetAngleDegrees || motor.velocity epsilonEquals 0.0
+        return abs(currentAngle - targetAngle) < closeEnoughToTargetAngleDegrees || motor.velocity epsilonEquals 0.0
     }
     private fun nearlyEqual(a: Double, b: Double, epsilon: Double = 1E-10): Boolean {
         return abs(a - b) < epsilon

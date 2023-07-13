@@ -21,8 +21,8 @@ class ElbowTest: CommandOpMode() {
         robot.telemetry.addLine(" Test Initialized")
         robot.telemetry.update()
 
-        upDpad.whenPressed(InstantCommand({ robot.elbow.targetAngleDegrees += 1.0 }, robot.elbow))
-        downDpad.whenPressed(InstantCommand({ robot.elbow.targetAngleDegrees -= 1.0 }, robot.elbow))
-        bButton.whenPressed(InstantCommand({ robot.elbow.targetAngleDegrees = 0.0 }, robot.elbow))
+        upDpad.whenPressed(InstantCommand({ robot.elbow.targetAngle += 1.0 }, robot.elbow))
+        downDpad.whenPressed(InstantCommand({ robot.elbow.targetAngle -= 1.0 }, robot.elbow))
+        bButton.whenPressed(InstantCommand({ robot.elbow.targetAngle = 0.0 }, robot.elbow))
     }
 }

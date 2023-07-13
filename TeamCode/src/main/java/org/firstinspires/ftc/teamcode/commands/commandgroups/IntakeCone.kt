@@ -5,6 +5,7 @@ import com.arcrobotics.ftclib.command.InstantCommand
 import com.arcrobotics.ftclib.command.ParallelCommandGroup
 import com.arcrobotics.ftclib.command.SelectCommand
 import com.arcrobotics.ftclib.command.SequentialCommandGroup
+import org.firstinspires.ftc.teamcode.commands.claw.SetClawPosition
 import org.firstinspires.ftc.teamcode.commands.general.UpdateTelemetry
 import org.firstinspires.ftc.teamcode.commands.elbow.SetElbowAngle
 import org.firstinspires.ftc.teamcode.commands.extension.SetExtensionLinkage
@@ -23,15 +24,16 @@ class IntakeCone(private var robot : Robot, private val newState: ArmAndTurretSt
 
     override fun configure(): CommandBase {
         // We can only enter intake mode from TRAVEL mode
-        // TODO check that the armStateData passes in is legit & consider ParalllelCommandGroup
+        // TODO check that the armStateData passes in is legit & consider ParallelCommandGroup
         return if (robot.armState == ArmState.TRAVEL) {
             SequentialCommandGroup(
                 SetAligner(robot.aligner, newState.arm.aligner.angle),
-//                SetTurretAngle(robot.turret, newState.turret.angle),
-                InstantCommand({robot.claw.position = ClawPositions.OPEN_FOR_INTAKE}, robot.claw),
                 SetElbowAngle(robot.elbow, newState.arm.elbow.angle),
-                SetExtensionLinkage(robot.extension, newState.arm.extension.length),
-                SetWristAngles(robot.wrist, newState.arm.wrist.bendAngle, newState.arm.wrist.twistAngle),
+                ParallelCommandGroup(
+                    SetClawPosition(robot.claw, ClawPositions.OPEN_FOR_INTAKE),
+                    SetWristAngles(robot.wrist, newState.arm.wrist.bendAngle, newState.arm.wrist.twistAngle),
+                    SetExtensionLinkage(robot.extension, newState.arm.extension.length),
+                    )
                 )
 
         } else {

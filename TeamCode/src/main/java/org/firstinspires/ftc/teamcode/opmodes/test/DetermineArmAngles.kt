@@ -34,16 +34,18 @@ class DetermineArmAngles : CommandOpMode() {
         robot.telemetry.addLine("Determining Arm Angles")
         robot.telemetry.update()
 
+        robot.elbow.isTelemetryEnabled = true
+//        robot.turret.isTelemetryEnabled = true
         rightBumper.whenPressed(InstantCommand({ multiplier += 1.0;  }))
         leftBumper.whenPressed(InstantCommand({ multiplier -= 1.0;  }))
 
         // right/left is turret movement
-        rightDpad.whenPressed(InstantCommand({ robot.turret.targetAngleDegrees += 1.0 * multiplier }, robot.turret))
-        leftDpad.whenPressed(InstantCommand({ robot.turret.targetAngleDegrees -= 1.0 * multiplier }, robot.turret))
+        rightDpad.whenPressed(InstantCommand({ robot.turret.targetAngle += 1.0 * multiplier }, robot.turret))
+        leftDpad.whenPressed(InstantCommand({ robot.turret.targetAngle -= 1.0 * multiplier }, robot.turret))
 
         // up/down is elbow movement
-        upDpad.whenPressed(InstantCommand({ robot.elbow.targetAngleDegrees += 1.0 * multiplier}, robot.elbow))
-        downDpad.whenPressed(InstantCommand({  robot.elbow.targetAngleDegrees -= 1.0 * multiplier}, robot.elbow))
+        upDpad.whenPressed(InstantCommand({ robot.elbow.targetAngle += 1.0 * multiplier}, robot.elbow))
+        downDpad.whenPressed(InstantCommand({  robot.elbow.targetAngle -= 1.0 * multiplier}, robot.elbow))
 
         // a/b is wrist movement
         aButton.whenPressed(InstantCommand({ robot.wrist.bendAngleDegrees += 1.0 * multiplier}, robot.wrist))
@@ -58,7 +60,7 @@ class DetermineArmAngles : CommandOpMode() {
         yButton.whenPressed(InstantCommand({ robot.extension.targetLength += 0.25 * multiplier }, robot.extension))
 
         schedule(UpdateTelemetry(robot) {
-            robot.telemetry.addData("Turret Angle", robot.turret.currentAngleDegrees)
+            robot.telemetry.addData("Turret Angle", robot.turret.currentAngle)
             robot.telemetry.addData("Elbow Angle", robot.elbow.currentAngleDegrees)
             robot.telemetry.addData("Wrist Bend Angle", robot.wrist.bendAngleDegrees)
             robot.telemetry.addData("Extension Position", robot.extension.targetLength)

@@ -13,4 +13,8 @@ class UpdateTelemetry(private val robot: Robot, private val addTelemetry : (Tele
         addTelemetry(robot.telemetry)
         robot.telemetry.update()
     }
+
+    override fun isFinished(): Boolean {
+        return true
+    }
 }

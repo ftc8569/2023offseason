@@ -10,16 +10,12 @@ class SetAligner(private val aligner : PoleAlignerSubsystem, private val angle :
         addRequirements(aligner)
     }
 
-    val timer = ElapsedTime()
-    val duration = 0.6
-
     override fun initialize() {
         aligner.angle = angle
-        timer.reset()
     }
 
     override fun isFinished(): Boolean {
-        return timer.seconds() > duration
+        return aligner.movementShouldBeComplete()
     }
 
 }

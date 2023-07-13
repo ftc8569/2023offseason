@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
-import org.firstinspires.ftc.teamcode.Cons
-
 data class ArmStateData(
     val wrist: WristStateData,
     val elbow: ElbowStateData,
@@ -29,7 +27,7 @@ data class PoleAlignerStateData(
 
 data class ClawStateData(
     val angle : Double)
-public class ArmStates() {
+public class ArmStatePositionData() {
     companion object {
         val CLAW_OPEN_FOR_INTAKE = ClawStateData(0.0)
         val CLAW_HOLD_CONE = ClawStateData(-25.0)
@@ -70,7 +68,7 @@ public class ArmStates() {
             PoleAlignerStateData(8.0),
             CLAW_HOLD_CONE
         )
-        val SCORE_MIDDLE = ArmStateData(
+        val SCORE_MEDIUM = ArmStateData(
             WristStateData(-12.0, 0.0, 27.0),
             ElbowStateData(35.0),
             ExtensionStateData(0.0),
@@ -81,7 +79,7 @@ public class ArmStates() {
             WristStateData(-10.0, 0.0, 7.0),
             ElbowStateData(3.0),
             ExtensionStateData(0.0),
-            PoleAlignerStateData(50.0),
+            ARM_HOME.aligner,
             CLAW_HOLD_CONE
         )
         var INTAKE = ArmStateData(
@@ -100,7 +98,7 @@ public class ArmStates() {
         )
         val TRAVEL = ArmStateData(
             WristStateData(-92.0, 0.0),
-            ElbowStateData(-26.0),
+            ElbowStateData(45.0),
             ExtensionStateData(0.0),
             PoleAlignerStateData(ARM_HOME.aligner.angle),
             CLAW_HOLD_CONE

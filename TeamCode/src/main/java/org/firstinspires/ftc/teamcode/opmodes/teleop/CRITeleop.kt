@@ -2,31 +2,30 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop
 
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.arcrobotics.ftclib.command.CommandOpMode
-import com.arcrobotics.ftclib.command.InstantCommand
-import com.arcrobotics.ftclib.command.ParallelCommandGroup
-import com.arcrobotics.ftclib.command.SelectCommand
-import com.arcrobotics.ftclib.command.WaitCommand
+import com.arcrobotics.ftclib.command.button.Trigger
 import com.arcrobotics.ftclib.gamepad.GamepadEx
 import com.arcrobotics.ftclib.gamepad.GamepadKeys
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import org.firstinspires.ftc.teamcode.commands.claw.SetClawPosition
 import org.firstinspires.ftc.teamcode.commands.commandgroups.*
 import org.firstinspires.ftc.teamcode.commands.drivetrain.DriveMecanumSnap
 import org.firstinspires.ftc.teamcode.commands.general.MonitorRobotTelemetry
-import org.firstinspires.ftc.teamcode.commands.general.UpdateTelemetry
 import org.firstinspires.ftc.teamcode.commands.turret.ControlTurretAngle
-import org.firstinspires.ftc.teamcode.subsystems.ArmAndTurretStateData
 import org.firstinspires.ftc.teamcode.subsystems.ArmState
-import org.firstinspires.ftc.teamcode.subsystems.ArmStates
+import org.firstinspires.ftc.teamcode.subsystems.ArmStatePositionData
+import org.firstinspires.ftc.teamcode.subsystems.ClawPositions
 import org.firstinspires.ftc.teamcode.subsystems.Robot
 import kotlin.math.pow
 import kotlin.math.sign
 
 @TeleOp
-class TeleopV2 : CommandOpMode() {
+class CRITeleop : CommandOpMode() {
     override fun initialize() {
         val robot = Robot(hardwareMap, telemetry)
         val driver = GamepadEx(gamepad1)
         val gunner = GamepadEx(gamepad2)
+
+        robot.elbow.isTelemetryEnabled = true
 
         schedule(MoveToTravel(robot))
 
@@ -38,9 +37,10 @@ class TeleopV2 : CommandOpMode() {
         )
 
         // Move the turret to the angle to the right joystick
-        schedule(ControlTurretAngle(robot.turret) {
+        val turretController = ControlTurretAngle(robot.turret) {
             Vector2d(-driver.rightY, driver.rightX)
-        })
+        }
+        schedule(turretController)
 
         // turn on the telemetry monitoring of the robot
         schedule(MonitorRobotTelemetry(robot))
@@ -64,17 +64,13 @@ class TeleopV2 : CommandOpMode() {
         )
 
         // Intake position based on the DPAD
-        driver.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(
-            IntakeCone(robot, ArmStates.INTAKE_REAR),
-        )
+        val beamBreakTrigger = Trigger { robot.claw.holdingCone }.whenActive(SetClawPosition(robot.claw, ClawPositions.HOLD_CONE))
+
         driver.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(
-            IntakeCone(robot, ArmStates.INTAKE_FRONT),
+            IntakeCone(robot, ArmStatePositionData.INTAKE_FRONT),
         )
-        driver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(
-            IntakeCone(robot, ArmStates.INTAKE_LEFT),
-        )
-        driver.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(
-            IntakeCone(robot, ArmStates.INTAKE_RIGHT),
+        driver.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(
+            MoveToTravel(robot)
         )
 
         // PICKUP Cone
@@ -85,10 +81,10 @@ class TeleopV2 : CommandOpMode() {
 
     fun shouldElbowMoveFirst(armState : ArmState) : Boolean {
         return when(armState) {
-            ArmState.GROUND -> true
-            ArmState.LOW -> true
-            ArmState.MED -> true
-            ArmState.HIGH -> false
+            ArmState.SCORE_GROUND -> true
+            ArmState.SCORE_LOW -> true
+            ArmState.SCORE_MEDIUM -> true
+            ArmState.SCORE_HIGH -> false
             else -> true
         }
     }

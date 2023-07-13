@@ -27,7 +27,7 @@ public class Cons {
     public static double TURRET_MAX_A = 800;
     public static double TURRET_KV = 0.0005;
     public static double TURRET_KA = 0.0001;
-    public static double TURRET_KP = 2;
+    public static double TURRET_KP = 0.02;
     public static double TURRET_KI = 0.0;
     public static double TURRET_KD = 0.0002;
     public static double TURRET_MOTOR_TICKS_PER_REV = 751.8; // For a 223RPM motor
@@ -58,9 +58,12 @@ public class Cons {
     public static double TURRET_MAX_ANGULAR_VELOCITY = 360.0;
     public static double TURRET_MAX_ANGULAR_ACCELERATION = 720.0;
 
+    public static double ELBOW_MAX_ANGULAR_VELOCITY = 720.0;
+    public static double ELBOW_MAX_ANGULAR_ACCELERATION = 720.0;
+    public static double ELBOW_GRAVITY_FEED_FORWARD_COEFFICIENT = 0.2;
 
     // Drivetrain Constants
-    public static double HEADING_KP = 5;
-    public static double HEADING_KD = 1;
+    public static double HEADING_KP = 3;
+    public static double HEADING_KD = 0.8;
 
 }

@@ -40,7 +40,7 @@ class ScoringHeights: LinearOpMode(){
 //                bendAngleDegrees -= 5
 //            }
 //
-//            robot.elbow.targetAngleDegrees = angle
+//            robot.elbow.targetAngle = angle
 //            robot.extension.position = distance
 //            robot.wrist.bendAngleDegrees = bendAngleDegrees
 //

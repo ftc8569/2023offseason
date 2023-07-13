@@ -10,7 +10,7 @@ class SetTurretAngle(val turret: TurretSubsystem, val ang: Double): CommandBase(
     }
 
     override fun initialize(){
-        turret.targetAngleDegrees = ang
+        turret.targetAngle = ang
     }
 
     override fun isFinished() : Boolean {

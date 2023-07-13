@@ -11,17 +11,20 @@ class ControlTurretAngle(private val turret : TurretSubsystem,
     init {
         addRequirements(turret)
     }
-
     private val minimumMagnitude = 0.9
+
+    fun setTurretAngle(angle: Double) {
+        turret.targetAngle = angle
+    }
     override fun execute() {
         val vector = turrentAngleProvider.invoke()
         val magnitude = vector.norm()
         if (magnitude > minimumMagnitude) {
             val joystickAngle =  normalizeDegrees(Math.toDegrees(vector.angle()))
-            val currentAngle = turret.currentAngleDegrees
+            val currentAngle = turret.currentAngle
             val angleDiff = shortestArc(currentAngle, joystickAngle)
             val newAngle = currentAngle + angleDiff
-            turret.targetAngleDegrees = roundToNearestSnap(newAngle, snapAngle)
+            turret.targetAngle = roundToNearestSnap(newAngle, snapAngle)
         }
     }
     override fun isFinished(): Boolean {

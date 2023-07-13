@@ -17,7 +17,7 @@ enum class OpModeType {
     TELEOP, AUTONOMOUS
 }
 enum class ArmState {
-    GROUND, LOW, MED, HIGH, INTAKE, TRAVEL, START
+    SCORE_GROUND, SCORE_LOW, SCORE_MEDIUM, SCORE_HIGH, INTAKE, TRAVEL, START
 }
 enum class RobotState {
     NOT_HOMED, HOMED

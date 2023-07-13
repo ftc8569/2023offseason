@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Robot
 class ToIntakePosition(private val r: Robot): CommandBase() {
     override fun initialize() {
         addRequirements(r.elbow, r.extension, r.claw, r.wrist)
-        r.elbow.targetAngleDegrees = -30.0
+        r.elbow.targetAngle = -30.0
         r.extension.targetLength = 0.1
         r.claw.position = ClawPositions.OPEN_FOR_INTAKE
         r.wrist.bendAngleDegrees = -10.0
