@@ -13,6 +13,7 @@ class SetExtensionLinkage(private val linkage : ExtensionLinkageSubsystem, priva
 
     override fun initialize() {
         linkage.targetLength = length_in;
+        println("SetExtensionLinkage: distance " + linkage.targetLength)
         timer.reset()
     }
 
