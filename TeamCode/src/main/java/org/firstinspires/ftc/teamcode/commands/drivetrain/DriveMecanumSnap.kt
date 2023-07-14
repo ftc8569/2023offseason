@@ -21,7 +21,7 @@ class DriveMecanumSnap (private val drive: DrivetrainSubsystem,
     }
 
     override fun execute() {
-        val out = angle_controller.calculate(goalHeading,drive.poseEstimate.heading)
+        val out = angle_controller.calculate(goalHeading, drive.poseEstimate.heading)
 
         drive.driveFieldCentric(
             strafeSupplier(),

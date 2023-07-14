@@ -19,7 +19,7 @@ class ClawSubsystem(val robot : Robot, val servo: AxonServo, val beamBreak: Digi
         beamBreak.mode = DigitalChannel.Mode.INPUT
     }
     val servoSpeedEstimate = 0.09 //seconds per 60 degrees @ 6V (Axon Minis)
-    val timer = ElapsedTime()
+    val motionProfileTimer  = ElapsedTime()
     private var estimatedTimeToComplete = 0.0 //seconds
     val maximumMovementTime = abs(servo.maximumAngle - servo.minimumAngle) * servoSpeedEstimate / 60.0 //seconds
 
@@ -31,7 +31,7 @@ class ClawSubsystem(val robot : Robot, val servo: AxonServo, val beamBreak: Digi
             angle  = getAngleForPosition(value)
             val angleChange = kotlin.math.abs(angle - previousAngle)
             estimatedTimeToComplete = (angleChange * servoSpeedEstimate / 60.0).coerceAtMost(maximumMovementTime)
-            timer.reset()
+            motionProfileTimer.reset()
             field = value
         }
     var angle : Double
@@ -60,6 +60,6 @@ class ClawSubsystem(val robot : Robot, val servo: AxonServo, val beamBreak: Digi
     }
 
     fun movementShouldBeComplete() : Boolean {
-        return timer.seconds() > estimatedTimeToComplete
+        return motionProfileTimer.seconds() > estimatedTimeToComplete
     }
 }

@@ -43,7 +43,7 @@ import java.util.List;
  */
 @Config
 public class JuicyMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(9, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(12, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(9, 0, 0);
 
     public static double LATERAL_MULTIPLIER = 1;
@@ -72,7 +72,7 @@ public class JuicyMecanumDrive extends MecanumDrive {
         super(DriveConstants.kV, DriveConstants.kA, DriveConstants.kStatic, DriveConstants.TRACK_WIDTH, DriveConstants.TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
-                new Pose2d(0.5, 0.5, Math.toRadians(1.0)), 0.5);
+                new Pose2d(0.25, 0.25, Math.toRadians(1.0)), 1.0);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 

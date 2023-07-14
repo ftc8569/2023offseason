@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.apriltags;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 
 import org.opencv.calib3d.Calib3d;
 import org.opencv.core.CvType;
@@ -26,8 +25,6 @@ public class AprilTagDetectionPipeline extends OpenCvPipeline
 
     private ArrayList<AprilTagDetection> detectionsUpdate = new ArrayList<>();
     private final Object detectionsUpdateSync = new Object();
-
-    private FtcDashboard dash;
 
     Mat cameraMatrix;
 
@@ -66,7 +63,7 @@ public class AprilTagDetectionPipeline extends OpenCvPipeline
         nativeApriltagPtr = AprilTagDetectorJNI.createApriltagDetector(AprilTagDetectorJNI.TagFamily.TAG_36h11.string, 3, 3);
     }
 
-    public AprilTagDetectionPipeline(FtcDashboard dash)
+    public AprilTagDetectionPipeline()
     {
         this.tagsize = 0.166;
         this.tagsizeX = 0.166;
@@ -75,8 +72,6 @@ public class AprilTagDetectionPipeline extends OpenCvPipeline
         this.fy = 578.272;
         this.cx = 402.145;
         this.cy = 221.506;
-
-        this.dash = dash;
 
         constructMatrix();
 

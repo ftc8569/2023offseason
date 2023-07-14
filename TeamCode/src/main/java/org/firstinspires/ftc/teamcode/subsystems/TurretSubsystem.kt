@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.Cons.*
 import kotlin.math.abs
 
-// Put timer in constructor, mock a timer
+// Put motionProfileTimer in constructor, mock a motionProfileTimer
 class TurretSubsystem(val robot: Robot, val motor: MotorEx, private val homingResult: HomingResult) : SubsystemBase() {
 
     val angleStartOffset = homingResult.homeAngles.turretAngle
@@ -110,7 +110,7 @@ class TurretSubsystem(val robot: Robot, val motor: MotorEx, private val homingRe
         return (ticks * 360 * MOTOR_TO_TURRET_GEAR_RATIO) / TURRET_MOTOR_TICKS_PER_REV
     }
     private fun generateMotionProfile(target: Double, currentX: Double, currentV: Double, currentA: Double) {
-        if (!nearlyEqual(previousTarget, target)) {
+        if (!(previousTarget epsilonEquals target)) {
             previousTarget = target
             motionProfile = MotionProfileGenerator.generateMotionProfile(
                 MotionState(currentX, currentV, currentA),
@@ -123,9 +123,6 @@ class TurretSubsystem(val robot: Robot, val motor: MotorEx, private val homingRe
     }
     public fun isCloseEnoughToTargetAngle(tolerance : Double = closeEnoughToTargetAngleDegrees) : Boolean {
         return abs(currentAngle - targetAngle) < closeEnoughToTargetAngleDegrees || motor.velocity epsilonEquals 0.0
-    }
-    private fun nearlyEqual(a: Double, b: Double, epsilon: Double = 1E-10): Boolean {
-        return abs(a - b) < epsilon
     }
 
 }

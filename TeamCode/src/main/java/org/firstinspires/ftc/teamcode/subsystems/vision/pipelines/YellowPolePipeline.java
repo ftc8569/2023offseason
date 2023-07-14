@@ -35,32 +35,32 @@ public class YellowPolePipeline extends OpenCvPipeline {
     public Mat processFrame(Mat input) {
         img = input;
         // Convert image to HSV color space
-        Mat hsv = new Mat();
-        Imgproc.cvtColor(input, hsv, Imgproc.COLOR_BGR2HSV);
+//        Mat hsv = new Mat();
+//        Imgproc.cvtColor(input, hsv, Imgproc.COLOR_BGR2HSV);
+//
+//        // Create a mask to isolate the yellow pole
+//        Mat mask = new Mat();
+//        Core.inRange(hsv, lowerYellow, upperYellow, mask);
 
-        // Create a mask to isolate the yellow pole
-        Mat mask = new Mat();
-        Core.inRange(hsv, lowerYellow, upperYellow, mask);
-
-        // Collapse the image into one dimension by summing along the vertical axis
-        Mat resultSum = new Mat();
-        Core.reduce(mask, resultSum, 0, Core.REDUCE_SUM, CvType.CV_32S);
-
-        // Create convolution kernel
-        Mat kernel = Mat.ones(1, kernelWidth, CvType.CV_32F);
-
-        // Perform convolution on the result sum
-        Mat convResult = new Mat();
-        Imgproc.filter2D(resultSum, convResult, -1, kernel);
-
-        // Find the x value of the maximum in the convolution result
-        double xLeftConv = Core.minMaxLoc(convResult).maxLoc.x;
-
-        // Add the kernel width to the x value to get the x value of the maximum in the original array
-        double xLeft = xLeftConv + kernelWidth / 2;
-
-        // Calculate the slope
-        double slopeVar = fx / (xLeft - cx);
+//        // Collapse the image into one dimension by summing along the vertical axis
+//        Mat resultSum = new Mat();
+//        Core.reduce(mask, resultSum, 0, Core.REDUCE_SUM, CvType.CV_32S);
+//
+//        // Create convolution kernel
+//        Mat kernel = Mat.ones(1, kernelWidth, CvType.CV_32F);
+//
+//        // Perform convolution on the result sum
+//        Mat convResult = new Mat();
+//        Imgproc.filter2D(resultSum, convResult, -1, kernel);
+//
+//        // Find the x value of the maximum in the convolution result
+//        double xLeftConv = Core.minMaxLoc(convResult).maxLoc.x;
+//
+//        // Add the kernel width to the x value to get the x value of the maximum in the original array
+//        double xLeft = xLeftConv + kernelWidth / 2;
+//
+//        // Calculate the slope
+//        double slopeVar = fx / (xLeft - cx);
 
         // Return the input image for display (optional)
         return input;
@@ -69,7 +69,7 @@ public class YellowPolePipeline extends OpenCvPipeline {
     private int captureCounter = 0;
     public String CaptureImage(){
         Mat image2Save = img;
-        String fullFileName = String.format("-%d.png",captureCounter++);
+        String fullFileName = String.format("juicy-%d.png",captureCounter++);
 
         if(null != image2Save)
             if (saveOpenCvImageToFile(fullFileName, image2Save))
@@ -86,7 +86,7 @@ public class YellowPolePipeline extends OpenCvPipeline {
 
         boolean mkdirs = VISION_FOLDER.mkdirs();
         File file = new File(VISION_FOLDER, filename);
-        boolean savedSuccessfully = Imgcodecs.imwrite(file.toString(), mat);
+        boolean savedSuccessfully = Imgcodecs.imwrite(file.toString(),mIntermediateMat);
         return  savedSuccessfully;
     }
 }

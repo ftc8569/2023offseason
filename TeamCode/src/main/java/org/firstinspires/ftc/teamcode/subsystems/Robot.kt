@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.ServoImplEx
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
+import org.firstinspires.ftc.teamcode.apriltags.ConeNumber
 import org.firstinspires.ftc.teamcode.utilities.AxonServo
 import java.lang.Thread.sleep
 
@@ -30,7 +31,7 @@ class Robot(val hardwareMap: HardwareMap, t: Telemetry, val opModeType: OpModeTy
             hub.bulkCachingMode = LynxModule.BulkCachingMode.AUTO
         }
     }
-
+    var detectedSignalCone = ConeNumber.NONE
     var armState = ArmState.START
     set (value) {
         field = value
@@ -60,6 +61,7 @@ class Robot(val hardwareMap: HardwareMap, t: Telemetry, val opModeType: OpModeTy
     val drivetrain = DrivetrainSubsystem(this)
     val turret: TurretSubsystem = TurretSubsystem(this, MotorEx(hardwareMap, "turret"), homingResult)
     val elbow = ElbowSubsystem(this, MotorEx(hardwareMap, "leftElbow"), MotorEx(hardwareMap, "rightElbow"), homingResult)
+    val signalSleeve = SignalConeDetectorSubSystem(this)
 
     private val extensionServo = AxonServo(hardwareMap, "extension", 500.0, 2500.0, 355.0, true)
     val extension = ExtensionLinkageSubsystem(this, extensionServo)

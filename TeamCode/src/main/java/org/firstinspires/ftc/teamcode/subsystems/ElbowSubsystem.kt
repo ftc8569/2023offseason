@@ -85,7 +85,7 @@ class ElbowSubsystem(private val robot: Robot, motor1: MotorEx, motor2: MotorEx,
                     robot.extension.targetLength/ExtensionLinkageSubsystem.MAXIMUM_EXTENSION  *
                     cos(Math.toRadians(currentAngle))
 
-            if (robot.extension.isExtended) power += gravityFeedForward
+            power += gravityFeedForward
         }
 
         motors.set(power)
@@ -106,7 +106,7 @@ class ElbowSubsystem(private val robot: Robot, motor1: MotorEx, motor2: MotorEx,
     }
 
     private fun generateMotionProfile(target: Double, currentX: Double, currentV: Double, currentA: Double) {
-        if (!nearlyEqual(previousTarget, target)) {
+        if (!(previousTarget epsilonEquals target)) {
             previousTarget = target
             motionProfile = MotionProfileGenerator.generateMotionProfile(
                 MotionState(currentX, currentV, currentA),
@@ -124,8 +124,4 @@ class ElbowSubsystem(private val robot: Robot, motor1: MotorEx, motor2: MotorEx,
     private fun convertEncoderTicksToDegrees(ticks: Double): Double {
         return (ticks / encoderTicksPerRevolution) * 360.0
     }
-    private fun nearlyEqual(a: Double, b: Double, epsilon: Double = 1E-10): Boolean {
-        return abs(a - b) < epsilon
-    }
-
 }

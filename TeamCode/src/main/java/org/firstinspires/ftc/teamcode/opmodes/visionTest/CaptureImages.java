@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.apriltags.AprilTagDetectionPipeline;
 import org.firstinspires.ftc.teamcode.subsystems.vision.pipelines.YellowPolePipeline;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -23,18 +24,20 @@ public class CaptureImages extends LinearOpMode {
     public void runOpMode() {
         // Setup FTCDashboard telemetry
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        YellowPolePipeline pipeline = new YellowPolePipeline(slope);
+//        YellowPolePipeline pipeline = new YellowPolePipeline(slope);
+        AprilTagDetectionPipeline pipeline = new AprilTagDetectionPipeline();
         webcam.setPipeline(pipeline);
 
         // show the raw camera stream on the dashboard
-        FtcDashboard.getInstance().startCameraStream(webcam, 10);
+        FtcDashboard.getInstance().startCameraStream(webcam, 5);
 
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
-                webcam.startStreaming(320, 240, OpenCvCameraRotation.UPSIDE_DOWN);
+                webcam.startStreaming(1920, 1080, OpenCvCameraRotation.UPSIDE_DOWN);
             }
 
             @Override
@@ -50,6 +53,8 @@ public class CaptureImages extends LinearOpMode {
         String lastCaptureFile = "none";
 
         while (opModeIsActive()) {
+            telemetry.addData("Detected", pipeline.getLatestDetections().size());
+            telemetry.addData("Sleeve", pipeline.getLatestDetections().size() > 0 ? pipeline.getLatestDetections().get(0).id : "none");
             telemetry.addData("Frame Count", webcam.getFrameCount());
             telemetry.addData("FPS", String.format("%.2f", webcam.getFps()));
             telemetry.addData("Total frame time ms", webcam.getTotalFrameTimeMs());
@@ -60,7 +65,7 @@ public class CaptureImages extends LinearOpMode {
             telemetry.addData("file", lastCaptureFile);
             telemetry.update();
 
-            if (gamepad1.x) lastCaptureFile = pipeline.CaptureImage();
+//            if (gamepad1.x) lastCaptureFile = pipeline.CaptureImage();
 
             sleep(100);
         }

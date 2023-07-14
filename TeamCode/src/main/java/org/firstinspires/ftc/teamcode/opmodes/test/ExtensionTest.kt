@@ -13,12 +13,12 @@ class ExtensionTest: CommandOpMode() {
     override fun initialize() {
         val robot = Robot(hardwareMap, telemetry)
         val driver = GamepadEx(gamepad1)
+
         val rightDpad = driver.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
         val leftDpad = driver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
         val upDpad = driver.getGamepadButton(GamepadKeys.Button.DPAD_UP)
         val downDpad = driver.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
 
-        robot.extension.isTelemetryEnabled = true
         robot.telemetry.addLine("Extension Test Initialized")
         robot.telemetry.update()
 

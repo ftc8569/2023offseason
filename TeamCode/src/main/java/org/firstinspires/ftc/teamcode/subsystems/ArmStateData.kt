@@ -34,11 +34,11 @@ public class ArmStatePositionData() {
         val CLAW_RELEASE_CONE_BUT_HOLD_TSE = ClawStateData(-18.0)
 
         val ARM_HOME = ArmStateData(
-            WristStateData(-92.0, 0.0),
-            ElbowStateData(-45.0),
+            WristStateData(0.0, 0.0),
+            ElbowStateData(0.0),
             ExtensionStateData(0.0),
             PoleAlignerStateData(-90.0),
-            CLAW_HOLD_CONE
+            CLAW_OPEN_FOR_INTAKE
         )
         val START_LEFT = ArmAndTurretStateData(
             ArmStateData(
@@ -97,7 +97,7 @@ public class ArmStatePositionData() {
             CLAW_HOLD_CONE
         )
         val TRAVEL = ArmStateData(
-            WristStateData(-92.0, 0.0),
+            WristStateData(-110.0, 0.0),
             ElbowStateData(45.0),
             ExtensionStateData(0.0),
             PoleAlignerStateData(ARM_HOME.aligner.angle),

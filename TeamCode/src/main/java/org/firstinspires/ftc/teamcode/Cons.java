@@ -4,6 +4,9 @@ import com.acmerobotics.dashboard.config.Config;
 
 @Config
 public class Cons {
+    public static long COMMAND_DELAY = 50;
+    public static double EASING = 1.0;
+
     // Elbow Constants
     public static double ELBOW_KS = 0.0;
     public static double ELBOW_KA = 0.0;
@@ -50,8 +53,6 @@ public class Cons {
     public static double WRIST_ZETA = 0.7;
 
     // Extension
-    public static double EXTENSION_HOME = 0.6;
-    public static double EXTENSION_MAX = 0.0;
 
 
     // Starting position constants
@@ -61,6 +62,10 @@ public class Cons {
     public static double ELBOW_MAX_ANGULAR_VELOCITY = 720.0;
     public static double ELBOW_MAX_ANGULAR_ACCELERATION = 720.0;
     public static double ELBOW_GRAVITY_FEED_FORWARD_COEFFICIENT = 0.2;
+
+    public static double EXTENSION_MAX_VELOCITY = 200.0; // in/s
+    public static double EXTENSION_MAX_ACCELERATION = 200.0; // in/s^2
+    public static double EXTENSION_SERVO_ANGLE_AT_ZERO_BASE_ANGLE = 160.0;
 
     // Drivetrain Constants
     public static double HEADING_KP = 3;

@@ -19,7 +19,7 @@ public class AprilTagPipelineWrapper extends SubsystemBase {
     public AprilTagPipelineWrapper(DrivetrainSubsystem dt,FtcDashboard dash, Telemetry t){
         this.dt = dt;
         this.t = t;
-        this.pipeline = new AprilTagDetectionPipeline(dash);
+        this.pipeline = new AprilTagDetectionPipeline();
     }
 
     public AprilTagDetectionPipeline getPipeline(){

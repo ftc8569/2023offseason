@@ -32,7 +32,8 @@ class AxonServo(
             else
                 servo.position = getServoPositionFromAngleDegrees(angle)
         }
-
+    val position : Double
+        get() = servo.position
     fun getServoPositionFromAngleDegrees(angle : Double) : Double {
         return clamp(angle/maximumRotationRangeDegrees + servoMiddlePosition, 0.0, 1.0)
     }

@@ -1,12 +1,16 @@
 package org.firstinspires.ftc.teamcode.opmodes.test
 
+import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.arcrobotics.ftclib.command.CommandBase
 import com.arcrobotics.ftclib.command.CommandOpMode
 import com.arcrobotics.ftclib.command.InstantCommand
 import com.arcrobotics.ftclib.gamepad.GamepadEx
 import com.arcrobotics.ftclib.gamepad.GamepadKeys
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import org.firstinspires.ftc.teamcode.commands.drivetrain.DriveMecanumSnap
 import org.firstinspires.ftc.teamcode.subsystems.Robot
+import kotlin.math.pow
+import kotlin.math.sign
 
 @TeleOp
 class DetermineArmAngles : CommandOpMode() {
@@ -15,6 +19,12 @@ class DetermineArmAngles : CommandOpMode() {
         val driver = GamepadEx(gamepad1)
         val gunner = GamepadEx(gamepad2)
         var multiplier = 1.0
+
+        // Coordinate System: +x is forward (away from driver station), +y is left, +theta is counter-clockwise
+        // (0,0) is the center of the field.  0.0 radians heading is directly away from the driver station along the +x axis
+        // this is where we map the robot coordinate system to the field coordinate system
+        val startPose = Pose2d(-87.5, -60.0, 0.0)
+        robot.drivetrain.poseEstimate = startPose
 
         val rightDpad = driver.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
         val leftDpad = driver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
@@ -34,8 +44,16 @@ class DetermineArmAngles : CommandOpMode() {
         robot.telemetry.addLine("Determining Arm Angles")
         robot.telemetry.update()
 
-        robot.elbow.isTelemetryEnabled = true
+        robot.drivetrain.defaultCommand = DriveMecanumSnap(
+            robot.drivetrain, 0.0,
+            { driver.leftY.pow(2) * sign(driver.leftY) },
+            { driver.leftX.pow(2) * sign(driver.leftX) },
+        )
+
+//        robot.elbow.isTelemetryEnabled = true
 //        robot.turret.isTelemetryEnabled = true
+        robot.extension.isTelemetryEnabled = true
+
         rightBumper.whenPressed(InstantCommand({ multiplier += 1.0;  }))
         leftBumper.whenPressed(InstantCommand({ multiplier -= 1.0;  }))
 
@@ -60,6 +78,8 @@ class DetermineArmAngles : CommandOpMode() {
         yButton.whenPressed(InstantCommand({ robot.extension.targetLength += 0.25 * multiplier }, robot.extension))
 
         schedule(UpdateTelemetry(robot) {
+            robot.telemetry.addData("X", robot.drivetrain.poseEstimate.x)
+            robot.telemetry.addData("Y", robot.drivetrain.poseEstimate.y)
             robot.telemetry.addData("Turret Angle", robot.turret.currentAngle)
             robot.telemetry.addData("Elbow Angle", robot.elbow.currentAngleDegrees)
             robot.telemetry.addData("Wrist Bend Angle", robot.wrist.bendAngleDegrees)

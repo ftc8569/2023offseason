@@ -3,7 +3,9 @@ package org.firstinspires.ftc.teamcode.subsystems
 import androidx.core.math.MathUtils.clamp
 import com.acmerobotics.roadrunner.profile.MotionProfileGenerator
 import com.acmerobotics.roadrunner.profile.MotionState
+import com.acmerobotics.roadrunner.util.epsilonEquals
 import com.arcrobotics.ftclib.command.SubsystemBase
+import com.qualcomm.robotcore.hardware.AnalogInput
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.Cons.*
 import org.firstinspires.ftc.teamcode.utilities.AxonServo
@@ -20,51 +22,42 @@ class ExtensionLinkageSubsystem(val robot: Robot, val servo: AxonServo) : Subsys
 
     companion object {
         const val MINIMUM_EXTENSION = 0.25
-        const val MAXIMUM_EXTENSION = 16.0
+        const val MAXIMUM_EXTENSION = 13.0
         const val GROUND = 5.19
         const val LOW = 8.0
         const val MID = 10.0
         const val HIGH = MAXIMUM_EXTENSION
         const val PICKUP = MINIMUM_EXTENSION
     }
-
+    val analogOutput = robot.hardwareMap.get(AnalogInput::class.java, "extension")
     var isTelemetryEnabled = false
-    val servoSpeedEstimate = 0.115 //seconds per 60 degrees @ 6V (Axon Max)
-    val completionTimer = ElapsedTime()
-    private var estimatedTimeToComplete = 0.0 //seconds
-    val maximumMovementTime = abs(servo.maximumAngle - servo.minimumAngle) * servoSpeedEstimate / 60.0 //seconds
 
-
-    private val velocity = 2.0 // inches / second
-    private val acceleration = 2.0 // inches / second ^ 2
-    val isExtended : Boolean
-        get() = servo.angle > servo.getAngleDegreesFromServoPosition(EXTENSION_HOME)
-    var targetLength : Double = EXTENSION_HOME
+    var targetLength : Double = MINIMUM_EXTENSION
         set(value) {
             field = clamp(value, MINIMUM_EXTENSION, HIGH)
-            val previousServoAngle = servoAngle
-            servoAngle = baseLinkageToServoAngle(solveBaseLinkageAngleDegrees(targetLength))
-            val angleChange = kotlin.math.abs(servoAngle - previousServoAngle)
-            estimatedTimeToComplete = (angleChange * servoSpeedEstimate / 60.0).coerceAtMost(maximumMovementTime)
-            completionTimer.reset()
+            servo.angle = getServoAngleFromExtensionLength(targetLength)
         }
-    var servoAngle : Double
-        private set (value) {
-            servo.angle = value
-        }
-        get() = servo.angle
-
+    private fun getServoAngleFromExtensionLength(extensionLength: Double) : Double {
+        return baseLinkageToServoAngle(solveBaseLinkageAngleDegrees(extensionLength))
+    }
     override fun periodic() {
+
+
         if(isTelemetryEnabled) {
             robot.telemetry.addLine("Extension: Telemetry Enabled")
+            robot.telemetry.addData("analog voltage", "%3f".format(analogOutput.voltage))
+            robot.telemetry.addData("measured servo angle", "%1f".format(getActualServoAngleFromAnalogSensor()))
             robot.telemetry.addData("extension length (inches)", targetLength)
             robot.telemetry.addData("servo angle (deg)", servo.angle)
+            robot.telemetry.addData("servo raw position (0.0-1.0)", servo.position)
             robot.telemetry.addData("base linkage angle (deg)", solveBaseLinkageAngleDegrees(targetLength))
             robot.telemetry.update()
         }
     }
-    fun movementShouldBeComplete() : Boolean {
-        return completionTimer.seconds() > estimatedTimeToComplete
+
+    private var closeEnoughToTargetLength = 10.0 // degrees measured servo angle
+    fun isCloseEnoughToTargetLength() : Boolean {
+        return false //abs(servo.angle - getActualServoAngleFromAnalogSensor()) < closeEnoughToTargetLength
     }
     private fun solveBaseLinkageAngleDegrees(linkageExtension  : Double) : Double {
         val mmToInchesConversion = 0.03937008
@@ -102,7 +95,17 @@ class ExtensionLinkageSubsystem(val robot: Robot, val servo: AxonServo) : Subsys
     }
     private fun baseLinkageToServoAngle(baseLinkageAngle : Double) : Double {
         val gearRatio = 2.0
-        val servoAngleAtZerobaseLinkageAngle = 164.0
+        val servoAngleAtZerobaseLinkageAngle = EXTENSION_SERVO_ANGLE_AT_ZERO_BASE_ANGLE
         return (baseLinkageAngle * gearRatio) - servoAngleAtZerobaseLinkageAngle
+    }
+    private fun getActualServoAngleFromAnalogSensor() : Double {
+        val x1 = 0.671
+        val y1 = 111.55
+        val x2 = 3.109
+        val y2 = -157.9
+        val analogVoltage = analogOutput.voltage
+        val slope = (y2 - y1) / (x2 - x1)
+        val interpolatedServoAngle = slope * (analogVoltage - x1) + y1
+        return interpolatedServoAngle
     }
 }
