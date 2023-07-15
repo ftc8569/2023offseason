@@ -7,8 +7,7 @@ import com.arcrobotics.ftclib.command.WaitCommand
 import org.firstinspires.ftc.teamcode.Cons
 import org.firstinspires.ftc.teamcode.Cons.EASING
 import org.firstinspires.ftc.teamcode.commands.claw.SetClawPosition
-import org.firstinspires.ftc.teamcode.commands.commandgroups.MoveToIntermediateScorePosition
-import org.firstinspires.ftc.teamcode.commands.commandgroups.MoveToTravel
+import org.firstinspires.ftc.teamcode.commands.commandgroups.MinimalStowFromStackToPole
 import org.firstinspires.ftc.teamcode.commands.elbow.SetElbowAngle
 import org.firstinspires.ftc.teamcode.commands.extension.SetExtensionLinkage
 import org.firstinspires.ftc.teamcode.commands.general.ConfigurableCommandBase
@@ -115,7 +114,7 @@ class IntakeFromConeStack(val robot : Robot, val alliancePosition: AlliancePosit
 //            SetElbowAngle(robot.elbow, armAndTurretState.arm.elbow.angle + elbowAnglePickupOffset),
 //            SetExtensionLinkage(robot.extension, ArmStatePositionData.INTERMEDIATE.extension.length, Cons.EASING),
             WaitCommand(250),
-            MoveToIntermediateScorePosition(robot)
+            MinimalStowFromStackToPole(robot)
         )
 
     }

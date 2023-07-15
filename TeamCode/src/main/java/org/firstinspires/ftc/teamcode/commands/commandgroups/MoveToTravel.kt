@@ -30,7 +30,6 @@ class MoveToTravel(val robot : Robot) : ConfigurableCommandBase()  {
             SetAligner(robot.aligner, ArmStatePositionData.TRAVEL.aligner.angle),
             SetElbowAngle(robot.elbow, ArmStatePositionData.TRAVEL.elbow.angle),
             ConditionalCommand(ClawRegripCone(robot), InstantCommand({ println("MoveToTravel - Skipped Regrip")})) { robot.claw.holdingCone },
-
         )
     }
 }

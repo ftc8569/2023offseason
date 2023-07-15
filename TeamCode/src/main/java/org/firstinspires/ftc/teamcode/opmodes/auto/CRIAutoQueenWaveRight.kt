@@ -36,8 +36,8 @@ class CRIAutoQueenWaveRight() : CommandOpMode() {
 
         // schedule the commands for Auto
         val autoCommands = SequentialCommandGroup(
-            DetectSignalCone(robot),
             MoveToTravel(robot),
+            DetectSignalCone(robot),
             UpdateTelemetry(robot){ telemetry -> telemetry.addData("Detected Cone", robot.detectedSignalCone)},
             MoveToAutoScoringPosition(robot, alliancePosition),
             DepositHighPoleAuto(robot, alliancePosition),

@@ -62,7 +62,6 @@ public class ArmStatePositionData() {
         )
         val SCORE_HIGH = ArmStateData(
             WristStateData(-2.0, 0.0, 34.0),
-
             ElbowStateData(58.0),
             ExtensionStateData(11.6),
             PoleAlignerStateData(8.0),
@@ -103,13 +102,28 @@ public class ArmStatePositionData() {
             PoleAlignerStateData(ARM_HOME.aligner.angle),
             CLAW_HOLD_CONE
         )
-        val INTERMEDIATE = ArmStateData(
-            WristStateData(-110.0, 0.0),
-            ElbowStateData(45.0),
-            ExtensionStateData(8.0),
-            PoleAlignerStateData(ARM_HOME.aligner.angle),
-            CLAW_HOLD_CONE
+        val HIGH_POLE_TO_CONESTACK = ArmAndTurretStateData(
+            ArmStateData(
+                WristStateData(-110.0, 0.0),
+                ElbowStateData(45.0),
+                ExtensionStateData(8.0),
+                PoleAlignerStateData(ARM_HOME.aligner.angle),
+                CLAW_HOLD_CONE
+            ),
+            TurretStateData(50.5)
         )
+
+        val CONESTACK_TO_HIGH_POLE = ArmAndTurretStateData(
+            ArmStateData(
+                WristStateData(-110.0, 0.0),
+                ElbowStateData(45.0),
+                ExtensionStateData(8.0),
+                PoleAlignerStateData(ARM_HOME.aligner.angle),
+                CLAW_HOLD_CONE
+            ),
+            TurretStateData(-53.2)
+        )
+
         val INTAKE_REAR = ArmAndTurretStateData(
             INTAKE,
             TurretStateData(180.0)

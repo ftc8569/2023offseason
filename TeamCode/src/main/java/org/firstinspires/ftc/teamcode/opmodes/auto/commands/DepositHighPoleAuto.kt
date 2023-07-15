@@ -6,8 +6,7 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup
 import com.arcrobotics.ftclib.command.WaitCommand
 import org.firstinspires.ftc.teamcode.Cons.EASING
 import org.firstinspires.ftc.teamcode.commands.claw.SetClawPosition
-import org.firstinspires.ftc.teamcode.commands.commandgroups.IntermediateBackToCones
-import org.firstinspires.ftc.teamcode.commands.commandgroups.MoveToIntermediateScorePosition
+import org.firstinspires.ftc.teamcode.commands.commandgroups.MinimalStowFromPoleToStack
 import org.firstinspires.ftc.teamcode.commands.elbow.SetElbowAngle
 import org.firstinspires.ftc.teamcode.commands.extension.SetExtensionLinkage
 import org.firstinspires.ftc.teamcode.commands.general.ConfigurableCommandBase
@@ -48,7 +47,7 @@ class DepositHighPoleAuto(val robot: Robot, val alliancePosition: AlliancePositi
             ),
             SetClawPosition(robot.claw, ClawPositions.OPEN_FOR_INTAKE),
             WaitCommand(250),
-            IntermediateBackToCones(robot)
+            MinimalStowFromPoleToStack(robot)
         )
     }
 }
