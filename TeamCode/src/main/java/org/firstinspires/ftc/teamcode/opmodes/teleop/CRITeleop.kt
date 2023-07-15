@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop
 
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.arcrobotics.ftclib.command.CommandOpMode
+import com.arcrobotics.ftclib.command.SequentialCommandGroup
+import com.arcrobotics.ftclib.command.WaitCommand
 import com.arcrobotics.ftclib.command.button.Trigger
 import com.arcrobotics.ftclib.gamepad.GamepadEx
 import com.arcrobotics.ftclib.gamepad.GamepadKeys
@@ -45,26 +47,37 @@ class CRITeleop : CommandOpMode() {
         // turn on the telemetry monitoring of the robot
         schedule(MonitorRobotTelemetry(robot))
 
-        // Score high, medium, or low based on the gamepad buttons
-        driver.getGamepadButton(GamepadKeys.Button.Y).whenPressed(
-            ScoreHighJunction(robot)
-        )
-        driver.getGamepadButton(GamepadKeys.Button.X).whenPressed(
-            ScoreMediumJunction(robot)
-        )
-        driver.getGamepadButton(GamepadKeys.Button.A).whenPressed(
-            ScoreLowJunction(robot)
-        )
-        driver.getGamepadButton(GamepadKeys.Button.B).whenPressed(
-            ScoreGroundJunction(robot)
-        )
-        // Deposit
-        driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(
-            DepositCone(robot)
+        // Intake position based on the DPAD
+        val beamBreakTrigger = Trigger { robot.claw.holdingCone }.whenActive(
+            SetClawPosition(
+                robot.claw,
+                ClawPositions.HOLD_CONE
+            )
         )
 
-        // Intake position based on the DPAD
-        val beamBreakTrigger = Trigger { robot.claw.holdingCone }.whenActive(SetClawPosition(robot.claw, ClawPositions.HOLD_CONE))
+        Trigger { driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.2 }.whenActive(
+            ScoreHighJunction(robot)
+        ).whenInactive(DepositCone(robot))
+
+        driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+            .whenActive(ScoreMediumJunction(robot)).whenInactive(DepositCone(robot))
+
+        driver.getGamepadButton(GamepadKeys.Button.Y).whenHeld(ScoreLowJunction(robot))
+            .whenInactive(DepositCone(robot))
+
+        driver.getGamepadButton(GamepadKeys.Button.B).whenHeld(ScoreGroundJunction(robot))
+            .whenInactive(DepositCone(robot))
+
+        driver.getGamepadButton(GamepadKeys.Button.X).whenHeld(
+            ScoreMediumJunction(robot))
+            .3
+
+        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+            .whenHeld(IntakeCone(robot, ArmStatePositionData.INTAKE_FRONT))
+
+        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+            .and(beamBreakTrigger)
+            .whenActive(SequentialCommandGroup(WaitCommand(300), MoveToTravel(robot)))
 
         driver.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(
             IntakeCone(robot, ArmStatePositionData.INTAKE_FRONT),
@@ -73,20 +86,14 @@ class CRITeleop : CommandOpMode() {
             MoveToTravel(robot)
         )
 
-        // PICKUP Cone
-        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenPressed(
-            PickupCone(robot)
-        )
-    }
-
-    fun shouldElbowMoveFirst(armState : ArmState) : Boolean {
-        return when(armState) {
-            ArmState.SCORE_GROUND -> true
-            ArmState.SCORE_LOW -> true
-            ArmState.SCORE_MEDIUM -> true
-            ArmState.SCORE_HIGH -> false
-            else -> true
+        fun shouldElbowMoveFirst(armState: ArmState): Boolean {
+            return when (armState) {
+                ArmState.SCORE_GROUND -> true
+                ArmState.SCORE_LOW -> true
+                ArmState.SCORE_MEDIUM -> true
+                ArmState.SCORE_HIGH -> false
+                else -> true
+            }
         }
     }
-
 }

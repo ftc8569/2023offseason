@@ -4,7 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 
 @Config
 public class Cons {
-    public static long COMMAND_DELAY = 50;
+    public static long COMMAND_DELAY = 100;
     public static double EASING = 1.0;
 
     // Elbow Constants

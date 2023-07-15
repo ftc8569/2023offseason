@@ -24,7 +24,7 @@ class MoveToTravel(val robot : Robot) : ConfigurableCommandBase()  {
     }
 
     override fun configure(): CommandBase {
-        return SequentialCommandGroup(
+        return ParallelCommandGroup(
             SetWristAngles(robot.wrist,ArmStatePositionData.TRAVEL.wrist.bendAngle,ArmStatePositionData.TRAVEL.wrist.twistAngle),
             SetExtensionLinkage(robot.extension, ArmStatePositionData.TRAVEL.extension.length, EASING),
             SetAligner(robot.aligner, ArmStatePositionData.TRAVEL.aligner.angle),

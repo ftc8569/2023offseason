@@ -14,7 +14,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation
 class SignalConeDetectorSubSystem(val robot: Robot, val isTelemetryEnabled : Boolean = false) : SubsystemBase()  {
     private val cameraMonitorViewId = robot.hardwareMap.appContext.resources.getIdentifier("cameraMonitorViewId", "id", robot.hardwareMap.appContext.packageName)
     val webcam: OpenCvCamera = OpenCvCameraFactory.getInstance().createWebcam(robot.hardwareMap.get(
-        WebcamName::class.java, "leftWebcam"), cameraMonitorViewId)
+        WebcamName::class.java, "rightWebcam"), cameraMonitorViewId)
     val pipeline = AprilTagDetectionPipeline()
 
     init {
@@ -28,6 +28,7 @@ class SignalConeDetectorSubSystem(val robot: Robot, val isTelemetryEnabled : Boo
         webcam.openCameraDeviceAsync(object : OpenCvCamera.AsyncCameraOpenListener {
             override fun onOpened() {
                 webcam.startStreaming(resolution.width, resolution.height, OpenCvCameraRotation.UPSIDE_DOWN)
+                FtcDashboard.getInstance().startCameraStream(webcam, 60.0)
             }
 
             override fun onError(errorCode: Int) {

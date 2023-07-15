@@ -7,6 +7,7 @@ import com.arcrobotics.ftclib.command.WaitCommand
 import org.firstinspires.ftc.teamcode.Cons
 import org.firstinspires.ftc.teamcode.Cons.EASING
 import org.firstinspires.ftc.teamcode.commands.claw.SetClawPosition
+import org.firstinspires.ftc.teamcode.commands.commandgroups.MoveToIntermediateScorePosition
 import org.firstinspires.ftc.teamcode.commands.commandgroups.MoveToTravel
 import org.firstinspires.ftc.teamcode.commands.elbow.SetElbowAngle
 import org.firstinspires.ftc.teamcode.commands.extension.SetExtensionLinkage
@@ -103,16 +104,18 @@ class IntakeFromConeStack(val robot : Robot, val alliancePosition: AlliancePosit
                 SetClawPosition(robot.claw, ClawPositions.OPEN_FOR_INTAKE)
             ),
             SetTurretAngle(robot.turret, armAndTurretState.turret.angle),
-            SetElbowAngle(robot.elbow, armAndTurretState.arm.elbow.angle),
-            SetExtensionLinkage(robot.extension, armAndTurretState.arm.extension.length, EASING),
-            SetWristAngles(robot.wrist, armAndTurretState.arm.wrist.bendAngle, armAndTurretState.arm.wrist.twistAngle),
+            ParallelCommandGroup(
+                SetElbowAngle(robot.elbow, armAndTurretState.arm.elbow.angle),
+                SetExtensionLinkage(robot.extension, armAndTurretState.arm.extension.length, EASING),
+                SetWristAngles(robot.wrist, armAndTurretState.arm.wrist.bendAngle, armAndTurretState.arm.wrist.twistAngle),
+            ),
             WaitCommand(Cons.COMMAND_DELAY),
 
             CloseClawOnBeamBreak(robot),
-            SetElbowAngle(robot.elbow, armAndTurretState.arm.elbow.angle + elbowAnglePickupOffset),
-            SetExtensionLinkage(robot.extension, armAndTurretState.arm.extension.length - extensionPickupOffset),
-            WaitCommand(100),
-            MoveToTravel(robot)
+//            SetElbowAngle(robot.elbow, armAndTurretState.arm.elbow.angle + elbowAnglePickupOffset),
+//            SetExtensionLinkage(robot.extension, ArmStatePositionData.INTERMEDIATE.extension.length, Cons.EASING),
+            WaitCommand(250),
+            MoveToIntermediateScorePosition(robot)
         )
 
     }

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes.auto
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.arcrobotics.ftclib.command.CommandOpMode
+import com.arcrobotics.ftclib.command.ParallelCommandGroup
 import com.arcrobotics.ftclib.command.SequentialCommandGroup
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import org.firstinspires.ftc.teamcode.commands.commandgroups.MoveToTravel
@@ -12,10 +13,7 @@ import org.firstinspires.ftc.teamcode.opmodes.auto.commands.DepositHighPoleAuto
 import org.firstinspires.ftc.teamcode.opmodes.auto.commands.IntakeFromConeStack
 import org.firstinspires.ftc.teamcode.opmodes.auto.commands.MoveToAutoScoringPosition
 import org.firstinspires.ftc.teamcode.opmodes.auto.commands.Park
-import org.firstinspires.ftc.teamcode.subsystems.ArmStatePositionData
-import org.firstinspires.ftc.teamcode.subsystems.ClawPositions
-import org.firstinspires.ftc.teamcode.subsystems.OpModeType
-import org.firstinspires.ftc.teamcode.subsystems.Robot
+import org.firstinspires.ftc.teamcode.subsystems.*
 
 @Autonomous
 class CRIAutoQueenWaveRight() : CommandOpMode() {
@@ -39,22 +37,23 @@ class CRIAutoQueenWaveRight() : CommandOpMode() {
         // schedule the commands for Auto
         val autoCommands = SequentialCommandGroup(
             DetectSignalCone(robot),
-            UpdateTelemetry(robot){ telemetry -> telemetry.addData("Detected Cone", robot.detectedSignalCone)},
             MoveToTravel(robot),
+            UpdateTelemetry(robot){ telemetry -> telemetry.addData("Detected Cone", robot.detectedSignalCone)},
             MoveToAutoScoringPosition(robot, alliancePosition),
             DepositHighPoleAuto(robot, alliancePosition),
             IntakeFromConeStack(robot, alliancePosition, 5),
             DepositHighPoleAuto(robot, alliancePosition),
             IntakeFromConeStack(robot, alliancePosition, 4),
             DepositHighPoleAuto(robot, alliancePosition),
-            IntakeFromConeStack(robot, alliancePosition, 3),
-            DepositHighPoleAuto(robot, alliancePosition),
-            IntakeFromConeStack(robot, alliancePosition, 2),
-            DepositHighPoleAuto(robot, alliancePosition),
-            IntakeFromConeStack(robot, alliancePosition, 1),
-            DepositHighPoleAuto(robot, alliancePosition),
+//            IntakeFromConeStack(robot, alliancePosition, 3),
+//            DepositHighPoleAuto(robot, alliancePosition),
+//            IntakeFromConeStack(robot, alliancePosition, 2),
+//            DepositHighPoleAuto(robot, alliancePosition),
+//            IntakeFromConeStack(robot, alliancePosition, 1),
+//            DepositHighPoleAuto(robot, alliancePosition),
+            MoveToTravel(robot),
             Park(robot, alliancePosition)
-        );
+        )
 
         schedule(autoCommands)
 

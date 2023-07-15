@@ -103,6 +103,13 @@ public class ArmStatePositionData() {
             PoleAlignerStateData(ARM_HOME.aligner.angle),
             CLAW_HOLD_CONE
         )
+        val INTERMEDIATE = ArmStateData(
+            WristStateData(-110.0, 0.0),
+            ElbowStateData(45.0),
+            ExtensionStateData(8.0),
+            PoleAlignerStateData(ARM_HOME.aligner.angle),
+            CLAW_HOLD_CONE
+        )
         val INTAKE_REAR = ArmAndTurretStateData(
             INTAKE,
             TurretStateData(180.0)
