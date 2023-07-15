@@ -24,21 +24,21 @@ class MinimalStowFromStackToPole(val robot: Robot) : ConfigurableCommandBase() {
             ParallelCommandGroup(
                 SetWristAngles(
                     robot.wrist,
-                    ArmStatePositionData.HIGH_POLE_TO_CONESTACK.arm.wrist.bendAngle,
-                    ArmStatePositionData.HIGH_POLE_TO_CONESTACK.arm.wrist.twistAngle
+                    ArmStatePositionData.CONESTACK_TO_HIGH_POLE.arm.wrist.bendAngle,
+                    ArmStatePositionData.CONESTACK_TO_HIGH_POLE.arm.wrist.twistAngle
                 ),
                 SetExtensionLinkage(
                     robot.extension,
-                    ArmStatePositionData.HIGH_POLE_TO_CONESTACK.arm.extension.length,
+                    ArmStatePositionData.CONESTACK_TO_HIGH_POLE.arm.extension.length,
                     Cons.EASING
                 ),
                 SetElbowAngle(
                     robot.elbow,
-                    ArmStatePositionData.HIGH_POLE_TO_CONESTACK.arm.elbow.angle
+                    ArmStatePositionData.CONESTACK_TO_HIGH_POLE.arm.elbow.angle
                 ),
                 SetTurretAngle(
                     robot.turret,
-                    ArmStatePositionData.HIGH_POLE_TO_CONESTACK.turret.angle
+                    ArmStatePositionData.CONESTACK_TO_HIGH_POLE.turret.angle
                 )
             ),
             SetAligner(

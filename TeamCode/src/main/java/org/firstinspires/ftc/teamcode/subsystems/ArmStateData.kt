@@ -110,7 +110,7 @@ public class ArmStatePositionData() {
                 PoleAlignerStateData(ARM_HOME.aligner.angle),
                 CLAW_HOLD_CONE
             ),
-            TurretStateData(50.5)
+            TurretStateData(92.0)
         )
 
         val CONESTACK_TO_HIGH_POLE = ArmAndTurretStateData(
