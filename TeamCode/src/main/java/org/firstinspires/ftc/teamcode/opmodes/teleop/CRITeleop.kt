@@ -58,16 +58,18 @@ class CRITeleop : CommandOpMode() {
         // REGULAR SCORING
         Trigger { driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.2 }.whenActive(
             ScoreHighJunction(robot)
-        ).whenInactive(DepositCone(robot))
+        ).whenInactive(DepositCone(robot).interruptOn { driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) })
 
         driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-            .whenActive(ScoreMediumJunction(robot)).whenInactive(DepositCone(robot))
+            .whenActive(ScoreMediumJunction(robot))
+            .whenInactive(DepositCone(robot).interruptOn { driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) })
+
 
         driver.getGamepadButton(GamepadKeys.Button.Y).whenHeld(ScoreLowJunction(robot))
-            .whenInactive(DepositCone(robot))
+            .whenInactive(DepositCone(robot).interruptOn { driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) })
 
         driver.getGamepadButton(GamepadKeys.Button.B).whenHeld(ScoreGroundJunction(robot))
-            .whenInactive(DepositCone(robot))
+            .whenInactive(DepositCone(robot).interruptOn { driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) })
 
         // CAPPING
         val rightTrigger = Trigger { driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.2 }
@@ -81,17 +83,15 @@ class CRITeleop : CommandOpMode() {
         driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
             .and(rightTrigger)
             .whenActive(ScoreMediumJunction(robot)).whenInactive(DepositCone(robot))
-            .whenInactive(DepositTSEUnderCone(robot))
+            .whenInactive(DepositTSEUnderCone(robot).interruptOn { driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) })
 
         driver.getGamepadButton(GamepadKeys.Button.Y).whenHeld(ScoreLowJunction(robot))
             .and(rightTrigger)
-            .whenInactive(DepositTSEUnderCone(robot))
+            .whenInactive(DepositTSEUnderCone(robot).interruptOn { driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) })
 
         driver.getGamepadButton(GamepadKeys.Button.B).whenHeld(ScoreGroundJunction(robot))
             .and(rightTrigger)
-            .whenInactive(DepositTSEUnderCone(robot))
-
-
+            .whenInactive(DepositTSEUnderCone(robot).interruptOn { driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) })
 
         driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
             .whenHeld(IntakeCone(robot, ArmStatePositionData.INTAKE_FRONT))
@@ -99,13 +99,6 @@ class CRITeleop : CommandOpMode() {
         driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
             .and(beamBreakTrigger)
             .whenActive(SequentialCommandGroup(WaitCommand(300), MoveToTravel(robot)))
-
-        driver.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(
-            IntakeCone(robot, ArmStatePositionData.INTAKE_FRONT),
-        )
-        driver.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(
-            MoveToTravel(robot)
-        )
 
         fun shouldElbowMoveFirst(armState: ArmState): Boolean {
             return when (armState) {
