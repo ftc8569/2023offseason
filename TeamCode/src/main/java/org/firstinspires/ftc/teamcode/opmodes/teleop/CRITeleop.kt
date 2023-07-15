@@ -55,6 +55,7 @@ class CRITeleop : CommandOpMode() {
             )
         )
 
+        // REGULAR SCORING
         Trigger { driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.2 }.whenActive(
             ScoreHighJunction(robot)
         ).whenInactive(DepositCone(robot))
@@ -68,9 +69,29 @@ class CRITeleop : CommandOpMode() {
         driver.getGamepadButton(GamepadKeys.Button.B).whenHeld(ScoreGroundJunction(robot))
             .whenInactive(DepositCone(robot))
 
-        driver.getGamepadButton(GamepadKeys.Button.X).whenHeld(
-            ScoreMediumJunction(robot))
-            .3
+        // CAPPING
+        val rightTrigger = Trigger { driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.2 }
+
+        Trigger { driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.2 }
+            .and(rightTrigger)
+            .whenActive(
+            ScoreHighJunction(robot)
+        ).whenInactive(DepositTSEUnderCone(robot))
+
+        driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+            .and(rightTrigger)
+            .whenActive(ScoreMediumJunction(robot)).whenInactive(DepositCone(robot))
+            .whenInactive(DepositTSEUnderCone(robot))
+
+        driver.getGamepadButton(GamepadKeys.Button.Y).whenHeld(ScoreLowJunction(robot))
+            .and(rightTrigger)
+            .whenInactive(DepositTSEUnderCone(robot))
+
+        driver.getGamepadButton(GamepadKeys.Button.B).whenHeld(ScoreGroundJunction(robot))
+            .and(rightTrigger)
+            .whenInactive(DepositTSEUnderCone(robot))
+
+
 
         driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
             .whenHeld(IntakeCone(robot, ArmStatePositionData.INTAKE_FRONT))
