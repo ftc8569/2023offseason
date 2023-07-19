@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.commands.claw.SetClawPosition
 import org.firstinspires.ftc.teamcode.commands.commandgroups.*
 import org.firstinspires.ftc.teamcode.commands.drivetrain.DriveMecanumSnap
+import org.firstinspires.ftc.teamcode.commands.drivetrain.ResetHeading
 import org.firstinspires.ftc.teamcode.commands.general.MonitorRobotTelemetry
 import org.firstinspires.ftc.teamcode.commands.turret.ControlTurretAngle
 import org.firstinspires.ftc.teamcode.subsystems.ArmState
@@ -58,18 +59,18 @@ class CRITeleop : CommandOpMode() {
         // REGULAR SCORING
         Trigger { driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.2 }.whenActive(
             ScoreHighJunction(robot)
-        ).whenInactive(DepositCone(robot).interruptOn { driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) })
+        ).whenInactive(DepositCone(robot))
 
         driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
             .whenActive(ScoreMediumJunction(robot))
-            .whenInactive(DepositCone(robot).interruptOn { driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) })
+            .whenInactive(DepositCone(robot))
 
 
         driver.getGamepadButton(GamepadKeys.Button.Y).whenHeld(ScoreLowJunction(robot))
-            .whenInactive(DepositCone(robot).interruptOn { driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) })
+            .whenInactive(DepositCone(robot))
 
         driver.getGamepadButton(GamepadKeys.Button.B).whenHeld(ScoreGroundJunction(robot))
-            .whenInactive(DepositCone(robot).interruptOn { driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) })
+            .whenInactive(DepositCone(robot))
 
         // CAPPING
         val rightTrigger = Trigger { driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.2 }
@@ -83,15 +84,19 @@ class CRITeleop : CommandOpMode() {
         driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
             .and(rightTrigger)
             .whenActive(ScoreMediumJunction(robot)).whenInactive(DepositCone(robot))
-            .whenInactive(DepositTSEUnderCone(robot).interruptOn { driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) })
+            .whenInactive(DepositTSEUnderCone(robot))
 
         driver.getGamepadButton(GamepadKeys.Button.Y).whenHeld(ScoreLowJunction(robot))
             .and(rightTrigger)
-            .whenInactive(DepositTSEUnderCone(robot).interruptOn { driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) })
+            .whenInactive(DepositTSEUnderCone(robot))
 
         driver.getGamepadButton(GamepadKeys.Button.B).whenHeld(ScoreGroundJunction(robot))
             .and(rightTrigger)
             .whenInactive(DepositTSEUnderCone(robot).interruptOn { driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) })
+
+        driver.getGamepadButton(GamepadKeys.Button.A).whenPressed(
+            ResetHeading(robot.drivetrain)
+        )
 
         driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
             .whenHeld(IntakeCone(robot, ArmStatePositionData.INTAKE_FRONT))

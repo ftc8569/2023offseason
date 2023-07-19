@@ -24,12 +24,15 @@ class MoveToTravel(val robot : Robot) : ConfigurableCommandBase()  {
     }
 
     override fun configure(): CommandBase {
-        return ParallelCommandGroup(
-            SetWristAngles(robot.wrist,ArmStatePositionData.TRAVEL.wrist.bendAngle,ArmStatePositionData.TRAVEL.wrist.twistAngle),
-            SetExtensionLinkage(robot.extension, ArmStatePositionData.TRAVEL.extension.length, EASING),
-            SetAligner(robot.aligner, ArmStatePositionData.TRAVEL.aligner.angle),
-            SetElbowAngle(robot.elbow, ArmStatePositionData.TRAVEL.elbow.angle),
+        return SequentialCommandGroup(
+            ParallelCommandGroup(
+                SetWristAngles(robot.wrist,ArmStatePositionData.TRAVEL.wrist.bendAngle,ArmStatePositionData.TRAVEL.wrist.twistAngle),
+                SetExtensionLinkage(robot.extension, ArmStatePositionData.TRAVEL.extension.length, EASING),
+                SetAligner(robot.aligner, ArmStatePositionData.TRAVEL.aligner.angle),
+                SetElbowAngle(robot.elbow, ArmStatePositionData.TRAVEL.elbow.angle),
+            ),
             ConditionalCommand(ClawRegripCone(robot), InstantCommand({ println("MoveToTravel - Skipped Regrip")})) { robot.claw.holdingCone },
+
         )
     }
 }
