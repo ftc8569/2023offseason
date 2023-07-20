@@ -83,6 +83,13 @@ public class ArmStatePositionData() {
             ARM_HOME.aligner,
             CLAW_HOLD_CONE
         )
+        val SCORE_LOW_UPSIDEDOWN = ArmStateData(
+            WristStateData(-10.0, 180.0, 7.0),
+            ElbowStateData(3.0),
+            ExtensionStateData(0.0),
+            ARM_HOME.aligner,
+            CLAW_HOLD_CONE
+        )
         var INTAKE = ArmStateData(
             WristStateData(-25.0, ARM_HOME.wrist.twistAngle),
             ElbowStateData(-45.0),

@@ -40,7 +40,7 @@ class DepositHighPoleAuto(val robot: Robot, val alliancePosition: AlliancePositi
                 SetTurretAngle(robot.turret, -53.2),
             ),
             SetExtensionLinkage(robot.extension, armAndTurretState.arm.extension.length, EASING),
-            WaitCommand(250),
+//            WaitCommand(250),
             ParallelCommandGroup(
                 SetWristAngles(robot.wrist, armAndTurretState.arm.wrist.depositBendAngle, 0.0),
                 SetAligner(robot.aligner, ArmStatePositionData.ARM_HOME.aligner.angle)

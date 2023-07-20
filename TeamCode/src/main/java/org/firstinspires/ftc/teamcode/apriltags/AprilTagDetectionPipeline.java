@@ -21,7 +21,7 @@ public class AprilTagDetectionPipeline extends OpenCvPipeline
 {
     private long nativeApriltagPtr;
     private Mat grey = new Mat();
-    private ArrayList<AprilTagDetection> detections = new ArrayList<>();
+    private volatile ArrayList<AprilTagDetection> detections = new ArrayList<>();
 
     private ArrayList<AprilTagDetection> detectionsUpdate = new ArrayList<>();
     private final Object detectionsUpdateSync = new Object();
@@ -115,7 +115,7 @@ public class AprilTagDetectionPipeline extends OpenCvPipeline
 
         synchronized (detectionsUpdateSync)
         {
-            detectionsUpdate = detections;
+            detectionsUpdate = new ArrayList<>(detections);
         }
 
         // For fun, use OpenCV to draw 6DOF markers on the image. We actually recompute the pose using
@@ -126,6 +126,9 @@ public class AprilTagDetectionPipeline extends OpenCvPipeline
             drawAxisMarker(input, tagsizeY/2.0, 6, pose.rvec, pose.tvec, cameraMatrix);
             draw3dCubeMarker(input, tagsizeX, tagsizeX, tagsizeY, 5, pose.rvec, pose.tvec, cameraMatrix);
         }
+
+        if (!detections.isEmpty())
+            System.out.println("working: " + detections.get(0).id);
 
         return input;
     }

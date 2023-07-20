@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
+import android.util.Log
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
 import com.arcrobotics.ftclib.hardware.motors.MotorEx
@@ -115,6 +116,7 @@ class Robot(
                 savedHomeResultsFromAuto!!
             }
             OpModeType.TELEOP -> {
+                Log.d("Positions saved from auto", (null != savedHomeResultsFromAuto).toString())
                 val resultToUse = if (limitSwitches.isAtHome()) {
                     // if we are already at home, we don't need to homeMecahnisms
                     HomingResult(
@@ -122,6 +124,7 @@ class Robot(
                         limitSwitches.getHomePosition(),
                         HomingMethod.LIMIT_SWITCH
                     )
+
                 } else if (null != savedHomeResultsFromAuto) {
                     // if we are not at home, but we have a saved result from auto, use that
                     val result = HomingResult(
@@ -134,10 +137,10 @@ class Robot(
                     result
                 } else {
                     // if we are not at home, and we don't have a saved result from auto, homeMecahnisms
-                    waitForHome(telemetry)
+//                    waitForHome(telemetry)
                     HomingResult(
-                        limitSwitches.getHomeAngles()!!,
-                        limitSwitches.getHomePosition(),
+                        LimitSwitchHomeAngles.RIGHT_HOME,
+                        HomePosition.RIGHT,
                         HomingMethod.LIMIT_SWITCH
                     )
                 }
