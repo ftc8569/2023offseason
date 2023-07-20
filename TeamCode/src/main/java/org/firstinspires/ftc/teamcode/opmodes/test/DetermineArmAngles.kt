@@ -39,6 +39,8 @@ class DetermineArmAngles : CommandOpMode() {
 
         val aButtonGunner = gunner.getGamepadButton(GamepadKeys.Button.A)
         val bButtonGunner = gunner.getGamepadButton(GamepadKeys.Button.B)
+        val xButtonGunner = gunner.getGamepadButton(GamepadKeys.Button.X)
+        val yButtonGunner = gunner.getGamepadButton(GamepadKeys.Button.Y)
 
 
         robot.telemetry.addLine("Determining Arm Angles")
@@ -52,7 +54,7 @@ class DetermineArmAngles : CommandOpMode() {
 
 //        robot.elbow.isTelemetryEnabled = true
 //        robot.turret.isTelemetryEnabled = true
-        robot.extension.isTelemetryEnabled = true
+//        robot.extension.isTelemetryEnabled = true
 
         rightBumper.whenPressed(InstantCommand({ multiplier += 1.0;  }))
         leftBumper.whenPressed(InstantCommand({ multiplier -= 1.0;  }))
@@ -68,6 +70,10 @@ class DetermineArmAngles : CommandOpMode() {
         // a/b is wrist movement
         aButton.whenPressed(InstantCommand({ robot.wrist.bendAngleDegrees += 1.0 * multiplier}, robot.wrist))
         bButton.whenPressed(InstantCommand({ robot.wrist.bendAngleDegrees -= 1.0 * multiplier}, robot.wrist))
+
+        // x/y is wrist twist
+        xButtonGunner.whenPressed(InstantCommand({ robot.wrist.twistAngleDegrees += 1.0 * multiplier}, robot.wrist))
+        yButtonGunner.whenPressed(InstantCommand({ robot.wrist.twistAngleDegrees -= 1.0 * multiplier}, robot.wrist))
 
         // a/b gunner is pole aligner
         aButtonGunner.whenPressed(InstantCommand({ robot.aligner.angle += 1.0 * multiplier}, robot.aligner))

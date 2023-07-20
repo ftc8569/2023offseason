@@ -9,7 +9,7 @@ class ClawRegripCone(robot : Robot) : SequentialCommandGroup() {
     init {
         addCommands(
             SetClawPosition(robot.claw, ClawPositions.RELEASE_CONE_BUT_HOLD_TSE),
-            WaitCommand(200),
+            WaitCommand(100),
             SetClawPosition(robot.claw, ClawPositions.HOLD_CONE)
         )
     }

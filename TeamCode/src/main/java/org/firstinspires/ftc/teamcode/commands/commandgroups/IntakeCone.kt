@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.commands.turret.SetTurretAngle
 import org.firstinspires.ftc.teamcode.commands.wrist.SetWristAngles
 import org.firstinspires.ftc.teamcode.subsystems.*
 
-class IntakeCone(private var robot : Robot, private val newState: ArmAndTurretStateData) : ConfigurableCommandBase() {
+class IntakeCone(private var robot : Robot, private val newState: ArmStateData) : ConfigurableCommandBase() {
 
     override fun initialize() {
         super.initialize()
@@ -27,12 +27,12 @@ class IntakeCone(private var robot : Robot, private val newState: ArmAndTurretSt
         // TODO check that the armStateData passes in is legit & consider ParallelCommandGroup
         return if (robot.armState == ArmState.TRAVEL) {
             SequentialCommandGroup(
-                SetAligner(robot.aligner, newState.arm.aligner.angle),
-                SetElbowAngle(robot.elbow, newState.arm.elbow.angle),
+                SetAligner(robot.aligner, newState.aligner.angle),
+                SetElbowAngle(robot.elbow, newState.elbow.angle),
                 ParallelCommandGroup(
                     SetClawPosition(robot.claw, ClawPositions.OPEN_FOR_INTAKE),
-                    SetWristAngles(robot.wrist, newState.arm.wrist.bendAngle, newState.arm.wrist.twistAngle),
-                    SetExtensionLinkage(robot.extension, newState.arm.extension.length),
+                    SetWristAngles(robot.wrist, newState.wrist.bendAngle, newState.wrist.twistAngle),
+                    SetExtensionLinkage(robot.extension, newState.extension.length),
                     )
                 )
 

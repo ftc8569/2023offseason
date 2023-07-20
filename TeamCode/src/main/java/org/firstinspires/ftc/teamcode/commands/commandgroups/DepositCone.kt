@@ -34,16 +34,14 @@ class DepositCone(val robot : Robot) : ConfigurableCommandBase()  {
             }
 
             return SequentialCommandGroup(
-                SequentialCommandGroup(
                     SetWristAngles(robot.wrist, wrist.depositBendAngle, 0.0),
                     SetClawPosition(robot.claw, ClawPositions.OPEN_FOR_INTAKE),
-                ),
-                ParallelCommandGroup(
-                    SetAligner(robot.aligner, ArmStatePositionData.ARM_HOME.aligner.angle),
-                    WaitCommand(250),
-                ),
-                MoveToTravel(robot)
-            )
+                    ParallelCommandGroup(
+                        SetAligner(robot.aligner, ArmStatePositionData.ARM_HOME.aligner.angle),
+                        WaitCommand(250),
+                    ),
+                    MoveToTravel(robot)
+                )
         }
     }
 }

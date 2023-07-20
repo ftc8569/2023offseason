@@ -17,6 +17,7 @@ class PickupCone(private val robot : Robot) : ConfigurableCommandBase() {
         return if (robot.armState == ArmState.INTAKE) {
             SequentialCommandGroup(
                 SetClawPosition(robot.claw, ClawPositions.HOLD_CONE),
+                WaitCommand(150),
                 MoveToTravel(robot)
             )
         } else

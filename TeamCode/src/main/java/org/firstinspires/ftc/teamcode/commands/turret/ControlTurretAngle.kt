@@ -3,35 +3,41 @@ package org.firstinspires.ftc.teamcode.commands.turret
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.arcrobotics.ftclib.command.CommandBase
 import org.apache.commons.math3.util.FastMath.round
+import org.firstinspires.ftc.teamcode.subsystems.Robot
 import org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem
 
-class ControlTurretAngle(private val turret : TurretSubsystem,
-                         private val snapAngle: Double = 45.0,
+class ControlTurretAngle(private val robot : Robot,
                          private val turrentAngleProvider : () -> Vector2d) : CommandBase() {
+
+    private val snapAngle: Double = 90.0
+    private var snapOffsetAngle = 0.0
+
     init {
-        addRequirements(turret)
+        addRequirements(robot.turret)
     }
     private val minimumMagnitude = 0.9
 
     fun setTurretAngle(angle: Double) {
-        turret.targetAngle = angle
+        robot.turret.targetAngle = angle
     }
     override fun execute() {
         val vector = turrentAngleProvider.invoke()
         val magnitude = vector.norm()
         if (magnitude > minimumMagnitude) {
             val joystickAngle =  normalizeDegrees(Math.toDegrees(vector.angle()))
-            val currentAngle = turret.currentAngle
+            val currentAngle = robot.turret.currentAngle
             val angleDiff = shortestArc(currentAngle, joystickAngle)
             val newAngle = currentAngle + angleDiff
-            turret.targetAngle = roundToNearestSnap(newAngle, snapAngle)
+
+            snapOffsetAngle = if(robot.claw.holdingCone) 45.0 else 0.0
+            robot.turret.targetAngle = roundToNearestSnap(newAngle, snapAngle, snapOffsetAngle)
         }
     }
     override fun isFinished(): Boolean {
         return false
     }
-    fun roundToNearestSnap(angle: Double, snapAngle: Double): Double {
-        return round(angle / snapAngle) * snapAngle
+    fun roundToNearestSnap(angle: Double, snapAngle: Double, snapOffset : Double): Double {
+        return round((angle - snapOffset) / snapAngle) * snapAngle + snapOffset
     }
     fun normalizeDegrees(angle: Double): Double {
         var normalizedAngle = angle % 360.0

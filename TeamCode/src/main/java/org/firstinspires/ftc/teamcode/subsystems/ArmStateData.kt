@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
+import org.firstinspires.ftc.teamcode.Cons
+
 data class ArmStateData(
     val wrist: WristStateData,
     val elbow: ElbowStateData,
@@ -23,21 +25,21 @@ data class ExtensionStateData(
     val length: Double)
 
 data class PoleAlignerStateData(
-    val angle: Double)
+    val     angle: Double)
 
 data class ClawStateData(
     val angle : Double)
 public class ArmStatePositionData() {
     companion object {
-        val CLAW_OPEN_FOR_INTAKE = ClawStateData(0.0)
-        val CLAW_HOLD_CONE = ClawStateData(-25.0)
-        val CLAW_RELEASE_CONE_BUT_HOLD_TSE = ClawStateData(-18.0)
+        val CLAW_OPEN_FOR_INTAKE = ClawStateData((Cons.CLAW_OPEN_FOR_INTAKE - 1500.0)/2000.0 * 180.0)
+        val CLAW_HOLD_CONE = ClawStateData((Cons.CLAW_HOLD_CONE - 1500.0)/2000.0 * 180.0)
+        val CLAW_RELEASE_CONE_BUT_HOLD_TSE = ClawStateData((Cons.CLAW_RELEASE_CONE_BUT_HOLD_TSE - 1500.0)/2000.0 * 180.0)
 
         val ARM_HOME = ArmStateData(
             WristStateData(0.0, 0.0),
             ElbowStateData(0.0),
             ExtensionStateData(0.0),
-            PoleAlignerStateData(-90.0),
+            PoleAlignerStateData(-149.0),
             CLAW_OPEN_FOR_INTAKE
         )
         val START_LEFT = ArmAndTurretStateData(
@@ -61,42 +63,42 @@ public class ArmStatePositionData() {
             TurretStateData(55.0)
         )
         val SCORE_HIGH = ArmStateData(
-            WristStateData(-2.0, 0.0, 34.0),
+            WristStateData(-5.0, ARM_HOME.wrist.twistAngle, 59.0),
             ElbowStateData(58.0),
-            ExtensionStateData(11.6),
-            PoleAlignerStateData(8.0),
+            ExtensionStateData(9.5),
+            PoleAlignerStateData(-30.0),
             CLAW_HOLD_CONE
         )
         val SCORE_MEDIUM = ArmStateData(
-            WristStateData(-12.0, 0.0, 27.0),
-            ElbowStateData(35.0),
+            WristStateData(2.0, ARM_HOME.wrist.twistAngle, 38.0),
+            ElbowStateData(30.0),
             ExtensionStateData(0.0),
-            PoleAlignerStateData(37.0),
+            PoleAlignerStateData(-11.0),
             CLAW_HOLD_CONE
         )
         val SCORE_LOW = ArmStateData(
-            WristStateData(-10.0, 0.0, 7.0),
-            ElbowStateData(3.0),
+            WristStateData(-45.0, ARM_HOME.wrist.twistAngle, -10.0),
+            ElbowStateData(-20.0),
             ExtensionStateData(0.0),
             ARM_HOME.aligner,
             CLAW_HOLD_CONE
         )
         var INTAKE = ArmStateData(
-            WristStateData(-37.0, 0.0),
+            WristStateData(-25.0, ARM_HOME.wrist.twistAngle),
             ElbowStateData(-45.0),
-            ExtensionStateData(5.25),
+            ExtensionStateData(6.5),
             PoleAlignerStateData(ARM_HOME.aligner.angle),
             CLAW_OPEN_FOR_INTAKE
         )
         val SCORE_GROUND = ArmStateData(
-            WristStateData(-37.0, 0.0, -37.0),
-            ElbowStateData(-49.0),
-            ExtensionStateData(4.25),
+            WristStateData(INTAKE.wrist.bendAngle, INTAKE.wrist.twistAngle, INTAKE.wrist.bendAngle),
+            INTAKE.elbow,
+            ExtensionStateData(INTAKE.extension.length - 1.0),
             PoleAlignerStateData(ARM_HOME.aligner.angle),
             CLAW_HOLD_CONE
         )
         val TRAVEL = ArmStateData(
-            WristStateData(-110.0, 0.0),
+            WristStateData(-110.0, ARM_HOME.wrist.twistAngle),
             ElbowStateData(45.0),
             ExtensionStateData(0.0),
             PoleAlignerStateData(ARM_HOME.aligner.angle),

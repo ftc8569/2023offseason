@@ -13,7 +13,6 @@ import org.firstinspires.ftc.teamcode.commands.commandgroups.*
 import org.firstinspires.ftc.teamcode.commands.drivetrain.DriveMecanumSnap
 import org.firstinspires.ftc.teamcode.commands.general.MonitorRobotTelemetry
 import org.firstinspires.ftc.teamcode.commands.turret.ControlTurretAngle
-import org.firstinspires.ftc.teamcode.subsystems.ArmState
 import org.firstinspires.ftc.teamcode.subsystems.ArmStatePositionData
 import org.firstinspires.ftc.teamcode.subsystems.ClawPositions
 import org.firstinspires.ftc.teamcode.subsystems.Robot
@@ -27,7 +26,7 @@ class CRITeleop : CommandOpMode() {
         val driver = GamepadEx(gamepad1)
         val gunner = GamepadEx(gamepad2)
 
-        robot.elbow.isTelemetryEnabled = true
+//        robot.elbow.isTelemetryEnabled = true
 
         schedule(MoveToTravel(robot))
 
@@ -39,75 +38,66 @@ class CRITeleop : CommandOpMode() {
         )
 
         // Move the turret to the angle to the right joystick
-        val turretController = ControlTurretAngle(robot.turret) {
+        val turretController = ControlTurretAngle(robot) {
             Vector2d(-driver.rightY, driver.rightX)
         }
-        schedule(turretController)
+        turretController.schedule(false)
 
         // turn on the telemetry monitoring of the robot
-        schedule(MonitorRobotTelemetry(robot))
+        MonitorRobotTelemetry(robot).schedule(false)
 
         // Intake position based on the DPAD
-        val beamBreakTrigger = Trigger { robot.claw.holdingCone }.whenActive(
+        val beamBreakTrigger = Trigger { robot.claw.holdingCone }
+
+        beamBreakTrigger.whenActive(
             SetClawPosition(
                 robot.claw,
                 ClawPositions.HOLD_CONE
-            )
-        )
+            ))
 
         // REGULAR SCORING
-        Trigger { driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.2 }.whenActive(
-            ScoreHighJunction(robot)
-        ).whenInactive(DepositCone(robot).interruptOn { driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) })
 
-        driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-            .whenActive(ScoreMediumJunction(robot))
-            .whenInactive(DepositCone(robot).interruptOn { driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) })
+        // Score high with right trigger
+        val triggerThreshold = 0.2
 
+        val driverRightTrigger = Trigger { driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > triggerThreshold }
+        val driverLeftTrigger = Trigger { driver.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > triggerThreshold }
 
-        driver.getGamepadButton(GamepadKeys.Button.Y).whenHeld(ScoreLowJunction(robot))
-            .whenInactive(DepositCone(robot).interruptOn { driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) })
+        val driverRightBumper = driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+        val driverLeftBumper = driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
 
-        driver.getGamepadButton(GamepadKeys.Button.B).whenHeld(ScoreGroundJunction(robot))
-            .whenInactive(DepositCone(robot).interruptOn { driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) })
+        val driverTriangleButton = driver.getGamepadButton(GamepadKeys.Button.Y)
+        val driverCircleButton = driver.getGamepadButton(GamepadKeys.Button.B)
+
+        driverRightTrigger.whenActive(ScoreHighJunction(robot)).whenInactive(DepositCone(robot))
+        driverRightBumper.whenActive(ScoreMediumJunction(robot)).whenInactive(DepositCone(robot))
+        driverTriangleButton.whenActive(ScoreLowJunction(robot)).whenInactive(DepositCone(robot))
+        driverCircleButton.whenActive(ScoreGroundJunction(robot)).whenInactive(DepositCone(robot))
+
+        driverLeftBumper.whenActive(IntakeCone(robot, ArmStatePositionData.INTAKE))
+        beamBreakTrigger.whenActive(PickupCone(robot))
+
 
         // CAPPING
-        val rightTrigger = Trigger { driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.2 }
 
-        Trigger { driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.2 }
-            .and(rightTrigger)
-            .whenActive(
-            ScoreHighJunction(robot)
-        ).whenInactive(DepositTSEUnderCone(robot))
+//        Trigger { driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.2 }
+//            .and(driverRightTrigger)
+//            .whenActive(ScoreHighJunction(robot)).whenInactive(DepositTSEUnderCone(robot))
+//
+//        driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+//            .and(driverRightTrigger)
+//            .whenActive(ScoreMediumJunction(robot)).whenInactive(DepositCone(robot))
+//            .whenInactive(DepositTSEUnderCone(robot).interruptOn { driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) })
+//
+//        driver.getGamepadButton(GamepadKeys.Button.Y).whenHeld(ScoreLowJunction(robot))
+//            .and(driverRightTrigger)
+//            .whenInactive(DepositTSEUnderCone(robot).interruptOn { driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) })
+//
+//        driver.getGamepadButton(GamepadKeys.Button.B).whenHeld(ScoreGroundJunction(robot))
+//            .and(driverRightTrigger)
+//            .whenInactive(DepositTSEUnderCone(robot).interruptOn { driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) })
+//
 
-        driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-            .and(rightTrigger)
-            .whenActive(ScoreMediumJunction(robot)).whenInactive(DepositCone(robot))
-            .whenInactive(DepositTSEUnderCone(robot).interruptOn { driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) })
 
-        driver.getGamepadButton(GamepadKeys.Button.Y).whenHeld(ScoreLowJunction(robot))
-            .and(rightTrigger)
-            .whenInactive(DepositTSEUnderCone(robot).interruptOn { driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) })
-
-        driver.getGamepadButton(GamepadKeys.Button.B).whenHeld(ScoreGroundJunction(robot))
-            .and(rightTrigger)
-            .whenInactive(DepositTSEUnderCone(robot).interruptOn { driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) })
-
-        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-            .whenHeld(IntakeCone(robot, ArmStatePositionData.INTAKE_FRONT))
-
-        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-            .and(beamBreakTrigger)
-            .whenActive(SequentialCommandGroup(WaitCommand(300), MoveToTravel(robot)))
-
-        fun shouldElbowMoveFirst(armState: ArmState): Boolean {
-            return when (armState) {
-                ArmState.SCORE_GROUND -> true
-                ArmState.SCORE_LOW -> true
-                ArmState.SCORE_MEDIUM -> true
-                ArmState.SCORE_HIGH -> false
-                else -> true
-            }
-        }
     }
 }
