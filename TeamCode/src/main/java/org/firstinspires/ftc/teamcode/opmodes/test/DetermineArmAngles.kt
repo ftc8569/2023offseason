@@ -110,6 +110,7 @@ class DetermineArmAngles : CommandOpMode() {
     class UpdateTelemetry(val robot : Robot, val printTelemetry : () -> Unit ) : CommandBase() {
         override fun execute() {
             printTelemetry()
+            robot.telemetry.update()
         }
 
         override fun isFinished(): Boolean {

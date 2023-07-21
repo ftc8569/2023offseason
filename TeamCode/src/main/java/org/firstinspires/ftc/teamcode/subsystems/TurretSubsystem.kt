@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
-import androidx.core.math.MathUtils.clamp
-import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.AngleController
 import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.BasicPID
 import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficients
 import com.acmerobotics.roadrunner.profile.MotionProfileGenerator
@@ -10,19 +8,28 @@ import com.acmerobotics.roadrunner.util.epsilonEquals
 import com.arcrobotics.ftclib.command.SubsystemBase
 import com.arcrobotics.ftclib.hardware.motors.Motor
 import com.arcrobotics.ftclib.hardware.motors.MotorEx
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
+import com.qualcomm.robotcore.hardware.IMU
 import com.qualcomm.robotcore.util.ElapsedTime
-import org.firstinspires.ftc.teamcode.Cons.*
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
+import org.firstinspires.ftc.teamcode.Cons.MOTOR_TO_TURRET_GEAR_RATIO
+import org.firstinspires.ftc.teamcode.Cons.TURRET_KD
+import org.firstinspires.ftc.teamcode.Cons.TURRET_KI
+import org.firstinspires.ftc.teamcode.Cons.TURRET_KP
+import org.firstinspires.ftc.teamcode.Cons.TURRET_MAX_ANGULAR_ACCELERATION
+import org.firstinspires.ftc.teamcode.Cons.TURRET_MAX_ANGULAR_VELOCITY
+import org.firstinspires.ftc.teamcode.Cons.TURRET_MOTOR_TICKS_PER_REV
 import kotlin.math.abs
 
 // Put motionProfileTimer in constructor, mock a motionProfileTimer
-class TurretSubsystem(val robot: Robot, val motor: MotorEx, private val homingResult: HomingResult) : SubsystemBase() {
+class TurretSubsystem   (val robot: Robot, val motor: MotorEx, private val homingResult: HomingResult) : SubsystemBase() {
 
     val angleStartOffset = homingResult.homeAngles.turretAngle
     var currentAngle = homingResult.homeAngles.turretAngle
         private set
 
     val angleRange = AngleRange(-360.0, 360.0)
-    var targetAngle = 0.0
+    var targetAngle = currentAngle
         set(value) {
             field = value.coerceIn(angleRange.minimumAngle, angleRange.maximumAngle)
         }
@@ -32,21 +39,24 @@ class TurretSubsystem(val robot: Robot, val motor: MotorEx, private val homingRe
     var maxAngularVelocity = TURRET_MAX_ANGULAR_VELOCITY
     var maxAngularAcceleration = TURRET_MAX_ANGULAR_ACCELERATION
 
-    var previousTarget = 0.0;
+    var previousTarget = targetAngle;
     var motionProfile = MotionProfileGenerator.generateMotionProfile(
         MotionState(currentAngle,.0,0.0,0.0),
         MotionState(targetAngle,0.0,0.0),
         { maxAngularVelocity },
         { maxAngularAcceleration })
     val motionProfileTimer = ElapsedTime()
-
-
+    private val imu = robot.hardwareMap.get<IMU>(IMU::class.java, "imu2") // imu on the expansion hub (turret imu)
     var isTelemetryEnabled = false
     var useMotionProfile = true
     var isEnabled = true
 
     val closeEnoughToTargetAngleDegrees = 1.0
     init {
+        val parameters = IMU.Parameters(RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD,
+            RevHubOrientationOnRobot.UsbFacingDirection.DOWN))
+        imu.initialize(parameters)
+
         motor.setRunMode(Motor.RunMode.RawPower)
 
         // if we are homing with the limit switch, reset the encoder
@@ -100,6 +110,9 @@ class TurretSubsystem(val robot: Robot, val motor: MotorEx, private val homingRe
             robot.telemetry.addData("CurrentAngle", currentAngle)
             robot.telemetry.addData("AngularV", angularV)
             robot.telemetry.addData("AngularA", angularA)
+
+            val imuHeading = imu.robotYawPitchRollAngles.getYaw(AngleUnit.DEGREES)
+            robot.telemetry.addData("imu heading", imuHeading)
             robot.telemetry.update()
         }
     }
