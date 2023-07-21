@@ -14,34 +14,32 @@ import kotlin.math.abs
 import kotlin.math.cos
 
 class ElbowSubsystem(private val robot: Robot, motor1: MotorEx, motor2: MotorEx, private val homingResult: HomingResult) : SubsystemBase() {
-    private val controller = PIDController(ELBOW_KP, ELBOW_KI, ELBOW_KD)
     private val motors = MotorGroup(motor1, motor2)
+    var isEnabled = true
+    var isTelemetryEnabled = false
+
+    private val controller = PIDController(ELBOW_KP, ELBOW_KI, ELBOW_KD)
     private val encoderTicksPerRevolution = 2782
     private val closeEnoughToTargetAngleDegrees = 1.0
 
     private val maxAngularVelocity = ELBOW_MAX_ANGULAR_VELOCITY
     private val maxAngularAcceleration = ELBOW_MAX_ANGULAR_ACCELERATION
-
-    var isTelemetryEnabled = false
-    val motionProfileTimer = ElapsedTime()
-    var previousTarget = 0.0
-    var motionProfile = MotionProfileGenerator.generateMotionProfile(
-        MotionState(0.0, 0.0, 0.0),
-        MotionState(0.0, 0.0, 0.0),
-        { maxAngularVelocity },
-        { maxAngularAcceleration },
-    )
-
     private val angleStartOffsetDegrees = homingResult.homeAngles.elbowAngle
     val angleRange = AngleRange(-45.0, 58.0)
-    var targetAngle = ArmStatePositionData.TRAVEL.elbow.angle
+    var currentAngleDegrees : Double = homingResult.homeAngles.elbowAngle
+        private set
+    var targetAngle = currentAngleDegrees
         set(value) {
             field = value.coerceIn(angleRange.minimumAngle, angleRange.maximumAngle)
         }
-    var isEnabled = true
-    val currentAngleDegrees : Double
-        get() = getCurrentElbowAngle()
-
+    val motionProfileTimer = ElapsedTime()
+    var previousTarget = targetAngle
+    var motionProfile = MotionProfileGenerator.generateMotionProfile(
+        MotionState(currentAngleDegrees, 0.0, 0.0),
+        MotionState(targetAngle, 0.0, 0.0),
+        { maxAngularVelocity },
+        { maxAngularAcceleration },
+    )
     init {
         register()
         motor1.inverted = true
@@ -51,8 +49,9 @@ class ElbowSubsystem(private val robot: Robot, motor1: MotorEx, motor2: MotorEx,
         if(homingResult.method == HomingMethod.LIMIT_SWITCH) {
             motors.resetEncoder()
         }
-
+        currentAngleDegrees = getCurrentElbowAngle()
     }
+
 
     var deltaTimer = ElapsedTime()
 
@@ -65,10 +64,10 @@ class ElbowSubsystem(private val robot: Robot, motor1: MotorEx, motor2: MotorEx,
         val deltaT = deltaTimer.seconds()
         deltaTimer.reset()
 
-        val currentAngle = getCurrentElbowAngle()
-        val newAngularV = (currentAngle - angularX) / deltaT
+        currentAngleDegrees = getCurrentElbowAngle()
+        val newAngularV = (currentAngleDegrees - angularX) / deltaT
         val newAngularA = (newAngularV - angularV) / deltaT
-        angularX = currentAngle
+        angularX = currentAngleDegrees
         angularV = newAngularV
         angularA = newAngularA
 
@@ -79,11 +78,11 @@ class ElbowSubsystem(private val robot: Robot, motor1: MotorEx, motor2: MotorEx,
         generateMotionProfile(targetAngle, currentMotionProfileX, angularV, angularA)
 
         if (isEnabled) {
-            power = controller.calculate(currentAngle, motionProfile[motionProfileTimer.seconds()].x)
+            power = controller.calculate(currentAngleDegrees, motionProfile[motionProfileTimer.seconds()].x)
 
             val gravityFeedForward = ELBOW_GRAVITY_FEED_FORWARD_COEFFICIENT *
                     robot.extension.targetLength/ExtensionLinkageSubsystem.MAXIMUM_EXTENSION  *
-                    cos(Math.toRadians(currentAngle))
+                    cos(Math.toRadians(currentAngleDegrees))
 
             power += gravityFeedForward
         }
@@ -94,7 +93,7 @@ class ElbowSubsystem(private val robot: Robot, motor1: MotorEx, motor2: MotorEx,
             robot.telemetry.addLine("Elbow: Telemetry Enabled")
             robot.telemetry.addData("IsEnabled:", isEnabled)
             robot.telemetry.addData("Target Angle:", targetAngle)
-            robot.telemetry.addData("Current Angle:", currentAngle)
+            robot.telemetry.addData("Current Angle:", currentAngleDegrees)
             robot.telemetry.addData("Angular V:", angularV)
             robot.telemetry.addData("Angular A:", angularA)
             robot.telemetry.addData("Power:", power)
