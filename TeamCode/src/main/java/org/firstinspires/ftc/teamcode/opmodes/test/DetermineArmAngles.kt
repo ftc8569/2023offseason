@@ -92,13 +92,13 @@ class DetermineArmAngles : CommandOpMode() {
             robot.telemetry.addData("Extension Position", robot.extension.targetLength)
             robot.telemetry.addData("Pole Aligner Angle", robot.aligner.angle)
             robot.telemetry.addData("angleMultiplier", multiplier)
-            robot.telemetry.update()
         })
     }
 
     class UpdateTelemetry(val robot : Robot, val printTelemetry : () -> Unit ) : CommandBase() {
         override fun execute() {
             printTelemetry()
+            robot.telemetry.update()
         }
 
         override fun isFinished(): Boolean {
