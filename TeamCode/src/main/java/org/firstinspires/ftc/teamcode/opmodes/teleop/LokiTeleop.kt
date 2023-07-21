@@ -73,8 +73,8 @@ class LokiTeleop : CommandOpMode() {
         val driverDPADRightButton = driver.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
         val driverDPADUpButton = driver.getGamepadButton(GamepadKeys.Button.DPAD_UP)
         val driverDPADDownButton = driver.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
-        driverDPADLeftButton.whenActive(InstantCommand( { driveCommand.adjustHeading( +1.0) }))
-        driverDPADRightButton.whenActive(InstantCommand( { driveCommand.adjustHeading( -1.0) }))
+        driverDPADRightButton.whenActive(InstantCommand( { driveCommand.adjustHeading( +1.0) }))
+        driverDPADLeftButton.whenActive(InstantCommand( { driveCommand.adjustHeading( -1.0) }))
         driverDPADUpButton.whenActive(InstantCommand( { driveCommand.resetHeadingToImuHeading() }))
         driverDPADDownButton.whenActive(InstantCommand( { driveCommand.isHeadingLocked = false }))
             .whenInactive(InstantCommand( {

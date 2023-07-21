@@ -4,10 +4,13 @@ import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.arcrobotics.ftclib.command.CommandBase
 import com.arcrobotics.ftclib.command.CommandOpMode
 import com.arcrobotics.ftclib.command.InstantCommand
+import com.arcrobotics.ftclib.command.button.Trigger
 import com.arcrobotics.ftclib.gamepad.GamepadEx
 import com.arcrobotics.ftclib.gamepad.GamepadKeys
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import org.firstinspires.ftc.teamcode.commands.claw.SetClawPosition
 import org.firstinspires.ftc.teamcode.commands.drivetrain.DriveMecanumSnap
+import org.firstinspires.ftc.teamcode.subsystems.ClawPositions
 import org.firstinspires.ftc.teamcode.subsystems.Robot
 import kotlin.math.pow
 import kotlin.math.sign
@@ -63,6 +66,13 @@ class DetermineArmAngles : CommandOpMode() {
         rightDpad.whenPressed(InstantCommand({ robot.turret.targetAngle += 1.0 * multiplier }, robot.turret))
         leftDpad.whenPressed(InstantCommand({ robot.turret.targetAngle -= 1.0 * multiplier }, robot.turret))
 
+        // triggers are grasp cone
+        val triggerThreshold = 0.2
+        val driverRightTrigger = Trigger { driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > triggerThreshold }
+        val driverLeftTrigger = Trigger { driver.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > triggerThreshold }
+        driverRightTrigger.whenActive(SetClawPosition(robot.claw, ClawPositions.HOLD_CONE))
+        driverLeftTrigger.whenActive(SetClawPosition(robot.claw, ClawPositions.OPEN_FOR_INTAKE))
+
         // up/down is elbow movement
         upDpad.whenPressed(InstantCommand({ robot.elbow.targetAngle += 1.0 * multiplier}, robot.elbow))
         downDpad.whenPressed(InstantCommand({  robot.elbow.targetAngle -= 1.0 * multiplier}, robot.elbow))
@@ -92,6 +102,7 @@ class DetermineArmAngles : CommandOpMode() {
             robot.telemetry.addData("Extension Position", robot.extension.targetLength)
             robot.telemetry.addData("Pole Aligner Angle", robot.aligner.angle)
             robot.telemetry.addData("angleMultiplier", multiplier)
+            robot.telemetry.addData("Wrist Twist Angle", robot.wrist.twistAngleDegrees)
             robot.telemetry.update()
         })
     }

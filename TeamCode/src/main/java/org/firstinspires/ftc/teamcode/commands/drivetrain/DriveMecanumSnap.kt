@@ -17,6 +17,7 @@ class DriveMecanumSnap (private val drive: DrivetrainSubsystem,
     val headingPID = BasicPID(PIDCoefficients(HEADING_KP, 0.0, HEADING_KD))
     val angle_controller = AngleController(headingPID)
     var isHeadingLocked = true
+    private var headingAdjustment = 0.0
 
     val laneKeepingPID = BasicPID(PIDCoefficients(TRANSLATIONAL_PID.kP, TRANSLATIONAL_PID.kI, TRANSLATIONAL_PID.kD))
 
@@ -29,14 +30,16 @@ class DriveMecanumSnap (private val drive: DrivetrainSubsystem,
         drive.poseEstimate = drive.poseEstimate.copy(heading = newHeading)
     }
     fun adjustHeading(headingAdjustmentDegrees: Double) {
-        var newHeading = drive.poseEstimate.heading + Math.toRadians(headingAdjustmentDegrees)
-        drive.poseEstimate = drive.poseEstimate.copy(heading = newHeading)
+        headingAdjustment += Math.toRadians(headingAdjustmentDegrees)
+//        var newHeading = drive.poseEstimate.heading + Math.toRadians(headingAdjustmentDegrees)
+//        drive.poseEstimate = drive.poseEstimate.copy(heading = newHeading)
     }
     fun resetGoalHeadingToCurrentHeading() {
         drive.poseEstimate = drive.poseEstimate.copy(heading = goalHeading)
     }
     override fun execute() {
-        val angleControllerCorrection = if(isHeadingLocked) angle_controller.calculate(goalHeading, drive.poseEstimate.heading) else 0.0
+        val headingToUse = drive.rawExternalHeading + headingAdjustment
+        val angleControllerCorrection = if(isHeadingLocked) angle_controller.calculate(goalHeading, headingToUse) else 0.0
 
         drive.driveFieldCentric(
             strafeSupplier(),

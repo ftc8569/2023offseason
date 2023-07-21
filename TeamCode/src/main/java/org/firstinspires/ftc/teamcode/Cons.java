@@ -56,8 +56,8 @@ public class Cons {
 
 
     // Starting position constants
-    public static double TURRET_MAX_ANGULAR_VELOCITY = 360.0;
-    public static double TURRET_MAX_ANGULAR_ACCELERATION = 720.0;
+    public static double TURRET_MAX_ANGULAR_VELOCITY = 3600.0;
+    public static double TURRET_MAX_ANGULAR_ACCELERATION = 7200.0;
 
     public static double ELBOW_MAX_ANGULAR_VELOCITY = 720.0;
     public static double ELBOW_MAX_ANGULAR_ACCELERATION = 720.0;

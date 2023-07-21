@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.commands.scoring.SetAligner
 import org.firstinspires.ftc.teamcode.commands.turret.SetTurretAngle
 import org.firstinspires.ftc.teamcode.commands.wrist.SetWristAngles
 import org.firstinspires.ftc.teamcode.subsystems.*
+import org.firstinspires.ftc.teamcode.subsystems.ArmStatePositionData.Companion.ARM_HOME
 import org.firstinspires.ftc.teamcode.subsystems.Robot
 
 class IntakeFromConeStack(
@@ -20,17 +21,18 @@ class IntakeFromConeStack(
     val coneNumber: Int
 ) : ConfigurableCommandBase() {
     override fun configure(): CommandBase {
-        val turretState = TurretStateData(92.0)
+        val turretState = TurretStateData(-92.0)
+        val postPickupBendAngleOffset = -75.0
         val armAndTurretState = when (alliancePosition) {
 
-            AlliancePosition.RIGHT -> when (coneNumber) {
+            AlliancePosition.LEFT -> when (coneNumber) {
 
                 5 -> ArmAndTurretStateData(
                     ArmStateData(
-                        WristStateData(-22.0, 0.0, 0.0),
-                        ElbowStateData(-19.0),
-                        ExtensionStateData(12.65),
-                        PoleAlignerStateData(-90.0),
+                        WristStateData(-5.0, 0.0, 0.0),
+                        ElbowStateData(-18.0),
+                        ExtensionStateData(11.75),
+                        PoleAlignerStateData(ARM_HOME.aligner.angle),
                         ArmStatePositionData.CLAW_OPEN_FOR_INTAKE
                     ),
                     turretState
@@ -38,10 +40,10 @@ class IntakeFromConeStack(
 
                 4 -> ArmAndTurretStateData(
                     ArmStateData(
-                        WristStateData(-26.0, 0.0, 0.0),
-                        ElbowStateData(-22.0),
-                        ExtensionStateData(12.75),
-                        PoleAlignerStateData(-90.0),
+                        WristStateData(-10.0, 0.0, 0.0),
+                        ElbowStateData(-23.0),
+                        ExtensionStateData(12.0),
+                        PoleAlignerStateData(ARM_HOME.aligner.angle),
                         ArmStatePositionData.CLAW_OPEN_FOR_INTAKE
                     ),
                     turretState
@@ -49,10 +51,10 @@ class IntakeFromConeStack(
 
                 3 -> ArmAndTurretStateData(
                     ArmStateData(
-                        WristStateData(-23.0, 0.0, 0.0),
+                        WristStateData(-12.0, 0.0, 0.0),
                         ElbowStateData(-26.0),
-                        ExtensionStateData(13.0),
-                        PoleAlignerStateData(-90.0),
+                        ExtensionStateData(12.6),
+                        PoleAlignerStateData(ARM_HOME.aligner.angle),
                         ArmStatePositionData.CLAW_OPEN_FOR_INTAKE
                     ),
                     turretState
@@ -60,10 +62,10 @@ class IntakeFromConeStack(
 
                 2 -> ArmAndTurretStateData(
                     ArmStateData(
-                        WristStateData(-22.0, 0.0, 0.0),
-                        ElbowStateData(-27.0),
-                        ExtensionStateData(12.5),
-                        PoleAlignerStateData(-90.0),
+                        WristStateData(-12.0, 0.0, 0.0),
+                        ElbowStateData(-28.0),
+                        ExtensionStateData(12.75),
+                        PoleAlignerStateData(ARM_HOME.aligner.angle),
                         ArmStatePositionData.CLAW_OPEN_FOR_INTAKE
                     ),
                     turretState
@@ -71,10 +73,10 @@ class IntakeFromConeStack(
 
                 1 -> ArmAndTurretStateData(
                     ArmStateData(
-                        WristStateData(-26.0, 0.0, 0.0),
-                        ElbowStateData(-28.0),
+                        WristStateData(-15.0, 0.0, 0.0),
+                        ElbowStateData(-31.0),
                         ExtensionStateData(13.0),
-                        PoleAlignerStateData(-90.0),
+                        PoleAlignerStateData(ARM_HOME.aligner.angle),
                         ArmStatePositionData.CLAW_OPEN_FOR_INTAKE
                     ),
                     turretState
@@ -83,45 +85,38 @@ class IntakeFromConeStack(
                 else -> throw IllegalStateException()
             }
 
-            AlliancePosition.CENTER_RIGHT, AlliancePosition.CENTER_LEFT, AlliancePosition.LEFT -> throw NotImplementedError()
+            AlliancePosition.CENTER_RIGHT, AlliancePosition.CENTER_LEFT, AlliancePosition.RIGHT -> throw NotImplementedError()
+
             else -> throw IllegalStateException()
         }
 
-        val extensionPickupOffset = 1.0
+        val extensionPickupOffset = 2.0
         val elbowAnglePickupOffset = 15.0
 
-        return SequentialCommandGroup(
-            ParallelCommandGroup(
-                SetAligner(robot.aligner, armAndTurretState.arm.aligner.angle),
-                SetClawPosition(robot.claw, ClawPositions.OPEN_FOR_INTAKE)
-            ),
-            SetTurretAngle(robot.turret, armAndTurretState.turret.angle),
-            ParallelCommandGroup(
-                SetElbowAngle(robot.elbow, armAndTurretState.arm.elbow.angle),
-                SetExtensionLinkage(
-                    robot.extension,
-                    armAndTurretState.arm.extension.length,
-                    EASING
-                ),
-                SetWristAngles(
-                    robot.wrist,
-                    armAndTurretState.arm.wrist.bendAngle,
-                    armAndTurretState.arm.wrist.twistAngle
-                ),
-            ),
-            WaitCommand(Cons.COMMAND_DELAY),
-            ConditionalCommand(
-                SetExtensionLinkage(
-                    robot.extension,
-                    armAndTurretState.arm.extension.length + 1.0,
-                    EASING
-                ), WaitCommand(100)
-            ) { !robot.claw.holdingCone },
-            CloseClawOnBeamBreak(robot),
+        //SetClawPosition(robot.claw, ClawPositions.OPEN_FOR_INTAKE)
 //            SetElbowAngle(robot.elbow, armAndTurretState.arm.elbow.angle + elbowAnglePickupOffset),
 //            SetExtensionLinkage(robot.extension, ArmStatePositionData.INTERMEDIATE.extension.length, Cons.EASING),
+        return SequentialCommandGroup(
+            ParallelCommandGroup(
+                SetClawPosition(robot.claw, ClawPositions.OPEN_FOR_INTAKE),
+                SetTurretAngle(robot.turret, armAndTurretState.turret.angle),
+                SetExtensionLinkage(robot.extension, (armAndTurretState.arm.extension.length-extensionPickupOffset)),
+                SetWristAngles(robot.wrist, armAndTurretState.arm.wrist.bendAngle, armAndTurretState.arm.wrist.twistAngle),
+            ),
             WaitCommand(250),
-            MinimalStowFromStackToPole(robot)
+            SetElbowAngle(robot.elbow, armAndTurretState.arm.elbow.angle),
+            WaitCommand(375),
+            ConditionalCommand(
+                SetExtensionLinkage(robot.extension, armAndTurretState.arm.extension.length),
+                WaitCommand(100)
+            ) { !robot.claw.holdingCone },
+            CloseClawOnBeamBreak(robot),
+            WaitCommand(250),
+            ParallelCommandGroup(
+                SetWristAngles(robot.wrist, armAndTurretState.arm.wrist.bendAngle+postPickupBendAngleOffset, 0.0),
+                SetElbowAngle(robot.elbow, 0.0)
+                    ),
+            WaitCommand(75)
         )
 
     }

@@ -16,7 +16,8 @@ data class TurretStateData(
 data class WristStateData(
     val bendAngle: Double,
     val twistAngle: Double,
-    val depositBendAngle : Double = 0.0)
+    val depositBendAngle : Double = 0.0,
+    val depositTwistAngle : Double = 0.0)
 
 data class ElbowStateData(
     val angle: Double)

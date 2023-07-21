@@ -15,7 +15,8 @@ import org.firstinspires.ftc.teamcode.commands.turret.SetTurretAngle
 import org.firstinspires.ftc.teamcode.commands.wrist.SetWristAngles
 import org.firstinspires.ftc.teamcode.subsystems.*
 
-class DepositHighPoleAuto(val robot: Robot, val alliancePosition: AlliancePosition) :
+class DepositHighPoleAuto(
+        val robot: Robot, val alliancePosition: AlliancePosition) :
     ConfigurableCommandBase() {
     override fun configure(): CommandBase {
         val armAndTurretState = when (alliancePosition) {
