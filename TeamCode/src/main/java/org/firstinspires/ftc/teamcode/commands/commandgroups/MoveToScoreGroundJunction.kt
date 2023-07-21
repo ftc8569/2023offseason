@@ -12,23 +12,24 @@ import org.firstinspires.ftc.teamcode.subsystems.ArmState
 import org.firstinspires.ftc.teamcode.subsystems.ArmStatePositionData
 import org.firstinspires.ftc.teamcode.subsystems.Robot
 
-class ScoreHighJunction(val robot : Robot) : ConfigurableCommandBase() {
+class MoveToScoreGroundJunction(val robot : Robot) : ConfigurableCommandBase() {
 
     override fun initialize() {
         super.initialize()
-        robot.armState = ArmState.SCORE_HIGH
+        robot.armState = ArmState.SCORE_GROUND
     }
 
     override fun configure(): CommandBase {
-        val armState = ArmStatePositionData.SCORE_HIGH
+        val armState = ArmStatePositionData.SCORE_GROUND
 
         return SequentialCommandGroup(
-            SetElbowAngle(robot.elbow, armState.elbow.angle),
             ParallelCommandGroup(
                 SetExtensionLinkage(robot.extension, armState.extension.length),
+                SetWristAngles(robot.wrist, armState.wrist.bendAngle, armState.wrist.twistAngle),
                 SetAligner(robot.aligner, armState.aligner.angle)
             ),
-            SetWristAngles(robot.wrist, armState.wrist.bendAngle, armState.wrist.twistAngle)
+            SetElbowAngle(robot.elbow, armState.elbow.angle)
         )
     }
+
 }

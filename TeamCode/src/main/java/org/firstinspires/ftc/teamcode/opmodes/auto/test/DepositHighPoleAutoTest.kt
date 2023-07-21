@@ -4,17 +4,10 @@ import com.arcrobotics.ftclib.command.CommandOpMode
 import com.arcrobotics.ftclib.command.SequentialCommandGroup
 import com.arcrobotics.ftclib.gamepad.GamepadEx
 import com.arcrobotics.ftclib.gamepad.GamepadKeys
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import org.firstinspires.ftc.teamcode.commands.commandgroups.MoveToTravel
-import org.firstinspires.ftc.teamcode.commands.commandgroups.ScoreHighJunction
-import org.firstinspires.ftc.teamcode.commands.general.UpdateTelemetry
-import org.firstinspires.ftc.teamcode.commands.vision.DetectSignalCone
 import org.firstinspires.ftc.teamcode.opmodes.auto.commands.AlliancePosition
 import org.firstinspires.ftc.teamcode.opmodes.auto.commands.DepositHighPoleAuto
 import org.firstinspires.ftc.teamcode.opmodes.auto.commands.IntakeFromConeStack
-import org.firstinspires.ftc.teamcode.opmodes.auto.commands.MoveToAutoScoringPosition
-import org.firstinspires.ftc.teamcode.opmodes.auto.commands.Park
 import org.firstinspires.ftc.teamcode.subsystems.OpModeType
 import org.firstinspires.ftc.teamcode.subsystems.Robot
 

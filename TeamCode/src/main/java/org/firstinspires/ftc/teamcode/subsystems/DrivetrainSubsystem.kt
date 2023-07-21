@@ -4,7 +4,6 @@ import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.arcrobotics.ftclib.command.CommandScheduler
 import com.arcrobotics.ftclib.command.Subsystem
 import com.arcrobotics.ftclib.util.MathUtils.clamp
-import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.teamcode.roadrunner.drive.JuicyMecanumDrive
 import kotlin.math.abs
 
@@ -91,9 +90,7 @@ class DrivetrainSubsystem(val robot : Robot) : JuicyMecanumDrive(robot.hardwareM
         return normalizedList
     }
 
-     fun resetHeading() {
-        poseEstimate = Pose2d(poseEstimate.x,poseEstimate.y,0.0)
-    }
+
 
     override fun periodic() {
         update()

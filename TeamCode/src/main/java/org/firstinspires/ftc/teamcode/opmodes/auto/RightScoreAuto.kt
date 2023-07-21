@@ -9,6 +9,7 @@ import com.arcrobotics.ftclib.command.CommandOpMode
 import com.arcrobotics.ftclib.command.InstantCommand
 import com.arcrobotics.ftclib.command.WaitCommand
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import org.firstinspires.ftc.teamcode.commands.elbow.SetElbowAngle
 import org.firstinspires.ftc.teamcode.commands.drivetrain.TrajectoryCommand
 import org.firstinspires.ftc.teamcode.commands.scoring.HomeScoring
@@ -20,6 +21,8 @@ import org.firstinspires.ftc.teamcode.utilities.ScoringConfigs.ALIGNER_SCORE
 import java.lang.Math.PI
 
 @Autonomous
+@Disabled
+
 class RightScoreAuto: CommandOpMode() {
 
     override fun initialize() {

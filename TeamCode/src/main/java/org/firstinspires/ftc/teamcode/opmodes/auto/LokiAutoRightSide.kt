@@ -5,9 +5,9 @@ import com.arcrobotics.ftclib.command.CommandOpMode
 import com.arcrobotics.ftclib.command.ParallelCommandGroup
 import com.arcrobotics.ftclib.command.SequentialCommandGroup
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
-import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import org.firstinspires.ftc.teamcode.commands.commandgroups.MoveToTravel
 import org.firstinspires.ftc.teamcode.commands.general.UpdateTelemetry
+import org.firstinspires.ftc.teamcode.commands.turret.SetTurretAngle
 import org.firstinspires.ftc.teamcode.commands.vision.DetectSignalCone
 import org.firstinspires.ftc.teamcode.commands.vision.DetectSignalConfigurable
 import org.firstinspires.ftc.teamcode.opmodes.auto.commands.AlliancePosition
@@ -18,12 +18,11 @@ import org.firstinspires.ftc.teamcode.opmodes.auto.commands.Park
 import org.firstinspires.ftc.teamcode.subsystems.*
 
 @Autonomous
-@Disabled
+class LokiAutoRightSide() : CommandOpMode() {
 
-class CenterAuto() : CommandOpMode() {
     override fun initialize() {
         val robot = Robot(hardwareMap, telemetry, OpModeType.AUTONOMOUS)
-        val alliancePosition = AlliancePosition.CENTER_RIGHT
+        val alliancePosition = AlliancePosition.RIGHT
 
         // Coordinate System: +x is forward (away from driver station), +y is left, +theta is counter-clockwise
         // (0,0) is the center of the field.  0.0 radians heading is directly away from the driver station along the +x axis
@@ -42,12 +41,29 @@ class CenterAuto() : CommandOpMode() {
         val autoCommands = SequentialCommandGroup(
             MoveToTravel(robot),
             DetectSignalCone(robot),
+//            DetectSignalConfigurable(robot),
             UpdateTelemetry(robot){ telemetry -> telemetry.addData("Detected Cone", robot.detectedSignalCone)},
+            MoveToAutoScoringPosition(robot, alliancePosition),
+            DepositHighPoleAuto(robot, alliancePosition),
+            IntakeFromConeStack(robot, alliancePosition, 5),
+            DepositHighPoleAuto(robot, alliancePosition),
+            IntakeFromConeStack(robot, alliancePosition, 4),
+            DepositHighPoleAuto(robot, alliancePosition),
+//            IntakeFromConeStack(robot, alliancePosition, 3),
+//            DepositHighPoleAuto(robot, alliancePosition),
+//            IntakeFromConeStack(robot, alliancePosition, 2),
+//            DepositHighPoleAuto(robot, alliancePosition),
+//            IntakeFromConeStack(robot, alliancePosition, 1),
+//            DepositHighPoleAuto(robot, alliancePosition),
             MoveToTravel(robot),
-            Park(robot, alliancePosition)
+            ParallelCommandGroup(
+                SetTurretAngle(robot.turret, 0.0),
+                Park(robot, alliancePosition)
+            )
         )
 
         schedule(autoCommands)
+
         while (robot.claw.position != ClawPositions.HOLD_CONE) {
             if(robot.claw.holdingCone)
                 robot.claw.position = ClawPositions.HOLD_CONE

@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.arcrobotics.ftclib.command.*
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.teamcode.apriltags.AprilTagDetectionPipeline
 import org.firstinspires.ftc.teamcode.commands.elbow.SetElbowAngle
@@ -20,6 +21,8 @@ import org.openftc.easyopencv.OpenCvCameraRotation
 import java.lang.Math.PI
 
 @Autonomous
+@Disabled
+
 class TransformerAuto: CommandOpMode() {
     override fun initialize() {
         val cameraMonitorViewId = hardwareMap.appContext.resources

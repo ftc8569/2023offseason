@@ -6,6 +6,7 @@ import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficients
 import com.arcrobotics.ftclib.command.CommandBase
 import org.firstinspires.ftc.teamcode.Cons.HEADING_KD
 import org.firstinspires.ftc.teamcode.Cons.HEADING_KP
+import org.firstinspires.ftc.teamcode.roadrunner.drive.JuicyMecanumDrive.TRANSLATIONAL_PID
 import org.firstinspires.ftc.teamcode.subsystems.DrivetrainSubsystem
 
 class DriveMecanumSnap (private val drive: DrivetrainSubsystem,
@@ -13,20 +14,34 @@ class DriveMecanumSnap (private val drive: DrivetrainSubsystem,
                         private val fwdSupplier: () -> Double,
                         private val strafeSupplier: () -> Double) : CommandBase() {
 
-    val pid_basic = BasicPID(PIDCoefficients(HEADING_KP, 0.0, HEADING_KD))
-    val angle_controller = AngleController(pid_basic)
+    val headingPID = BasicPID(PIDCoefficients(HEADING_KP, 0.0, HEADING_KD))
+    val angle_controller = AngleController(headingPID)
+    var isHeadingLocked = true
+
+    val laneKeepingPID = BasicPID(PIDCoefficients(TRANSLATIONAL_PID.kP, TRANSLATIONAL_PID.kI, TRANSLATIONAL_PID.kD))
 
     init {
         addRequirements(drive)
     }
 
+    fun resetHeadingToImuHeading() {
+        var newHeading = drive.rawExternalHeading
+        drive.poseEstimate = drive.poseEstimate.copy(heading = newHeading)
+    }
+    fun adjustHeading(headingAdjustmentDegrees: Double) {
+        var newHeading = drive.poseEstimate.heading + Math.toRadians(headingAdjustmentDegrees)
+        drive.poseEstimate = drive.poseEstimate.copy(heading = newHeading)
+    }
+    fun resetGoalHeadingToCurrentHeading() {
+        drive.poseEstimate = drive.poseEstimate.copy(heading = goalHeading)
+    }
     override fun execute() {
-        val out = angle_controller.calculate(goalHeading, drive.poseEstimate.heading)
+        val angleControllerCorrection = if(isHeadingLocked) angle_controller.calculate(goalHeading, drive.poseEstimate.heading) else 0.0
 
         drive.driveFieldCentric(
             strafeSupplier(),
             fwdSupplier(),
-            -out,
+            -angleControllerCorrection,
             drive.poseEstimate.heading
         )
     }

@@ -33,15 +33,30 @@ class DepositCone(val robot : Robot) : ConfigurableCommandBase()  {
                 else -> ArmStatePositionData.ARM_HOME.wrist
             }
 
-            return SequentialCommandGroup(
+            // TODO check that these WaitCommand(250) are still needed given the upgrade to the speed servo
+            return  if(!robot.isHoldingTSE) SequentialCommandGroup(
                     SetWristAngles(robot.wrist, wrist.depositBendAngle, 0.0),
                     SetClawPosition(robot.claw, ClawPositions.OPEN_FOR_INTAKE),
                     ParallelCommandGroup(
                         SetAligner(robot.aligner, ArmStatePositionData.ARM_HOME.aligner.angle),
                         WaitCommand(250),
-                    ),
+                        ),
                     MoveToTravel(robot)
-                )
+                    )
+            else
+                SequentialCommandGroup(
+                    SetWristAngles(robot.wrist, wrist.depositBendAngle, 0.0),
+                    SequentialCommandGroup(
+                        SetClawPosition(robot.claw, ClawPositions.RELEASE_CONE_BUT_HOLD_TSE),
+                        WaitCommand(100),
+                        SetClawPosition(robot.claw, ClawPositions.HOLD_CONE)
+                        ),
+                    ParallelCommandGroup(
+                        SetAligner(robot.aligner, ArmStatePositionData.ARM_HOME.aligner.angle),
+                        WaitCommand(250),
+                        ),
+                    MoveToTravel(robot)
+                    )
         }
     }
 }

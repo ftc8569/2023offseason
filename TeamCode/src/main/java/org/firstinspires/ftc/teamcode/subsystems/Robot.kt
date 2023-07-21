@@ -40,7 +40,7 @@ class Robot(
             hub.bulkCachingMode = LynxModule.BulkCachingMode.AUTO
         }
     }
-
+    var isHoldingTSE = false
     var detectedSignalCone = ConeNumber.NONE
     var armState = ArmState.START
         set(value) {

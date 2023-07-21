@@ -2,26 +2,24 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop
 
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.arcrobotics.ftclib.command.CommandOpMode
+import com.arcrobotics.ftclib.command.InstantCommand
 import com.arcrobotics.ftclib.command.button.Trigger
 import com.arcrobotics.ftclib.gamepad.GamepadEx
 import com.arcrobotics.ftclib.gamepad.GamepadKeys
-import com.qualcomm.robotcore.eventloop.opmode.Disabled
+import com.arcrobotics.ftclib.kotlin.extensions.gamepad.whenInactive
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import org.firstinspires.ftc.teamcode.commands.claw.SetClawPosition
 import org.firstinspires.ftc.teamcode.commands.commandgroups.*
 import org.firstinspires.ftc.teamcode.commands.drivetrain.DriveMecanumSnap
 import org.firstinspires.ftc.teamcode.commands.general.MonitorRobotTelemetry
 import org.firstinspires.ftc.teamcode.commands.turret.ControlTurretAngle
+import org.firstinspires.ftc.teamcode.subsystems.ArmState
 import org.firstinspires.ftc.teamcode.subsystems.ArmStatePositionData
-import org.firstinspires.ftc.teamcode.subsystems.ClawPositions
 import org.firstinspires.ftc.teamcode.subsystems.Robot
 import kotlin.math.pow
 import kotlin.math.sign
 
 @TeleOp
-@Disabled
-
-class CRITeleop : CommandOpMode() {
+class LokiTeleop : CommandOpMode() {
     override fun initialize() {
         val robot = Robot(hardwareMap, telemetry)
         val driver = GamepadEx(gamepad1)
@@ -32,11 +30,12 @@ class CRITeleop : CommandOpMode() {
         schedule(MoveToTravel(robot))
 
         // drive with left joystick snapped to 0 degree heading
-        robot.drivetrain.defaultCommand = DriveMecanumSnap(
+        val driveCommand = DriveMecanumSnap(
             robot.drivetrain, 0.0,
             { driver.leftY.pow(2) * sign(driver.leftY) },
             { driver.leftX.pow(2) * sign(driver.leftX) },
         )
+        robot.drivetrain.defaultCommand = driveCommand
 
         // Move the turret to the angle to the right joystick
         val turretController = ControlTurretAngle(robot) {
@@ -47,22 +46,9 @@ class CRITeleop : CommandOpMode() {
         // turn on the telemetry monitoring of the robot
         MonitorRobotTelemetry(robot).schedule(false)
 
-        // Intake position based on the DPAD
-        val beamBreakTrigger = Trigger { robot.claw.holdingCone }
 
-        beamBreakTrigger.whenActive(
-            SetClawPosition(
-                robot.claw,
-                ClawPositions.HOLD_CONE
-            ))
-
-        // REGULAR SCORING
-
-        // Score high with right trigger
         val triggerThreshold = 0.2
-
         val driverRightTrigger = Trigger { driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > triggerThreshold }
-        val driverLeftTrigger = Trigger { driver.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > triggerThreshold }
 
         val driverRightBumper = driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
         val driverLeftBumper = driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
@@ -76,28 +62,25 @@ class CRITeleop : CommandOpMode() {
         driverCircleButton.whenActive(MoveToScoreGroundJunction(robot)).whenInactive(DepositCone(robot))
 
         driverLeftBumper.whenActive(IntakeCone(robot, ArmStatePositionData.INTAKE))
-        beamBreakTrigger.whenActive(PickupCone(robot))
+        val beamBreakInIntakeMode = Trigger { robot.claw.holdingCone && robot.armState == ArmState.INTAKE }
+        beamBreakInIntakeMode.whenActive(PickupCone(robot))
 
+        val driverLeftTrigger = Trigger { driver.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > triggerThreshold }
+        driverLeftTrigger.whenActive(InstantCommand( { robot.isHoldingTSE = true })).whenInactive(InstantCommand({ robot.isHoldingTSE = false }))
 
-        // CAPPING
-
-//        Trigger { driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.2 }
-//            .and(driverRightTrigger)
-//            .whenActive(ScoreHighJunction(robot)).whenInactive(DepositTSEUnderCone(robot))
-//
-//        driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-//            .and(driverRightTrigger)
-//            .whenActive(ScoreMediumJunction(robot)).whenInactive(DepositCone(robot))
-//            .whenInactive(DepositTSEUnderCone(robot).interruptOn { driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) })
-//
-//        driver.getGamepadButton(GamepadKeys.Button.Y).whenHeld(ScoreLowJunction(robot))
-//            .and(driverRightTrigger)
-//            .whenInactive(DepositTSEUnderCone(robot).interruptOn { driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) })
-//
-//        driver.getGamepadButton(GamepadKeys.Button.B).whenHeld(ScoreGroundJunction(robot))
-//            .and(driverRightTrigger)
-//            .whenInactive(DepositTSEUnderCone(robot).interruptOn { driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) })
-//
+        // drive DPAD left/right to adjust the heading
+        val driverDPADLeftButton = driver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
+        val driverDPADRightButton = driver.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
+        val driverDPADUpButton = driver.getGamepadButton(GamepadKeys.Button.DPAD_UP)
+        val driverDPADDownButton = driver.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
+        driverDPADLeftButton.whenActive(InstantCommand( { driveCommand.adjustHeading( +1.0) }))
+        driverDPADRightButton.whenActive(InstantCommand( { driveCommand.adjustHeading( -1.0) }))
+        driverDPADUpButton.whenActive(InstantCommand( { driveCommand.resetHeadingToImuHeading() }))
+        driverDPADDownButton.whenActive(InstantCommand( { driveCommand.isHeadingLocked = false }))
+            .whenInactive(InstantCommand( {
+                driveCommand.resetGoalHeadingToCurrentHeading()
+                driveCommand.isHeadingLocked = true
+            }))
 
 
     }

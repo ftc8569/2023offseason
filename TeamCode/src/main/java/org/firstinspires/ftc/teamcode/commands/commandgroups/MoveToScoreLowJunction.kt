@@ -12,14 +12,14 @@ import org.firstinspires.ftc.teamcode.subsystems.ArmState
 import org.firstinspires.ftc.teamcode.subsystems.ArmStatePositionData
 import org.firstinspires.ftc.teamcode.subsystems.Robot
 
-class ScoreMediumJunction(val robot : Robot) : ConfigurableCommandBase() {
+class MoveToScoreLowJunction(val robot : Robot) : ConfigurableCommandBase() {
     override fun initialize() {
         super.initialize()
-        robot.armState = ArmState.SCORE_MEDIUM
+        robot.armState = ArmState.SCORE_LOW
     }
 
     override fun configure(): CommandBase {
-        val armState = ArmStatePositionData.SCORE_MEDIUM
+        val armState = ArmStatePositionData.SCORE_LOW
 
         return SequentialCommandGroup(
             SetElbowAngle(robot.elbow, armState.elbow.angle),
