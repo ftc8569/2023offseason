@@ -17,7 +17,16 @@ class ElbowSubsystem(private val robot: Robot, motor1: MotorEx, motor2: MotorEx,
     private val motors = MotorGroup(motor1, motor2)
     var isEnabled = true
     var isTelemetryEnabled = false
+    init {
+        register()
+        motor1.inverted = true
+        motors.setRunMode(Motor.RunMode.RawPower)
 
+        // if we are homing with the limit switch, reset the encoder
+        if(homingResult.method == HomingMethod.LIMIT_SWITCH) {
+            motors.resetEncoder()
+        }
+    }
     private val controller = PIDController(ELBOW_KP, ELBOW_KI, ELBOW_KD)
     private val encoderTicksPerRevolution = 2782
     private val closeEnoughToTargetAngleDegrees = 1.0
@@ -26,7 +35,10 @@ class ElbowSubsystem(private val robot: Robot, motor1: MotorEx, motor2: MotorEx,
     private val maxAngularAcceleration = ELBOW_MAX_ANGULAR_ACCELERATION
     private val angleStartOffsetDegrees = homingResult.homeAngles.elbowAngle
     val angleRange = AngleRange(-45.0, 58.0)
-    var currentAngleDegrees : Double = homingResult.homeAngles.elbowAngle
+    var currentAngleDegrees : Double = if(homingResult.method == HomingMethod.USING_SAVED_FROM_AUTO)
+                                           getCurrentAngleFromEncoders()
+                                        else
+                                            homingResult.homeAngles.elbowAngle
         private set
     var targetAngle = currentAngleDegrees
         set(value) {
@@ -40,22 +52,12 @@ class ElbowSubsystem(private val robot: Robot, motor1: MotorEx, motor2: MotorEx,
         { maxAngularVelocity },
         { maxAngularAcceleration },
     )
-    init {
-        register()
-        motor1.inverted = true
-        motors.setRunMode(Motor.RunMode.RawPower)
 
-        // if we are homing with the limit switch, reset the encoder
-        if(homingResult.method == HomingMethod.LIMIT_SWITCH) {
-            motors.resetEncoder()
-        }
-        currentAngleDegrees = getCurrentElbowAngle()
-    }
 
 
     var deltaTimer = ElapsedTime()
 
-    private var angularX : Double = getCurrentElbowAngle()
+    private var angularX : Double = getCurrentAngleFromEncoders()
     private var angularV : Double = 0.0
     private var angularA : Double = 0.0
 
@@ -64,7 +66,7 @@ class ElbowSubsystem(private val robot: Robot, motor1: MotorEx, motor2: MotorEx,
         val deltaT = deltaTimer.seconds()
         deltaTimer.reset()
 
-        currentAngleDegrees = getCurrentElbowAngle()
+        currentAngleDegrees = getCurrentAngleFromEncoders()
         val newAngularV = (currentAngleDegrees - angularX) / deltaT
         val newAngularA = (newAngularV - angularV) / deltaT
         angularX = currentAngleDegrees
@@ -116,7 +118,7 @@ class ElbowSubsystem(private val robot: Robot, motor1: MotorEx, motor2: MotorEx,
             motionProfileTimer.reset()
         }
     }
-    private fun getCurrentElbowAngle(): Double {
+    private fun getCurrentAngleFromEncoders(): Double {
         // just use the first motor encoder
         return convertEncoderTicksToDegrees(motors.positions[0])  + angleStartOffsetDegrees
     }

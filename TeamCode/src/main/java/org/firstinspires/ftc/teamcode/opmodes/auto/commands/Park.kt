@@ -32,10 +32,10 @@ class Park(val robot : Robot, val alliancePosition: AlliancePosition, val center
 
         val endPose = when(alliancePosition) {
             AlliancePosition.RIGHT -> when (robot.detectedSignalCone) {
-                ConeNumber.ONE -> Pose2d(-36.0, -12.0, 0.0)
-                ConeNumber.TWO -> Pose2d(-36.0, -36.0, 0.0)
-                ConeNumber.THREE -> Pose2d(-36.0, -60.0, 0.0)
-                else -> throw IllegalStateException()
+                ConeNumber.ONE -> Pose2d(-12.0, -12.0, 0.0)
+                ConeNumber.TWO -> Pose2d(-12.0, -36.0, 0.0)
+                ConeNumber.THREE -> Pose2d(-12.0, -60.0, 0.0)
+                else -> Pose2d(-36.0, -12.0, 0.0) // guess ONE
             }
 
             AlliancePosition.CENTER_RIGHT -> when (robot.detectedSignalCone) {
@@ -56,7 +56,7 @@ class Park(val robot : Robot, val alliancePosition: AlliancePosition, val center
                 ConeNumber.ONE -> Pose2d(-12.0, 60.0, 0.0)
                 ConeNumber.TWO -> Pose2d(-12.0, 36.0, 0.0)
                 ConeNumber.THREE -> Pose2d(-12.0, 12.0, 0.0)
-                else -> throw IllegalStateException()
+                else -> Pose2d(-12.0, 60.0, 0.0) // guess ONE
             }
 
             else -> throw IllegalStateException()

@@ -107,17 +107,20 @@ class Robot(
             OpModeType.AUTONOMOUS -> {
                 // if we are initializing autonomous, we need homeMecahnisms on initialization every time
                 waitForHome(telemetry)
+                println("HOMING; Auto - homed - saving")
                 // and save these home angles for use in teleop
                 savedHomeResultsFromAuto = HomingResult(
                     limitSwitches.getHomeAngles()!!,
                     limitSwitches.getHomePosition(),
                     HomingMethod.LIMIT_SWITCH
                 )
+                println("HOMING: Auto - saved - " + savedHomeResultsFromAuto!!.toString())
                 savedHomeResultsFromAuto!!
             }
             OpModeType.TELEOP -> {
                 Log.d("Positions saved from auto", (null != savedHomeResultsFromAuto).toString())
                 val resultToUse = if (limitSwitches.isAtHome()) {
+                    println("HOMING; Teleop - limitSwitches.isAtHome()")
                     // if we are already at home, we don't need to homeMecahnisms
                     HomingResult(
                         limitSwitches.getHomeAngles()!!,
@@ -126,16 +129,18 @@ class Robot(
                     )
 
                 } else if (null != savedHomeResultsFromAuto) {
+                    println("HOMING: Teleop - savedHomeResultsFromAuto")
+                    println("HOMING: Teleop - " + savedHomeResultsFromAuto!!.toString())
                     // if we are not at home, but we have a saved result from auto, use that
                     val result = HomingResult(
                         savedHomeResultsFromAuto!!.homeAngles,
                         savedHomeResultsFromAuto!!.homePosition,
                         HomingMethod.USING_SAVED_FROM_AUTO
                     )
-                    savedHomeResultsFromAuto =
-                        null // clear the saved result so that we only use the saved result once
+                    savedHomeResultsFromAuto = null // clear the saved result so that we only use the saved result once
                     result
                 } else {
+                    throw IllegalStateException("Unable to HOME in TeleOp")
                     // if we are not at home, and we don't have a saved result from auto, homeMecahnisms
 //                    waitForHome(telemetry)
                     HomingResult(

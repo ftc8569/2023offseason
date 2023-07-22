@@ -11,7 +11,6 @@ class DetectSignalCone(val robot : Robot) : CommandBase() {
     init {
         addRequirements(robot.signalSleeve)
         robot.signalSleeve.start(Size( 1920, 1080))
-        println("working: initialized")
     }
     override fun initialize() {
         robot.detectedSignalCone = ConeNumber.NONE
@@ -19,6 +18,8 @@ class DetectSignalCone(val robot : Robot) : CommandBase() {
     }
     override fun execute() {
         val detected = robot.signalSleeve.getSignalConeDetected()
+        robot.telemetry.addData("Cone Detected", detected.toString())
+        robot.telemetry.update()
         if (detected != ConeNumber.NONE)
             robot.detectedSignalCone = detected
     }

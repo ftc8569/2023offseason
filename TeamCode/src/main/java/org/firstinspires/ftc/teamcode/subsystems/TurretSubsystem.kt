@@ -24,8 +24,28 @@ import kotlin.math.abs
 // Put motionProfileTimer in constructor, mock a motionProfileTimer
 class TurretSubsystem   (val robot: Robot, val motor: MotorEx, private val homingResult: HomingResult) : SubsystemBase() {
 
+    private val imu = robot.hardwareMap.get<IMU>(IMU::class.java, "imu2") // imu on the expansion hub (turret imu)
+
+    init {
+        val parameters = IMU.Parameters(RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD,
+                RevHubOrientationOnRobot.UsbFacingDirection.DOWN))
+        imu.initialize(parameters)
+
+        motor.setRunMode(Motor.RunMode.RawPower)
+
+        // if we are homing with the limit switch, reset the encoder
+        if(homingResult.method == HomingMethod.LIMIT_SWITCH) {
+            motor.resetEncoder()
+        }
+
+        register()
+    }
+
     val angleStartOffset = homingResult.homeAngles.turretAngle
-    var currentAngle = homingResult.homeAngles.turretAngle
+    var currentAngle = if (homingResult.method == HomingMethod.USING_SAVED_FROM_AUTO)
+                            getCurrentAngleFromEncoder()
+                        else
+                            homingResult.homeAngles.turretAngle
         private set
 
     val angleRange = AngleRange(-360.0, 360.0)
@@ -46,28 +66,15 @@ class TurretSubsystem   (val robot: Robot, val motor: MotorEx, private val homin
         { maxAngularVelocity },
         { maxAngularAcceleration })
     val motionProfileTimer = ElapsedTime()
-    private val imu = robot.hardwareMap.get<IMU>(IMU::class.java, "imu2") // imu on the expansion hub (turret imu)
     var isTelemetryEnabled = false
     var useMotionProfile = true
     var isEnabled = true
 
     val closeEnoughToTargetAngleDegrees = 1.0
-    init {
-        val parameters = IMU.Parameters(RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD,
-            RevHubOrientationOnRobot.UsbFacingDirection.DOWN))
-        imu.initialize(parameters)
 
-        motor.setRunMode(Motor.RunMode.RawPower)
-
-        // if we are homing with the limit switch, reset the encoder
-        if(homingResult.method == HomingMethod.LIMIT_SWITCH) {
-            motor.resetEncoder()
-        }
-
-        currentAngle = encodersToAngleDegrees(motor.currentPosition.toDouble()) + angleStartOffset
-        register()
+    fun getCurrentAngleFromEncoder() : Double {
+        return encodersToAngleDegrees(motor.currentPosition.toDouble()) + angleStartOffset
     }
-
     var deltaTimer = ElapsedTime()
     private var angularX : Double = currentAngle
     private var angularV : Double = 0.0

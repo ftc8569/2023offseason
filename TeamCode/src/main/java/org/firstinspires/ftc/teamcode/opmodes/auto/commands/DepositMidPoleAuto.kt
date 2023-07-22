@@ -40,8 +40,18 @@ class DepositMidPoleAuto(
                         ),
                         TurretStateData(-251.0) // -251.0
                 )
+                AlliancePosition.RIGHT -> ArmAndTurretStateData(
+                        ArmStateData(
+                                WristStateData(-5.0, -90.0, 25.0, 0.0),
+                                ElbowStateData(25.8),
+                                ExtensionStateData(4.6),
+                                PoleAlignerStateData(ARM_HOME.aligner.angle),
+                                ArmStatePositionData.CLAW_HOLD_CONE
+                        ),
+                        TurretStateData(251.0) // -251.0
+                )
 
-                AlliancePosition.CENTER_RIGHT, AlliancePosition.CENTER_LEFT, AlliancePosition.RIGHT -> throw NotImplementedError()
+                AlliancePosition.CENTER_RIGHT, AlliancePosition.CENTER_LEFT -> throw NotImplementedError()
                 else -> throw IllegalStateException()
             }
 
