@@ -37,7 +37,7 @@ public class ArmStatePositionData() {
         val CLAW_RELEASE_CONE_BUT_HOLD_TSE = ClawStateData((Cons.CLAW_RELEASE_CONE_BUT_HOLD_TSE - 1500.0)/2000.0 * 180.0)
 
         val ARM_HOME = ArmStateData(
-            WristStateData(0.0, 0.0),
+            WristStateData(-113.0, 0.0),
             ElbowStateData(0.0),
             ExtensionStateData(0.0),
             PoleAlignerStateData(-149.0),
@@ -61,7 +61,7 @@ public class ArmStatePositionData() {
                 ARM_HOME.aligner,
                 CLAW_HOLD_CONE
             ),
-            TurretStateData(55.0)
+            TurretStateData(40.0)
         )
         val SCORE_HIGH = ArmStateData(
             WristStateData(-5.0, ARM_HOME.wrist.twistAngle, 59.0),

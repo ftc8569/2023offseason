@@ -26,7 +26,7 @@ class DetectSignalCone(val robot : Robot) : CommandBase() {
         return if(robot.detectedSignalCone != ConeNumber.NONE) {
             robot.signalSleeve.shutdown()
             true
-        } else if(timer.seconds() > 3.0){
+        } else if(timer.seconds() > 120.0){
             robot.detectedSignalCone = ConeNumber.ONE
             robot.signalSleeve.shutdown()
             true

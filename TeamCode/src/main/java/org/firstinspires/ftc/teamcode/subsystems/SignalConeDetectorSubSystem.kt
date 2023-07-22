@@ -11,10 +11,10 @@ import org.openftc.easyopencv.OpenCvCamera
 import org.openftc.easyopencv.OpenCvCameraFactory
 import org.openftc.easyopencv.OpenCvCameraRotation
 
-class SignalConeDetectorSubSystem(val robot: Robot, val isTelemetryEnabled : Boolean = false) : SubsystemBase()  {
+class SignalConeDetectorSubSystem(val robot: Robot, val isTelemetryEnabled : Boolean = true) : SubsystemBase()  {
     private val cameraMonitorViewId = robot.hardwareMap.appContext.resources.getIdentifier("cameraMonitorViewId", "id", robot.hardwareMap.appContext.packageName)
     val webcam: OpenCvCamera = OpenCvCameraFactory.getInstance().createWebcam(robot.hardwareMap.get(
-        WebcamName::class.java, "rightWebcam"), cameraMonitorViewId)
+        WebcamName::class.java, "leftWebcam"), cameraMonitorViewId)
     val pipeline = AprilTagDetectionPipeline()
 
     init {

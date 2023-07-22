@@ -111,7 +111,7 @@ class TurretSubsystem   (val robot: Robot, val motor: MotorEx, private val homin
             robot.telemetry.addData("AngularV", angularV)
             robot.telemetry.addData("AngularA", angularA)
 
-            val imuHeading = imu.robotYawPitchRollAngles.getYaw(AngleUnit.DEGREES)
+            val imuHeading = angleStartOffset - imu.robotYawPitchRollAngles.getYaw(AngleUnit.DEGREES)
             robot.telemetry.addData("imu heading", imuHeading)
             robot.telemetry.update()
         }

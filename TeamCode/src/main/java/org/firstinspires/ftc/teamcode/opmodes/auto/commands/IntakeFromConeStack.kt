@@ -30,8 +30,8 @@ class IntakeFromConeStack(
                 5 -> ArmAndTurretStateData(
                     ArmStateData(
                         WristStateData(-5.0, 0.0, 0.0),
-                        ElbowStateData(-18.0),
-                        ExtensionStateData(11.75),
+                        ElbowStateData(-19.0),
+                        ExtensionStateData(11.85),
                         PoleAlignerStateData(ARM_HOME.aligner.angle),
                         ArmStatePositionData.CLAW_OPEN_FOR_INTAKE
                     ),
@@ -74,7 +74,7 @@ class IntakeFromConeStack(
                 1 -> ArmAndTurretStateData(
                     ArmStateData(
                         WristStateData(-15.0, 0.0, 0.0),
-                        ElbowStateData(-31.0),
+                        ElbowStateData(-32.0),
                         ExtensionStateData(13.0),
                         PoleAlignerStateData(ARM_HOME.aligner.angle),
                         ArmStatePositionData.CLAW_OPEN_FOR_INTAKE
@@ -90,7 +90,7 @@ class IntakeFromConeStack(
             else -> throw IllegalStateException()
         }
 
-        val extensionPickupOffset = 2.0
+        val extensionPickupOffset = 2.5
         val elbowAnglePickupOffset = 15.0
 
         //SetClawPosition(robot.claw, ClawPositions.OPEN_FOR_INTAKE)
@@ -103,20 +103,20 @@ class IntakeFromConeStack(
                 SetExtensionLinkage(robot.extension, (armAndTurretState.arm.extension.length-extensionPickupOffset)),
                 SetWristAngles(robot.wrist, armAndTurretState.arm.wrist.bendAngle, armAndTurretState.arm.wrist.twistAngle),
             ),
-            WaitCommand(250),
+            WaitCommand(25),
             SetElbowAngle(robot.elbow, armAndTurretState.arm.elbow.angle),
-            WaitCommand(375),
+            WaitCommand(125),
             ConditionalCommand(
                 SetExtensionLinkage(robot.extension, armAndTurretState.arm.extension.length),
-                WaitCommand(100)
+                WaitCommand(50)
             ) { !robot.claw.holdingCone },
             CloseClawOnBeamBreak(robot),
-            WaitCommand(250),
+            WaitCommand(125),
             ParallelCommandGroup(
                 SetWristAngles(robot.wrist, armAndTurretState.arm.wrist.bendAngle+postPickupBendAngleOffset, 0.0),
                 SetElbowAngle(robot.elbow, 0.0)
                     ),
-            WaitCommand(75)
+//            WaitCommand(75)
         )
 
     }

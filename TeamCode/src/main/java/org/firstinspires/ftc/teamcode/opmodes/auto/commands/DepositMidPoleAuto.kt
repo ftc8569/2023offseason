@@ -5,6 +5,7 @@ import com.arcrobotics.ftclib.command.ParallelCommandGroup
 import com.arcrobotics.ftclib.command.SequentialCommandGroup
 import com.arcrobotics.ftclib.command.WaitCommand
 import org.firstinspires.ftc.teamcode.Cons
+import org.firstinspires.ftc.teamcode.commands.claw.ClawRegripCone
 import org.firstinspires.ftc.teamcode.commands.claw.SetClawPosition
 import org.firstinspires.ftc.teamcode.commands.commandgroups.MinimalStowFromPoleToStack
 import org.firstinspires.ftc.teamcode.commands.elbow.SetElbowAngle
@@ -26,19 +27,18 @@ import org.firstinspires.ftc.teamcode.subsystems.TurretStateData
 import org.firstinspires.ftc.teamcode.subsystems.WristStateData
 
 class DepositMidPoleAuto(
-        val robot: Robot, val alliancePosition: AlliancePosition) :
-    ConfigurableCommandBase() {
+        val robot: Robot, val alliancePosition: AlliancePosition) : ConfigurableCommandBase() {
     override fun configure(): CommandBase {
             val armAndTurretState = when (alliancePosition) {
                 AlliancePosition.LEFT -> ArmAndTurretStateData(
                         ArmStateData(
                                 WristStateData(-5.0, 90.0, 25.0, 0.0),
-                                ElbowStateData(26.0),
+                                ElbowStateData(25.8),
                                 ExtensionStateData(4.6),
                                 PoleAlignerStateData(ARM_HOME.aligner.angle),
                                 ArmStatePositionData.CLAW_HOLD_CONE
                         ),
-                        TurretStateData(-251.0)
+                        TurretStateData(-251.0) // -251.0
                 )
 
                 AlliancePosition.CENTER_RIGHT, AlliancePosition.CENTER_LEFT, AlliancePosition.RIGHT -> throw NotImplementedError()
@@ -51,8 +51,8 @@ class DepositMidPoleAuto(
                             SetElbowAngle(robot.elbow, armAndTurretState.arm.elbow.angle),
                             SetTurretAngle(robot.turret, armAndTurretState.turret.angle),
                             SetExtensionLinkage(robot.extension, armAndTurretState.arm.extension.length),
-                            SetWristAngles(robot.wrist, armAndTurretState.arm.wrist.bendAngle, armAndTurretState.arm.wrist.twistAngle),
-                    ),
+                            SetWristAngles(robot.wrist, armAndTurretState.arm.wrist.bendAngle, armAndTurretState.arm.wrist.twistAngle)
+                            ),
                     WaitCommand(375),
                     SetWristAngles(robot.wrist, armAndTurretState.arm.wrist.depositBendAngle, armAndTurretState.arm.wrist.depositTwistAngle),
                     SetClawPosition(robot.claw, ClawPositions.OPEN_FOR_INTAKE),

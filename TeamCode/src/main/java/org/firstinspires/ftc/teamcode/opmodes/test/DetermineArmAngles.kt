@@ -56,7 +56,7 @@ class DetermineArmAngles : CommandOpMode() {
         )
 
 //        robot.elbow.isTelemetryEnabled = true
-//        robot.turret.isTelemetryEnabled = true
+        robot.turret.isTelemetryEnabled = true
 //        robot.extension.isTelemetryEnabled = true
 
         rightBumper.whenPressed(InstantCommand({ multiplier += 1.0;  }))

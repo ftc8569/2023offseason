@@ -53,9 +53,9 @@ class Park(val robot : Robot, val alliancePosition: AlliancePosition, val center
             }
 
             AlliancePosition.LEFT -> when (robot.detectedSignalCone) {
-                ConeNumber.ONE -> Pose2d(-36.0, -12.0, 0.0)
-                ConeNumber.TWO -> Pose2d(-36.0, -36.0, 0.0)
-                ConeNumber.THREE -> Pose2d(-36.0, -60.0, 0.0)
+                ConeNumber.ONE -> Pose2d(-12.0, 60.0, 0.0)
+                ConeNumber.TWO -> Pose2d(-12.0, 36.0, 0.0)
+                ConeNumber.THREE -> Pose2d(-12.0, 12.0, 0.0)
                 else -> throw IllegalStateException()
             }
 
