@@ -21,7 +21,7 @@ class IntakeFromConeStack(
     val coneNumber: Int
 ) : ConfigurableCommandBase() {
     override fun configure(): CommandBase {
-        val turretState = TurretStateData(-92.0)
+        val turretState = TurretStateData(-93.0)
         val postPickupBendAngleOffset = -75.0
         val armAndTurretState = when (alliancePosition) {
 

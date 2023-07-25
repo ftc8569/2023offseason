@@ -40,7 +40,7 @@ class DriveMecanumSnap (private val drive: DrivetrainSubsystem,
     override fun execute() {
 //        val imuWeight = 0.02
 //        val headingToUse = imuWeight*(drive.rawExternalHeading + headingAdjustment)+drive.poseEstimate.heading*(1.0-imuWeight)
-        val headingToUse = drive.rawExternalHeading + headingAdjustment
+        val headingToUse = drive.poseEstimate.heading + headingAdjustment
         val angleControllerCorrection = if(isHeadingLocked) angle_controller.calculate(goalHeading, headingToUse) else 0.0
 
         drive.driveFieldCentric(

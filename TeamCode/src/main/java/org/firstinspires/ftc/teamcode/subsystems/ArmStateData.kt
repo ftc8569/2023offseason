@@ -43,6 +43,20 @@ public class ArmStatePositionData() {
             PoleAlignerStateData(-149.0),
             CLAW_OPEN_FOR_INTAKE
         )
+        val ARM_CONE_RIGHTING = ArmStateData(
+                WristStateData(-33.0, 0.0),
+                ElbowStateData(-18.0),
+                ExtensionStateData(4.75),
+                PoleAlignerStateData(-22.0),
+                CLAW_OPEN_FOR_INTAKE
+        )
+        val ARM_FALLEN_CONE_HOVER = ArmStateData(
+                WristStateData(80.0, 0.0),
+                ElbowStateData(-25.0),
+                ExtensionStateData(4.0),
+                ARM_HOME.aligner,
+                CLAW_OPEN_FOR_INTAKE
+        )
         val START_LEFT = ArmAndTurretStateData(
             ArmStateData(
                 ARM_HOME.wrist,
@@ -67,7 +81,7 @@ public class ArmStatePositionData() {
             WristStateData(-5.0, ARM_HOME.wrist.twistAngle, 59.0),
             ElbowStateData(58.0),
             ExtensionStateData(9.5),
-            PoleAlignerStateData(-30.0),
+            PoleAlignerStateData(-35.0),
             CLAW_HOLD_CONE
         )
         val SCORE_MEDIUM = ArmStateData(
@@ -83,6 +97,13 @@ public class ArmStatePositionData() {
             ExtensionStateData(0.0),
             ARM_HOME.aligner,
             CLAW_HOLD_CONE
+        )
+        val TILT_POLE = ArmStateData(
+                WristStateData(-70.0, ARM_HOME.wrist.twistAngle),
+                ElbowStateData(10.0),
+                ExtensionStateData(10.0),
+                PoleAlignerStateData(-10.0),
+                CLAW_OPEN_FOR_INTAKE
         )
         val SCORE_LOW_UPSIDEDOWN = ArmStateData(
             WristStateData(-10.0, 180.0, 7.0),
